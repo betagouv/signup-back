@@ -1,0 +1,35 @@
+require 'rails_helper'
+
+RSpec.describe Users::OmniauthCallbacksController, type: :controller do
+  before do
+    request.env['devise.mapping'] = Devise.mappings[:user]
+  end
+
+  describe 'dgfip calls successfully' do
+    let(:token) { '12345' }
+    before do
+      request.env['omniauth.auth'] = OmniAuth::AuthHash.new(
+        credentials: { token: token },
+        email: 'user@user.user',
+        provider: 'dgfip',
+        uid: '123545'
+      )
+    end
+
+    it 'redirects to front host' do
+      front_host = YAML.load_file('config/front.yml')[Rails.env]['callback_url']
+
+      get :dgfip
+
+      expect(response).to redirect_to(Regexp.new(front_host))
+    end
+
+    it 'redirects with token' do
+      front_host = YAML.load_file('config/front.yml')[Rails.env]['host']
+
+      get :dgfip
+
+      expect(response).to redirect_to(Regexp.new(token))
+    end
+  end
+end

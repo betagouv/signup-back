@@ -1,0 +1,18 @@
+test:
+  client_options:
+    site: 'http://my_awesome_application.com'
+    authorize_url: '/oauth/authorize'
+  client_id: 12345
+  client_secret: 12345
+development:
+  client_options:
+    site: 'http://localhost:3001'
+    authorize_url: '/oauth/authorize'
+  client_id: f6feea577e55543877f555e35be37a3930ea37c53eec0d5bfb58ea0e80048762
+  client_secret: 2708a12e758090862cde983d513f066a31225cd079620a8cffff24d6b9df5223
+docker:
+  client_options:
+    site: 'http://oauth:3001'
+    authorize_url: '/oauth/authorize'
+  client_id: f6feea577e55543877f555e35be37a3930ea37c53eec0d5bfb58ea0e80048762
+  client_secret: 2708a12e758090862cde983d513f066a31225cd079620a8cffff24d6b9df5223

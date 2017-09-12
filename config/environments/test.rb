@@ -37,6 +37,15 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
-  # Raises error for missing translations
-  # config.action_view.raise_on_missing_translations = true
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.mock_auth[:france_connect] = OmniAuth::AuthHash.new(
+    provider: 'france_connect',
+    uid: '123545'
+  )
+  OmniAuth.config.mock_auth[:dgfip] = OmniAuth::AuthHash.new(
+    credentials: { token: 'test' },
+    email: 'user@user.user',
+    provider: 'dgfip',
+    uid: '123545'
+  )
 end
