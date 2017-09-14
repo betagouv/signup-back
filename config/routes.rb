@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
+  resources :enrollments
   scope :api do
-    get 'users/access_denied'
+      get 'users/access_denied'
   end
 
   devise_scope :api do

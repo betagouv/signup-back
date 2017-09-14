@@ -8,14 +8,15 @@ end
 gem 'devise'
 gem 'jwt'
 gem 'omniauth-oauth2'
+gem 'pg'
 gem 'puma', '~> 3.7'
 gem 'rack-cors'
 gem 'rails', '~> 5.1.4'
-gem 'sqlite3'
 
 group :development, :test do
   gem 'factory_girl_rails'
   gem 'rspec-rails'
+  gem 'database_cleaner'
 end
 
 group :development do
