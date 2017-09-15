@@ -6,7 +6,7 @@ module OmniAuth
       # change the class name and the :name option to match your application name
       option :name, :france_connect
 
-      option :client_options, site: 'http://my_awesome_application.com',
+      option :client_options, site: 'http://localhost:3001',
                               authorize_url: '/oauth/authorize'
 
       uid { raw_info['id'] }

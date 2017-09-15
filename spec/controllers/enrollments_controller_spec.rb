@@ -24,6 +24,20 @@ require 'rails_helper'
 # `rails-controller-testing` gem.
 
 RSpec.describe EnrollmentsController, type: :controller do
+  let(:user) { FactoryGirl.create(:user) }
+  before do
+    @request.headers['Authorization'] = 'Bearer test'
+    stub_request(:get, 'http://test.host/api/v1/me')
+      .with(
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization' => 'Bearer test',
+          'User-Agent' => 'Faraday v0.12.1'
+        }
+      ).to_return(status: 200, body: "{'id': #{user.id}}", headers: {})
+  end
+
   let(:enrollment) { FactoryGirl.create(:enrollment) }
 
   let(:valid_attributes) do
@@ -32,6 +46,23 @@ RSpec.describe EnrollmentsController, type: :controller do
 
   let(:invalid_attributes) do
     { agreement: false }
+  end
+
+  describe 'authentication' do
+    it 'redirect to users/access_denied if oauth request fails' do
+      stub_request(:get, 'http://test.host/api/v1/me')
+        .with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer test',
+            'User-Agent' => 'Faraday v0.12.1'
+          }
+        ).to_return(status: 401, body: '', headers: {})
+
+      get :index
+      expect(response).to redirect_to(users_access_denied_path)
+    end
   end
 
   describe 'GET #index' do

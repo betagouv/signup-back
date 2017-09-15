@@ -15,6 +15,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'database_cleaner'
+require 'webmock/rspec'
 
 RSpec.configure do |config|
   config.before(:suite) do

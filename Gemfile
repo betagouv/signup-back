@@ -6,6 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'devise'
+gem 'faraday_middleware'
 gem 'jwt'
 gem 'omniauth-oauth2'
 gem 'pg'
@@ -14,9 +15,10 @@ gem 'rack-cors'
 gem 'rails', '~> 5.1.4'
 
 group :development, :test do
+  gem 'database_cleaner'
   gem 'factory_girl_rails'
   gem 'rspec-rails'
-  gem 'database_cleaner'
+  gem 'webmock'
 end
 
 group :development do
