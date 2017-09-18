@@ -5,14 +5,17 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem 'carrierwave'
 gem 'devise'
 gem 'faraday_middleware'
 gem 'jwt'
 gem 'omniauth-oauth2'
 gem 'pg'
 gem 'puma', '~> 3.7'
+gem 'pundit'
 gem 'rack-cors'
 gem 'rails', '~> 5.1.4'
+gem 'rolify'
 
 group :development, :test do
   gem 'database_cleaner'

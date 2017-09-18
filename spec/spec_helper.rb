@@ -16,6 +16,7 @@
 
 require 'database_cleaner'
 require 'webmock/rspec'
+require 'pundit/rspec'
 
 RSpec.configure do |config|
   config.before(:suite) do

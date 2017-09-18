@@ -1,4 +1,5 @@
 class Enrollment < ApplicationRecord
+  resourcify
   validate :agreement_validation
 
   private

@@ -1,10 +1,10 @@
 class EnrollmentsController < ApplicationController
-  before_action :set_enrollment, only: [:show, :update, :destroy]
   before_action :authenticate!
+  before_action :set_enrollment, only: [:show, :update, :destroy]
 
   # GET /enrollments
   def index
-    @enrollments = Enrollment.all
+    @enrollments = enrollments_scope
 
     render json: @enrollments
   end
@@ -16,7 +16,10 @@ class EnrollmentsController < ApplicationController
 
   # POST /enrollments
   def create
-    @enrollment = Enrollment.new(enrollment_params)
+    @enrollment = enrollments_scope.new(enrollment_params)
+    current_user.add_role(:applicant, @enrollment)
+
+    authorize @enrollment, :create?
 
     if @enrollment.save
       render json: @enrollment, status: :created, location: @enrollment
@@ -40,12 +43,15 @@ class EnrollmentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
     def set_enrollment
-      @enrollment = Enrollment.find(params[:id])
+      @enrollment = enrollments_scope.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
+    def enrollments_scope
+      EnrollmentPolicy::Scope.new(current_user, Enrollment).resolve
+    end
+
     def enrollment_params
       params.require(:enrollment).permit(:agreement, :state, service_provider: {}, scopes: {}, legal_basis: {}, service_description: {})
     end

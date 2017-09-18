@@ -4,6 +4,7 @@ module Users
 
     def oauth2_callback
       token = request.env['omniauth.auth']['credentials'].token
+      @current_user = User.from_dgfip_omniauth(request.env['omniauth.auth'])
       redirect_to "#{FRONT_CONFIG['callback_url']}/#{token}"
     end
 
@@ -25,7 +26,7 @@ module Users
     protected
 
     def after_omniauth_failure_path_for(_scope)
-      users_access_denied_path
+      users_access_denied_path # TODO: make a beatifull page
     end
   end
 end

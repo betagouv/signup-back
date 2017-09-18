@@ -40,6 +40,7 @@ Rails.application.configure do
   OmniAuth.config.test_mode = true
   OmniAuth.config.mock_auth[:france_connect] = OmniAuth::AuthHash.new(
     provider: 'france_connect',
+    email: 'user@user.user',
     uid: '123545'
   )
   OmniAuth.config.mock_auth[:dgfip] = OmniAuth::AuthHash.new(

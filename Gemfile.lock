@@ -43,6 +43,10 @@ GEM
     arel (8.0.0)
     bcrypt (3.1.11)
     builder (3.2.3)
+    carrierwave (1.1.0)
+      activemodel (>= 4.0.0)
+      activesupport (>= 4.0.0)
+      mime-types (>= 1.16)
     concurrent-ruby (1.0.5)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -107,6 +111,8 @@ GEM
     pg (0.20.0)
     public_suffix (2.0.5)
     puma (3.10.0)
+    pundit (1.1.0)
+      activesupport (>= 3.0.0)
     rack (2.0.3)
     rack-cors (0.4.1)
     rack-test (0.7.0)
@@ -141,6 +147,7 @@ GEM
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
+    rolify (5.1.0)
     rspec-core (3.6.0)
       rspec-support (~> 3.6.0)
     rspec-expectations (3.6.0)
@@ -190,6 +197,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  carrierwave
   database_cleaner
   devise
   factory_girl_rails
@@ -199,8 +207,10 @@ DEPENDENCIES
   omniauth-oauth2
   pg
   puma (~> 3.7)
+  pundit
   rack-cors
   rails (~> 5.1.4)
+  rolify
   rspec-rails
   spring
   spring-watcher-listen (~> 2.0.0)
