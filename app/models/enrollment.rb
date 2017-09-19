@@ -2,6 +2,9 @@ class Enrollment < ApplicationRecord
   resourcify
   validate :agreement_validation
 
+  has_many :documents
+  accepts_nested_attributes_for :documents
+
   private
 
   def agreement_validation

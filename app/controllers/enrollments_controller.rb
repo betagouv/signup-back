@@ -11,7 +11,7 @@ class EnrollmentsController < ApplicationController
 
   # GET /enrollments/1
   def show
-    render json: @enrollment
+    render json: @enrollment.to_json(include: :documents)
   end
 
   # POST /enrollments
@@ -31,7 +31,7 @@ class EnrollmentsController < ApplicationController
   # PATCH/PUT /enrollments/1
   def update
     if @enrollment.update(enrollment_params)
-      render json: @enrollment
+      render json: @enrollment.to_json(include: :documents)
     else
       render json: @enrollment.errors, status: :unprocessable_entity
     end
@@ -53,6 +53,6 @@ class EnrollmentsController < ApplicationController
     end
 
     def enrollment_params
-      params.require(:enrollment).permit(:agreement, :state, service_provider: {}, scopes: {}, legal_basis: {}, service_description: {})
+      params.require(:enrollment).permit(:agreement, :state, service_provider: {}, scopes: {}, legal_basis: {}, service_description: {}, documents_attributes: [:type, :attachment])
     end
 end

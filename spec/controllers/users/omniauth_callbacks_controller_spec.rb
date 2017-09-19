@@ -10,7 +10,7 @@ RSpec.describe Users::OmniauthCallbacksController, type: :controller do
     before do
       request.env['omniauth.auth'] = OmniAuth::AuthHash.new(
         credentials: { token: token },
-        email: 'user@user.user',
+        info: { email: 'user@user.user' },
         provider: 'dgfip',
         uid: '123545'
       )

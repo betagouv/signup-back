@@ -5,8 +5,8 @@ class User < ApplicationRecord
   def self.from_dgfip_omniauth(data)
     where(
       provider: data['provider'],
-      uid: data['uid'],
-      email: data['email']
+      uid: data['uid'] || data['id'],
+      email: data.info['email']
     ).first_or_create
   end
 

@@ -15,6 +15,7 @@ gem 'puma', '~> 3.7'
 gem 'pundit'
 gem 'rack-cors'
 gem 'rails', '~> 5.1.4'
+gem 'rmagick'
 gem 'rolify'
 
 group :development, :test do

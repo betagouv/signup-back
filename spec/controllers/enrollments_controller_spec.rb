@@ -166,6 +166,17 @@ RSpec.describe EnrollmentsController, type: :controller do
         { scopes: { tax_adress: true } }
       end
 
+      let(:documents_attributes) do
+        [{
+          type: 'Document::LegalBasis',
+          attachment: fixture_file_upload(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
+        }]
+      end
+
+      after do
+        DocumentUploader.new(Document, :attachment).remove!
+      end
+
       it 'renders a not found' do
         put :update, params: { id: enrollment.to_param, enrollment: new_attributes }
 
@@ -216,6 +227,15 @@ RSpec.describe EnrollmentsController, type: :controller do
 
             expect(response).to have_http_status(:ok)
             expect(response.content_type).to eq('application/json')
+          end
+
+          it 'creates an attached legal basis' do
+            expect do
+              put :update, params: {
+                id: enrollment.to_param,
+                enrollment: { documents_attributes: documents_attributes }
+              }
+            end.to(change { enrollment.documents.count })
           end
         end
       end

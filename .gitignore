@@ -17,5 +17,7 @@
 !/log/.keep
 !/tmp/.keep
 
+/public/uploads
+
 .byebug_history
 *.swp
