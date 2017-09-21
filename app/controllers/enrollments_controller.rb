@@ -6,12 +6,16 @@ class EnrollmentsController < ApplicationController
   def index
     @enrollments = enrollments_scope
 
-    render json: @enrollments
+    render json: @enrollments.to_json(include: {
+      documents: { methods: :type }
+    })
   end
 
   # GET /enrollments/1
   def show
-    render json: @enrollment.to_json(include: :documents)
+    render json: @enrollment.to_json(include: {
+      documents: { methods: :type }
+    })
   end
 
   # POST /enrollments
@@ -30,8 +34,11 @@ class EnrollmentsController < ApplicationController
 
   # PATCH/PUT /enrollments/1
   def update
+    authorize @enrollment, :update?
     if @enrollment.update(enrollment_params)
-      render json: @enrollment.to_json(include: :documents)
+      render json: @enrollment.to_json(include: {
+        documents: { methods: :type }
+      })
     else
       render json: @enrollment.errors, status: :unprocessable_entity
     end
@@ -53,6 +60,6 @@ class EnrollmentsController < ApplicationController
     end
 
     def enrollment_params
-      params.require(:enrollment).permit(:agreement, :state, service_provider: {}, scopes: {}, legal_basis: {}, service_description: {}, documents_attributes: [:type, :attachment])
+      params.require(:enrollment).permit(:agreement, service_provider: {}, scopes: {}, legal_basis: {}, service_description: {}, documents_attributes: [:type, :attachment])
     end
 end

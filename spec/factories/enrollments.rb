@@ -9,6 +9,5 @@ FactoryGirl.define do
     service_description main: nil, deployment_date: nil, seasonality: nil,
       max_charge: nil
     agreement true
-    state ''
   end
 end

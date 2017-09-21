@@ -17,6 +17,7 @@ gem 'rack-cors'
 gem 'rails', '~> 5.1.4'
 gem 'rmagick'
 gem 'rolify'
+gem 'state_machines-activerecord'
 
 group :development, :test do
   gem 'database_cleaner'

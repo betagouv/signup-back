@@ -5,6 +5,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
+    return record.can_complete_application? if user.france_connect?
     false
   end
 
