@@ -52,13 +52,25 @@ RSpec.describe Enrollment, type: :model do
       expect(enrollment.state).to eq('filled_application')
     end
 
-    it 'is on waiting_for_approval state if all documents uploaded' do
+    it 'is on completed_application state if all documents uploaded' do
       Enrollment::DOCUMENT_TYPES.each do |document_type|
         enrollment.documents.create(
           type: document_type,
           attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
         )
       end
+
+      expect(enrollment.state).to eq('completed_application')
+    end
+
+    it 'is on waiting_for_approval state if all documents uploaded and apllicant set' do
+      Enrollment::DOCUMENT_TYPES.each do |document_type|
+        enrollment.documents.create(
+          type: document_type,
+          attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
+        )
+      end
+      enrollment.update(applicant: { email: 'test@test.test' })
 
       expect(enrollment.state).to eq('waiting_for_approval')
     end

@@ -60,6 +60,6 @@ class EnrollmentsController < ApplicationController
     end
 
     def enrollment_params
-      params.require(:enrollment).permit(:agreement, service_provider: {}, scopes: {}, legal_basis: {}, service_description: {}, documents_attributes: [:type, :attachment])
+      params.require(:enrollment).permit(:agreement, service_provider: {}, scopes: {}, legal_basis: {}, service_description: {}, documents_attributes: [:type, :attachment], applicant: {})
     end
 end
