@@ -9,19 +9,19 @@ class ApplicationController < ActionController::Base
 
   rescue_from Dgfip::AccessDenied do |e|
     render status: :unauthorized, json: {
-      message: 'you are not authorized to access this API',
+      message: "Vous n'êtes pas authorisé à accéder à cette API",
       detail: e.message
     }
   end
 
   rescue_from Pundit::NotAuthorizedError do |e|
     render status: :forbidden, json: {
-      message: 'you are not authorized to access this resource',
+      message: "Vous n'êtes pas authorisé à modifier cette ressource",
       detail: e.message
     }
   end
 
-  rescue_from ActiveRecord::RecordNotFound do |e|
+  rescue_from ActiveRecord::RecordNotFound do |_e|
     render status: :not_found, json: {
       message: 'Record not found'
     }

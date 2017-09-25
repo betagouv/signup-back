@@ -26,3 +26,10 @@ development:
 test:
   <<: *default
   database: dgfip_back-test
+
+production:
+  <<: *default
+  database: <%= ENV.fetch('PG_DB', nil) %>
+  host: localhost
+  user: <%= ENV.fetch('PG_USER', nil) %>
+  password: <%= ENV.fetch('PG_PASSWORD', nil) %>

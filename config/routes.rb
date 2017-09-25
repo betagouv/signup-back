@@ -7,5 +7,6 @@ Rails.application.routes.draw do
   devise_scope :api do
     devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   end
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  get '/uploads/:model/:type/:mounted_as/:id/:filename', to: 'documents#show'
 end

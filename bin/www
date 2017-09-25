@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /opt/apps/dgfip-contractualization-back/dgfip-contractualization-back
+puma -C ./config/puma.rb

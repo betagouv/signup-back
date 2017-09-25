@@ -28,14 +28,10 @@ module DgfipContractualization
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '*', :headers => :any, :methods => [:get, :post, :put, :options]
+        resource '*', :headers => :any, :methods => [:get, :post, :put, :options], :credentials => false
       end
     end
 
-    config.api_only = true
-    config.session_store :cookie_store, key: '_dgfip_contractualization'
-    config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Flash
-    config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
+    config.public_file_server.enabled = false
   end
 end
