@@ -6,6 +6,12 @@ RSpec.describe Enrollment, type: :model do
     DocumentUploader.new(Enrollment, :attachment).remove!
   end
 
+  it 'can have messages attached to it' do
+    expect do
+      enrollment.messages.create(user: FactoryGirl.create(:user), content: 'test')
+    end.to change { enrollment.messages.count }
+  end
+
   Enrollment::DOCUMENT_TYPES.each do |document_type|
     describe document_type do
       it 'can have document' do
@@ -72,7 +78,7 @@ RSpec.describe Enrollment, type: :model do
       end
       enrollment.update(applicant: { email: 'test@test.test' })
 
-      expect(enrollment.state).to eq('waiting_for_approval')
+      expect(enrollment.state).to eq('completed_application')
     end
   end
 end

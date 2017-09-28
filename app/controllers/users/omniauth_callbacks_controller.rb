@@ -4,6 +4,7 @@ module Users
 
     def oauth2_callback
       token = request.env['omniauth.auth']['credentials'].token
+      session[:token] = token
       @current_user = User.from_dgfip_omniauth(request.env['omniauth.auth'])
       redirect_to "#{FRONT_CONFIG['callback_url']}/#{token}"
     end

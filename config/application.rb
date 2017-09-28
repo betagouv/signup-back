@@ -28,7 +28,7 @@ module DgfipContractualization
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '*', :headers => :any, :methods => [:get, :post, :put, :options], :credentials => false
+        resource '*', headers: :any, methods: %i[get post put options], credentials: false
       end
     end
 

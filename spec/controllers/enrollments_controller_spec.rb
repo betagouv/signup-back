@@ -7,14 +7,14 @@ RSpec.describe EnrollmentsController, type: :controller do
     user
     @request.headers['Authorization'] = 'Bearer test'
     stub_request(:get, 'http://test.host/api/v1/me')
-    .with(
-      headers: {
-        'Accept' => '*/*',
-        'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-        'Authorization' => 'Bearer test',
-        'User-Agent' => 'Faraday v0.12.1'
-      }
-    ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: {'Content-Type' => 'application/json'})
+      .with(
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization' => 'Bearer test',
+          'User-Agent' => 'Faraday v0.12.1'
+        }
+      ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
   end
 
   let(:enrollment) { FactoryGirl.create(:enrollment) }
@@ -30,14 +30,14 @@ RSpec.describe EnrollmentsController, type: :controller do
   describe 'authentication' do
     it 'redirect to users/access_denied if oauth request fails' do
       stub_request(:get, 'http://test.host/api/v1/me')
-      .with(
-        headers: {
-          'Accept' => '*/*',
-          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization' => 'Bearer test',
-          'User-Agent' => 'Faraday v0.12.1'
-        }
-      ).to_return(status: 401, body: '', headers: {})
+        .with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer test',
+            'User-Agent' => 'Faraday v0.12.1'
+          }
+        ).to_return(status: 401, body: '', headers: {})
 
       get :index
       expect(response).to have_http_status(:unauthorized)
@@ -66,14 +66,14 @@ RSpec.describe EnrollmentsController, type: :controller do
       before do
         @request.headers['Authorization'] = 'Bearer test'
         stub_request(:get, 'http://test.host/api/v1/me')
-        .with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer test',
-            'User-Agent' => 'Faraday v0.12.1'
-          }
-        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: {'Content-Type' => 'application/json'})
+          .with(
+            headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'Authorization' => 'Bearer test',
+              'User-Agent' => 'Faraday v0.12.1'
+            }
+          ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
       end
 
       describe 'user is applicant of enrollment' do
@@ -115,14 +115,14 @@ RSpec.describe EnrollmentsController, type: :controller do
         user
         @request.headers['Authorization'] = 'Bearer test'
         stub_request(:get, 'http://test.host/api/v1/me')
-        .with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer test',
-            'User-Agent' => 'Faraday v0.12.1'
-          }
-        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: {'Content-Type' => 'application/json'})
+          .with(
+            headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'Authorization' => 'Bearer test',
+              'User-Agent' => 'Faraday v0.12.1'
+            }
+          ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
       end
 
       context 'with valid params' do
@@ -156,7 +156,6 @@ RSpec.describe EnrollmentsController, type: :controller do
           expect(response.content_type).to eq('application/json')
         end
       end
-
     end
   end
 
@@ -191,14 +190,14 @@ RSpec.describe EnrollmentsController, type: :controller do
         before do
           @request.headers['Authorization'] = 'Bearer test'
           stub_request(:get, 'http://test.host/api/v1/me')
-          .with(
-            headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization' => 'Bearer test',
-              'User-Agent' => 'Faraday v0.12.1'
-            }
-          ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: {'Content-Type' => 'application/json'})
+            .with(
+              headers: {
+                'Accept' => '*/*',
+                'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Authorization' => 'Bearer test',
+                'User-Agent' => 'Faraday v0.12.1'
+              }
+            ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
         end
 
         describe 'user is not applicant of enrollment' do
@@ -258,14 +257,14 @@ RSpec.describe EnrollmentsController, type: :controller do
       before do
         @request.headers['Authorization'] = 'Bearer test'
         stub_request(:get, 'http://test.host/api/v1/me')
-        .with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer test',
-            'User-Agent' => 'Faraday v0.12.1'
-          }
-      ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: {'Content-Type' => 'application/json'})
+          .with(
+            headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'Authorization' => 'Bearer test',
+              'User-Agent' => 'Faraday v0.12.1'
+            }
+          ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
       end
 
       describe 'user is not applicant of enrollment' do

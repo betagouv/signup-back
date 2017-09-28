@@ -1,6 +1,8 @@
 class User < ApplicationRecord
-  rolify
   devise :omniauthable, omniauth_providers: %i[dgfip france_connect]
+
+  rolify
+  has_many :messages
 
   def self.from_dgfip_omniauth(data)
     where(

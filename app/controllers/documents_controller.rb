@@ -8,7 +8,7 @@ class DocumentsController < ApplicationController
       Rails
         .root.join('public/uploads')
         .join(params[:model]).join(params[:type])
-        .join(params[:mounted_as]).join(params[:id]).join(params[:filename])
+        .join(params[:mounted_as]).join(params[:id]).join("#{params[:filename]}.#{params[:format]}")
     )
   end
 end

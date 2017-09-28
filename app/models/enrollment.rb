@@ -6,7 +6,11 @@ class Enrollment < ApplicationRecord
   ].freeze
 
   resourcify
+  has_many :messages
+
   validate :agreement_validation
+  validate :applicant_validation
+  before_save :clean_json
   after_touch :document_workflow
   after_save :applicant_workflow
 
@@ -39,10 +43,31 @@ class Enrollment < ApplicationRecord
 
   private
 
+  def clean_json
+    self.service_description = _clean_json(service_description)
+    self.legal_basis = _clean_json(legal_basis)
+    self.applicant = _clean_json(applicant)
+  end
+
+  def _clean_json(h)
+    return h unless h.is_a?(Hash)
+    Hash[h.map do |k, v|
+      [k, v.blank? ? nil : v]
+    end]
+  end
+
   def agreement_validation
     return if agreement
 
     errors.add(:agreement, "Vous devez accepter les conditions d'utilisation")
+  end
+
+  def applicant_validation
+    if applicant_changed? && can_send_application?
+      errors.add(:applicant, "Vous devez renseigner l'Email") unless applicant['email'].present?
+      errors.add(:applicant, "Vous devez renseigner la Fonction") unless applicant['position'].present?
+      errors.add(:applicant, "Vous devez accepter la convention") unless applicant['agreement'].present?
+    end
   end
 
   def applicant_workflow

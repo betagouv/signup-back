@@ -41,9 +41,13 @@ class ApplicationController < ActionController::Base
   end
 
   def authorization_header
-    res = request.headers['Authorization']
+    res = request.headers['Authorization'] || session_bearer
     raise Dgfip::AccessDenied, 'You must privide an authorization header' unless res
     res
+  end
+
+  def session_bearer
+    "Bearer #{session[:token]}" if session[:token]
   end
 
   def client

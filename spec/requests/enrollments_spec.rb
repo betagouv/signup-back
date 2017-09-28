@@ -14,7 +14,7 @@ RSpec.describe 'Enrollments', type: :request do
           'Authorization' => bearer,
           'User-Agent' => 'Faraday v0.12.1'
         }
-      ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: {'Content-Type' => 'application/json'})
+      ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
   end
 
   describe 'GET /enrollments' do
