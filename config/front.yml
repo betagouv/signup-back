@@ -5,4 +5,4 @@ development:
 docker:
   callback_url: http://localhost:4200/#/oauth-callback
 production:
-  callback_url: http://84.39.49.146/#/oauth-callback
+  callback_url: https://impots.particulier.api.gouv.fr/#/oauth-callback

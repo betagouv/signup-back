@@ -36,4 +36,18 @@ RSpec.describe EnrollmentPolicy do
       expect(subject).to permit(fc_user, enrollment)
     end
   end
+
+  permissions :trigger? do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:dgfip_user) { FactoryGirl.create(:user, provider: 'dgfip') }
+    let(:enrollment) { FactoryGirl.create(:enrollment) }
+
+    it 'deny access if not dgfip user' do
+      expect(subject).not_to permit(user, enrollment)
+    end
+
+    it 'allow access if dgfip user' do
+      expect(subject).to permit(dgfip_user, enrollment)
+    end
+  end
 end

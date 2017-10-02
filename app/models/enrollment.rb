@@ -17,27 +17,35 @@ class Enrollment < ApplicationRecord
   has_many :documents
   accepts_nested_attributes_for :documents
 
-  state_machine :state, initial: 'filled_application'do
+  state_machine :state, initial: 'filled_application' do
     state 'filled_application'
-    state 'completed_application'
     state 'waiting_for_approval'
-    state 'application_approval'
+    state 'application_approved'
+    state 'application_ready'
     state 'deployed'
 
     event 'complete_application' do
-      transition %w[filled_application completed_application] => 'completed_application'
+      transition %w[filled_application completed_application] => 'waiting_for_approval'
     end
 
     event 'send_application' do
       transition 'completed_application' => 'waiting_for_approval'
     end
 
+    event 'refuse_application' do
+      transition 'waiting_for_approval' => 'filled_application'
+    end
+
     event 'approve_application' do
-      transition 'waiting_for_approval' => 'application_approval'
+      transition %w[filled_application completed_application waiting_for_approval] => 'application_approved'
+    end
+
+    event 'sign_convention' do
+      transition 'application_approved' => 'application_ready'
     end
 
     event 'deploy' do
-      transition 'application_approval' => 'deployed'
+      transition 'application_ready' => 'deployed'
     end
   end
 
@@ -63,7 +71,7 @@ class Enrollment < ApplicationRecord
   end
 
   def applicant_validation
-    if applicant_changed? && can_send_application?
+    if applicant_changed? && can_sign_convention?
       errors.add(:applicant, "Vous devez renseigner l'Email") unless applicant['email'].present?
       errors.add(:applicant, "Vous devez renseigner la Fonction") unless applicant['position'].present?
       errors.add(:applicant, "Vous devez accepter la convention") unless applicant['agreement'].present?
@@ -72,8 +80,8 @@ class Enrollment < ApplicationRecord
 
   def applicant_workflow
     if applicant&.fetch('email', nil).present? &&
-      can_send_application?
-      send_application!
+       can_sign_convention?
+      sign_convention!
     end
   end
 

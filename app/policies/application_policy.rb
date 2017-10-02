@@ -1,6 +1,12 @@
 class ApplicationPolicy
   attr_reader :user, :record
 
+  def self.acl_methods
+    (self.instance_methods - Object.methods).keep_if do |e|
+      e =~ /\?/
+    end
+  end
+
   def initialize(user, record)
     @user = user
     @record = record

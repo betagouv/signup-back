@@ -66,19 +66,43 @@ RSpec.describe Enrollment, type: :model do
         )
       end
 
-      expect(enrollment.state).to eq('completed_application')
+      expect(enrollment.state).to eq('waiting_for_approval')
     end
 
-    it 'is on waiting_for_approval state if all documents uploaded and apllicant set' do
-      Enrollment::DOCUMENT_TYPES.each do |document_type|
-        enrollment.documents.create(
-          type: document_type,
-          attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
-        )
-      end
-      enrollment.update(applicant: { email: 'test@test.test' })
+    describe 'the enrollment is on waiting_for_approval state' do
+      let(:enrollment) { FactoryGirl.create(:enrollment, state: 'waiting_for_approval') }
 
-      expect(enrollment.state).to eq('completed_application')
+      it 'can be refused and sent back to filled_application' do
+        enrollment.refuse_application!
+
+        expect(enrollment.state).to eq('filled_application')
+      end
+
+      it 'can be approved application and sent to application_approved state' do
+        enrollment.approve_application!
+
+        expect(enrollment.state).to eq('application_approved')
+      end
+    end
+
+    describe 'the enrollment is on application_approved state' do
+      let(:enrollment) { FactoryGirl.create(:enrollment, state: 'application_approved') }
+
+      it 'can sign convention and send to application_ready state' do
+        enrollment.sign_convention!
+
+        expect(enrollment.state).to eq('application_ready')
+      end
+    end
+
+    describe 'the enrollment is on application_ready state' do
+      let(:enrollment) { FactoryGirl.create(:enrollment, state: 'application_ready') }
+
+      it 'can deploy and send to deployed state' do
+        enrollment.deploy!
+
+        expect(enrollment.state).to eq('deployed')
+      end
     end
   end
 end

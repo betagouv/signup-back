@@ -21,7 +21,7 @@ class User < ApplicationRecord
   end
 
   def france_connect?
-    provider
+    provider == 'france_connect'
   end
 
   def dgfip?

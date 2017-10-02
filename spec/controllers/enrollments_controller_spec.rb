@@ -241,6 +241,89 @@ RSpec.describe EnrollmentsController, type: :controller do
     end
   end
 
+  describe 'PATCH #trigger' do
+    describe 'with a dgfip user' do
+      let(:uid) { 1 }
+      let(:user) { FactoryGirl.create(:user, provider: 'dgfip', uid: uid) }
+
+      before do
+        @request.headers['Authorization'] = 'Bearer test'
+        stub_request(:get, 'http://test.host/api/v1/me')
+        .with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer test',
+            'User-Agent' => 'Faraday v0.12.1'
+          }
+        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+      end
+
+      describe 'user is applicant of enrollment' do
+        before do
+          user.add_role(:applicant, enrollment)
+        end
+
+        it 'triggers an event' do
+          patch :trigger, params: { id: enrollment.id, event: "complete_application" }
+
+          expect(enrollment.reload.state).to eq('waiting_for_approval')
+        end
+
+        it 'returns the enrollment' do
+          patch :trigger, params: { id: enrollment.id, event: "complete_application" }
+
+          res = JSON.parse(response.body)
+          res.delete('updated_at')
+          res.delete('created_at')
+          res.delete('state')
+
+          exp = enrollment.as_json
+          exp.delete('updated_at')
+          exp.delete('created_at')
+          exp.delete('state')
+
+          expect(res).to eq(exp)
+        end
+
+        it 'throw a 400 if not an event' do
+          patch :trigger, params: { id: enrollment.id, event: "boom" }
+
+          expect(response).to have_http_status(400)
+        end
+      end
+    end
+
+    describe 'with a france_connect user' do
+      let(:uid) { 1 }
+      let(:user) { FactoryGirl.create(:user, provider: 'france_connect', uid: uid) }
+
+      before do
+        @request.headers['Authorization'] = 'Bearer test'
+        stub_request(:get, 'http://test.host/api/v1/me')
+        .with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer test',
+            'User-Agent' => 'Faraday v0.12.1'
+          }
+        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+      end
+
+      describe 'user is applicant of enrollment' do
+        before do
+          user.add_role(:applicant, enrollment)
+        end
+        it 'is unauthorized' do
+          patch :trigger, params: { id: enrollment.id, event: "complete_application" }
+
+          expect(response).to have_http_status(403)
+        end
+      end
+    end
+  end
+
   describe 'DELETE #destroy' do
     it 'renders a not found' do
       enrollment
