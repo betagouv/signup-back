@@ -17,11 +17,11 @@ class EnrollmentsController < ApplicationController
   # POST /enrollments
   def create
     @enrollment = enrollments_scope.new(enrollment_params)
-    current_user.add_role(:applicant, @enrollment)
 
     authorize @enrollment, :create?
 
     if @enrollment.save
+      current_user.add_role(:applicant, @enrollment)
       render json: @enrollment, status: :created, location: @enrollment
     else
       render json: @enrollment.errors, status: :unprocessable_entity
