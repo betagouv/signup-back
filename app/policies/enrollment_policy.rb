@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EnrollmentPolicy < ApplicationPolicy
   def create?
     return false unless user.france_connect?
@@ -5,8 +7,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
-    return record.can_complete_application? || record.can_sign_convention? if user.france_connect?
-    false
+    record.can_complete_application? && user.france_connect?
   end
 
   def complete_application?

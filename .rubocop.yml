@@ -1,2 +1,13 @@
 AllCops:
   TargetRubyVersion: 2.3.0
+  Exclude:
+    - 'spec/**/*'
+    - 'db/**/*'
+    - 'config/**/*'
+
+Metrics/LineLength:
+  Max: 120
+Style/Documentation:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
@@ -10,7 +12,7 @@ RSpec.describe User, type: :model do
       it 'can have messages' do
         expect do
           user.messages.create(enrollment: enrollment, content: 'test')
-        end.to change { user.messages.count}
+        end.to change { user.messages.count }
       end
 
       it 'user can be applicant to an enrollment' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DocumentPolicy < ApplicationPolicy
   def show?
     return true if user.dgfip?

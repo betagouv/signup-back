@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require Rails.root.join('lib/omni_auth/strategies/france_connect')
 require Rails.root.join('lib/omni_auth/strategies/dgfip')
 # Use this hook to configure devise mailer, warden hooks and so forth.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dgfip
   class OauthClient
     attr_reader :me_url

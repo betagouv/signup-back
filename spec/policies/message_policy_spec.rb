@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe MessagePolicy do
@@ -7,7 +9,6 @@ RSpec.describe MessagePolicy do
   let(:france_connect_user) { FactoryGirl.create(:user, provider: 'france_connect', email: 'france_connect') }
   let(:enrollment) { FactoryGirl.create(:enrollment) }
   let(:message) { FactoryGirl.create(:message, user: user, enrollment: enrollment) }
-
 
   permissions :create? do
     it 'deny access with no user' do

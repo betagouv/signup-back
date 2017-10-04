@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     FRONT_CONFIG = YAML.load_file(Rails.root.join('config/front.yml'))[Rails.env]

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'oauth2'
 
 class ApplicationController < ActionController::Base
@@ -14,7 +16,7 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  rescue_from Pundit::NotAuthorizedError do |e|
+  rescue_from Pundit::NotAuthorizedError do |_e|
     render status: :forbidden, json: {
       message: ["Vous n'êtes pas authorisé à modifier cette ressource"]
     }
@@ -29,18 +31,20 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate!
-    token = authorization_header.gsub(/Bearer /, '')
-
-    oauth_user = if Rails.env.docker? || Rails.env.production?
-                   { 'id' => token }
-                 else
-                   Rails.cache.fetch(token, expires_in: 10.minutes) do
-                     client.me(token)
-                   end.body
-                 end
-
     @current_user = User.find_by(uid: oauth_user['id'].to_s)
     raise Dgfip::AccessDenied, 'User not found' unless current_user
+  end
+
+  def oauth_user
+    token = authorization_header.gsub(/Bearer /, '')
+
+    if Rails.env.docker? || Rails.env.production?
+      { 'id' => token }
+    else
+      Rails.cache.fetch(token, expires_in: 10.minutes) do
+        client.me(token)
+      end.body
+    end
   end
 
   def authorization_header

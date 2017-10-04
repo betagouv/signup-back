@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe MessagesController, type: :controller do
@@ -9,14 +11,14 @@ RSpec.describe MessagesController, type: :controller do
       user.add_role(:applicant, enrollment)
       @request.headers['Authorization'] = 'Bearer test'
       stub_request(:get, 'http://test.host/api/v1/me')
-      .with(
-        headers: {
-          'Accept' => '*/*',
-          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization' => 'Bearer test',
-          'User-Agent' => 'Faraday v0.12.1'
-        }
-      ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+        .with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer test',
+            'User-Agent' => 'Faraday v0.12.1'
+          }
+        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
     end
 
     let(:message) { FactoryGirl.create(:message, user: user, enrollment: enrollment) }
@@ -107,14 +109,14 @@ RSpec.describe MessagesController, type: :controller do
       user.add_role(:applicant, enrollment)
       @request.headers['Authorization'] = 'Bearer test'
       stub_request(:get, 'http://test.host/api/v1/me')
-      .with(
-        headers: {
-          'Accept' => '*/*',
-          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization' => 'Bearer test',
-          'User-Agent' => 'Faraday v0.12.1'
-        }
-      ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+        .with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer test',
+            'User-Agent' => 'Faraday v0.12.1'
+          }
+        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
     end
 
     let(:message) { FactoryGirl.create(:message, user: user, enrollment: enrollment) }

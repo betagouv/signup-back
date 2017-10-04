@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Enrollment < ApplicationRecord
   DOCUMENT_TYPES = %w[
     Document::CNILVoucher
@@ -70,12 +72,12 @@ class Enrollment < ApplicationRecord
     errors.add(:agreement, "Vous devez accepter les conditions d'utilisation")
   end
 
-  def applicant_validation
-    if applicant_changed? && can_sign_convention?
-      errors.add(:applicant, "Vous devez renseigner l'Email") unless applicant['email'].present?
-      errors.add(:applicant, "Vous devez renseigner la Fonction") unless applicant['position'].present?
-      errors.add(:applicant, "Vous devez accepter la convention") unless applicant['agreement'].present?
-    end
+  def applicant_validation # rubocop:disable Metrics/AbcSize
+    return unless applicant_changed? && can_sign_convention?
+
+    errors.add(:applicant, "Vous devez renseigner l'Email") unless applicant['email'].present?
+    errors.add(:applicant, 'Vous devez renseigner la Fonction') unless applicant['position'].present?
+    errors.add(:applicant, 'Vous devez accepter la convention') unless applicant['agreement'].present?
   end
 
   def applicant_workflow

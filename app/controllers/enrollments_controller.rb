@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EnrollmentsController < ApplicationController
   before_action :authenticate!
   before_action :set_enrollment, only: %i[show update trigger destroy]
@@ -53,14 +55,10 @@ class EnrollmentsController < ApplicationController
 
   def serialize(enrollment)
     enrollment.as_json(
-      include: [{
-        documents: { methods: :type }
-      }, {
-        messages: { include: :user }
-      }]
+      include: [{ documents: { methods: :type } }, { messages: { include: :user } }]
     ).merge('acl' => Hash[
       EnrollmentPolicy.acl_methods.map do |method|
-        [method.to_s.gsub(/\?/, ''), EnrollmentPolicy.new(current_user, enrollment).send(method)]
+        [method.to_s.delete('?'), EnrollmentPolicy.new(current_user, enrollment).send(method)]
       end
     ])
   end
@@ -76,7 +74,15 @@ class EnrollmentsController < ApplicationController
   end
 
   def enrollment_params
-    params.require(:enrollment).permit(:agreement, service_provider: {}, scopes: {}, legal_basis: {}, service_description: {}, documents_attributes: %i[type attachment], applicant: {})
+    params.require(:enrollment).permit(
+      :agreement,
+      service_provider: {},
+      scopes: {},
+      legal_basis: {},
+      service_description: {},
+      documents_attributes: %i[type attachment],
+      applicant: {}
+    )
   end
 
   def event_param

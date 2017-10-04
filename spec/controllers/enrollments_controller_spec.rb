@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe EnrollmentsController, type: :controller do
@@ -250,14 +252,14 @@ RSpec.describe EnrollmentsController, type: :controller do
         before do
           @request.headers['Authorization'] = 'Bearer test'
           stub_request(:get, 'http://test.host/api/v1/me')
-          .with(
-            headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization' => 'Bearer test',
-              'User-Agent' => 'Faraday v0.12.1'
-            }
-          ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+            .with(
+              headers: {
+                'Accept' => '*/*',
+                'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Authorization' => 'Bearer test',
+                'User-Agent' => 'Faraday v0.12.1'
+              }
+            ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
         end
 
         describe 'user is applicant of enrollment' do
@@ -266,7 +268,7 @@ RSpec.describe EnrollmentsController, type: :controller do
           end
 
           it 'throw a 400 if not an event' do
-            patch :trigger, params: { id: enrollment.id, event: "boom" }
+            patch :trigger, params: { id: enrollment.id, event: 'boom' }
 
             expect(response).to have_http_status(400)
           end
@@ -277,13 +279,13 @@ RSpec.describe EnrollmentsController, type: :controller do
             end
 
             it 'triggers an event' do
-              patch :trigger, params: { id: enrollment.id, event: "complete_application" }
+              patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
 
               expect(enrollment.reload.state).to eq('waiting_for_approval')
             end
 
             it 'returns the enrollment' do
-              patch :trigger, params: { id: enrollment.id, event: "complete_application" }
+              patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
 
               res = JSON.parse(response.body)
               res.delete('updated_at')
@@ -299,7 +301,6 @@ RSpec.describe EnrollmentsController, type: :controller do
 
               expect(res).to eq(exp)
             end
-
           end
         end
       end
@@ -312,14 +313,14 @@ RSpec.describe EnrollmentsController, type: :controller do
       before do
         @request.headers['Authorization'] = 'Bearer test'
         stub_request(:get, 'http://test.host/api/v1/me')
-        .with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer test',
-            'User-Agent' => 'Faraday v0.12.1'
-          }
-        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+          .with(
+            headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'Authorization' => 'Bearer test',
+              'User-Agent' => 'Faraday v0.12.1'
+            }
+          ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
       end
 
       describe 'user is applicant of enrollment' do
@@ -327,7 +328,7 @@ RSpec.describe EnrollmentsController, type: :controller do
           user.add_role(:applicant, enrollment)
         end
         it 'is unauthorized' do
-          patch :trigger, params: { id: enrollment.id, event: "complete_application" }
+          patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
 
           expect(response).to have_http_status(403)
         end
