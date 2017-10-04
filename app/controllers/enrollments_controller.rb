@@ -51,6 +51,20 @@ class EnrollmentsController < ApplicationController
     @enrollment.destroy
   end
 
+  def serialize(enrollment)
+    enrollment.as_json(
+      include: [{
+        documents: { methods: :type }
+      }, {
+        messages: { include: :user }
+      }]
+    ).merge('acl' => Hash[
+      EnrollmentPolicy.acl_methods.map do |method|
+        [method.to_s.gsub(/\?/, ''), EnrollmentPolicy.new(current_user, enrollment).send(method)]
+      end
+    ])
+  end
+
   private
 
   def set_enrollment
@@ -77,19 +91,5 @@ class EnrollmentsController < ApplicationController
     render status: :bad_request, json: {
       message: ['event not permitted']
     }
-  end
-
-  def serialize(enrollment)
-    enrollment.as_json(
-      include: [{
-        documents: { methods: :type }
-      }, {
-        messages: { include: :user }
-      }]
-    ).merge(acl: Hash[
-      EnrollmentPolicy.acl_methods.map do |method|
-        [method.to_s.gsub(/\?/, ''), EnrollmentPolicy.new(current_user, enrollment).send(method)]
-      end
-    ])
   end
 end

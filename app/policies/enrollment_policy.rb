@@ -21,10 +21,6 @@ class EnrollmentPolicy < ApplicationPolicy
     user.dgfip? && record.can_refuse_application?
   end
 
-  def sign_convention?
-    user.france_connect? && record.can_sign_convention?
-  end
-
   def deploy?
     user.france_connect? && record.can_deploy?
   end

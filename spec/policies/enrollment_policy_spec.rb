@@ -37,17 +37,103 @@ RSpec.describe EnrollmentPolicy do
     end
   end
 
-  permissions :trigger? do
+  permissions :complete_application? do
     let(:user) { FactoryGirl.create(:user) }
-    let(:dgfip_user) { FactoryGirl.create(:user, provider: 'dgfip') }
+    let(:enrollment) { FactoryGirl.create(:enrollment) }
+
+    it 'deny access if not frnace connect user' do
+      expect(subject).not_to permit(user, enrollment)
+    end
+
+    describe 'I have a france connect user' do
+      let(:user) { FactoryGirl.create(:user, provider: 'france_connect') }
+
+      it 'deny access if it cannot complete application' do
+        expect(enrollment).to receive(:can_complete_application?).and_return(false)
+
+        expect(subject).not_to permit(user, enrollment)
+      end
+
+      it 'allow access if it can complete application' do
+        expect(enrollment).to receive(:can_complete_application?).and_return(true)
+
+        expect(subject).to permit(user, enrollment)
+      end
+    end
+  end
+
+  permissions :deploy? do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:enrollment) { FactoryGirl.create(:enrollment) }
+
+    it 'deny access if not frnace connect user' do
+      expect(subject).not_to permit(user, enrollment)
+    end
+
+    describe 'I have a france connect user' do
+      let(:user) { FactoryGirl.create(:user, provider: 'france_connect') }
+
+      it 'deny access if it cannot deploy' do
+        expect(enrollment).to receive(:can_deploy?).and_return(false)
+
+        expect(subject).not_to permit(user, enrollment)
+      end
+
+      it 'allow access if it can deploy' do
+        expect(enrollment).to receive(:can_deploy?).and_return(true)
+
+        expect(subject).to permit(user, enrollment)
+      end
+    end
+  end
+
+  permissions :approve_application? do
+    let(:user) { FactoryGirl.create(:user) }
     let(:enrollment) { FactoryGirl.create(:enrollment) }
 
     it 'deny access if not dgfip user' do
       expect(subject).not_to permit(user, enrollment)
     end
 
-    it 'allow access if dgfip user' do
-      expect(subject).to permit(dgfip_user, enrollment)
+    describe 'I have a dgfip user' do
+      let(:user) { FactoryGirl.create(:user, provider: 'dgfip') }
+
+      it 'deny access if it cannot approve application' do
+        expect(enrollment).to receive(:can_approve_application?).and_return(false)
+
+        expect(subject).not_to permit(user, enrollment)
+      end
+
+      it 'allow access if it can approve application' do
+        expect(enrollment).to receive(:can_approve_application?).and_return(true)
+
+        expect(subject).to permit(user, enrollment)
+      end
+    end
+  end
+
+  permissions :refuse_application? do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:enrollment) { FactoryGirl.create(:enrollment) }
+
+    it 'deny access if not dgfip user' do
+      expect(subject).not_to permit(user, enrollment)
+    end
+
+    describe 'I have a dgfip user' do
+      let(:user) { FactoryGirl.create(:user, provider: 'dgfip') }
+
+      it 'deny access if it cannot refuse application' do
+        expect(enrollment).to receive(:can_refuse_application?).and_return(false)
+
+        expect(subject).not_to permit(user, enrollment)
+      end
+
+      it 'allow access if it can refuse application' do
+        expect(enrollment).to receive(:can_refuse_application?).and_return(true)
+
+        expect(subject).to permit(user, enrollment)
+      end
     end
   end
 end

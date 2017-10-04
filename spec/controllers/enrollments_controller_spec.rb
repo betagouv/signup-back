@@ -242,61 +242,72 @@ RSpec.describe EnrollmentsController, type: :controller do
   end
 
   describe 'PATCH #trigger' do
-    describe 'with a dgfip user' do
-      let(:uid) { 1 }
-      let(:user) { FactoryGirl.create(:user, provider: 'dgfip', uid: uid) }
+    describe 'complete_application?' do
+      describe 'with a france_connect user' do
+        let(:uid) { 1 }
+        let(:user) { FactoryGirl.create(:user, provider: 'france_connect', uid: uid) }
 
-      before do
-        @request.headers['Authorization'] = 'Bearer test'
-        stub_request(:get, 'http://test.host/api/v1/me')
-        .with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer test',
-            'User-Agent' => 'Faraday v0.12.1'
-          }
-        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
-      end
-
-      describe 'user is applicant of enrollment' do
         before do
-          user.add_role(:applicant, enrollment)
+          @request.headers['Authorization'] = 'Bearer test'
+          stub_request(:get, 'http://test.host/api/v1/me')
+          .with(
+            headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'Authorization' => 'Bearer test',
+              'User-Agent' => 'Faraday v0.12.1'
+            }
+          ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
         end
 
-        it 'triggers an event' do
-          patch :trigger, params: { id: enrollment.id, event: "complete_application" }
+        describe 'user is applicant of enrollment' do
+          before do
+            user.add_role(:applicant, enrollment)
+          end
 
-          expect(enrollment.reload.state).to eq('waiting_for_approval')
-        end
+          it 'throw a 400 if not an event' do
+            patch :trigger, params: { id: enrollment.id, event: "boom" }
 
-        it 'returns the enrollment' do
-          patch :trigger, params: { id: enrollment.id, event: "complete_application" }
+            expect(response).to have_http_status(400)
+          end
 
-          res = JSON.parse(response.body)
-          res.delete('updated_at')
-          res.delete('created_at')
-          res.delete('state')
+          describe 'enrollment can be completed' do
+            before do
+              # expect_all_instance_of(Enrollment).to receive(:can_complete_application?).and_return(true)
+            end
 
-          exp = enrollment.as_json
-          exp.delete('updated_at')
-          exp.delete('created_at')
-          exp.delete('state')
+            it 'triggers an event' do
+              patch :trigger, params: { id: enrollment.id, event: "complete_application" }
 
-          expect(res).to eq(exp)
-        end
+              expect(enrollment.reload.state).to eq('waiting_for_approval')
+            end
 
-        it 'throw a 400 if not an event' do
-          patch :trigger, params: { id: enrollment.id, event: "boom" }
+            it 'returns the enrollment' do
+              patch :trigger, params: { id: enrollment.id, event: "complete_application" }
 
-          expect(response).to have_http_status(400)
+              res = JSON.parse(response.body)
+              res.delete('updated_at')
+              res.delete('created_at')
+              res.delete('state')
+              res.delete('acl')
+
+              exp = @controller.serialize(enrollment)
+              exp.delete('updated_at')
+              exp.delete('created_at')
+              exp.delete('state')
+              exp.delete('acl')
+
+              expect(res).to eq(exp)
+            end
+
+          end
         end
       end
     end
 
-    describe 'with a france_connect user' do
+    describe 'with a dgfip user' do
       let(:uid) { 1 }
-      let(:user) { FactoryGirl.create(:user, provider: 'france_connect', uid: uid) }
+      let(:user) { FactoryGirl.create(:user, provider: 'dgfip', uid: uid) }
 
       before do
         @request.headers['Authorization'] = 'Bearer test'
