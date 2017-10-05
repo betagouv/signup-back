@@ -3,17 +3,18 @@
 class MessagesController < ApplicationController
   before_action :authenticate!
   before_action :set_enrollment
-  before_action :set_message, only: %i[show edit update destroy]
+  before_action :set_message, only: %i[show update destroy]
 
   # GET /messages
   def index
     @messages = messages_scope.all
-    render json: @messages.to_json(inlcude: :user)
+    res = @messages.map { |e| e.as_json(include: :user) }
+    render json: res
   end
 
   # GET /messages/1
   def show
-    render json: @message.to_json(inlcude: :user)
+    render json: @message.as_json(inlcude: :user)
   end
 
   # POST /messages
