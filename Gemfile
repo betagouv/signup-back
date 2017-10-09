@@ -8,6 +8,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'carrierwave'
+gem 'carrierwave-i18n'
 gem 'devise'
 gem 'faraday_middleware'
 gem 'jwt'
@@ -17,6 +18,7 @@ gem 'puma', '~> 3.7'
 gem 'pundit'
 gem 'rack-cors'
 gem 'rails', '~> 5.1.4'
+gem 'rails-i18n'
 gem 'rmagick'
 gem 'rolify'
 gem 'state_machines-activerecord'
