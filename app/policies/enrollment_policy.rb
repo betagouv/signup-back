@@ -7,7 +7,10 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
-    record.can_complete_application? && user.france_connect?
+    res = false
+    res = true if record.can_complete_application?
+    res = record.applicant&.fetch('email', nil).present? if record.can_sign_convention?
+    res && user.france_connect?
   end
 
   def complete_application?
@@ -20,6 +23,10 @@ class EnrollmentPolicy < ApplicationPolicy
 
   def refuse_application?
     user.dgfip? && record.can_refuse_application?
+  end
+
+  def sign_convention?
+    user.france_connect? && record.can_sign_convention?
   end
 
   def deploy?

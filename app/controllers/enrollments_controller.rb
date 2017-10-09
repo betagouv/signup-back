@@ -32,8 +32,9 @@ class EnrollmentsController < ApplicationController
 
   # PATCH/PUT /enrollments/1
   def update
+    @enrollment.attributes = enrollment_params
     authorize @enrollment, :update?
-    if @enrollment.update(enrollment_params)
+    if @enrollment.save
       render json: serialize(@enrollment)
     else
       render json: @enrollment.errors, status: :unprocessable_entity

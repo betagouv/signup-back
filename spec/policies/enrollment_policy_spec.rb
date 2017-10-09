@@ -37,6 +37,17 @@ RSpec.describe EnrollmentPolicy do
       expect(enrollment).to receive(:can_complete_application?).and_return(true)
       expect(subject).to permit(fc_user, enrollment)
     end
+
+    it 'deny access if france_connected_user and can sign convention without applicant' do
+      expect(enrollment).to receive(:can_sign_convention?).and_return(true)
+      expect(subject).not_to permit(fc_user, enrollment)
+    end
+
+    it 'allow access if france_connected_user and can sign convention with applicant' do
+      expect(enrollment).to receive(:can_sign_convention?).and_return(true)
+      enrollment.applicant = { email: 'test@test.test' }
+      expect(subject).to permit(fc_user, enrollment)
+    end
   end
 
   permissions :complete_application? do
