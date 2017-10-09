@@ -13,6 +13,10 @@ class EnrollmentPolicy < ApplicationPolicy
     res && user.france_connect?
   end
 
+  def convention?
+    record.can_sign_convention? || record.can_deploy? || record.deployed?
+  end
+
   def complete_application?
     user.france_connect? && record.can_complete_application?
   end

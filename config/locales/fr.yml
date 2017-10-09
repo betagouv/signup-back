@@ -1,0 +1,12 @@
+fr:
+  enrollment:
+    scopes:
+      number_of_tax_shares: RFR et nombre de parts fiscales
+      tax_address:  Adresse fiscale de taxation à l'IR
+      non_wadge_income: Revenus non salariaux
+      family_situation: Situation de la famille et détail du nombre de personnes à charge
+      support_payments: Montant des pensions alimentaires reçues
+      deficit: Existance de déficit sur l'année de revenus
+      housing_tax: Données de taxe d'habitation principale
+      total_gross_income: Revenu Brut Global / Déficit Brut Global
+      world_income: Montant des revenus mondiaux

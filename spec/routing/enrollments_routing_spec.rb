@@ -12,6 +12,10 @@ RSpec.describe EnrollmentsController, type: :routing do
       expect(get: '/api/enrollments/1').to route_to('enrollments#show', id: '1')
     end
 
+    it 'routes to #convention' do
+      expect(get: '/api/enrollments/1/convention').to route_to('enrollments#convention', id: '1')
+    end
+
     it 'routes to #create' do
       expect(post: '/api/enrollments').to route_to('enrollments#create')
     end

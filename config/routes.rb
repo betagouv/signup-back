@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :enrollments do
       resources :messages
       member do
+        get :convention
         patch :trigger
       end
     end

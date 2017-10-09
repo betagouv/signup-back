@@ -100,6 +100,53 @@ RSpec.describe EnrollmentsController, type: :controller do
     end
   end
 
+  describe 'GET #convention' do
+    it 'returns a success response' do
+      get :convention, params: { id: enrollment.to_param }
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    describe 'with a france_connect user' do
+      let(:uid) { 1 }
+      let(:user) { FactoryGirl.create(:user, provider: 'france_connect', uid: uid) }
+
+      before do
+        @request.headers['Authorization'] = 'Bearer test'
+        stub_request(:get, 'http://test.host/api/v1/me')
+          .with(
+            headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'Authorization' => 'Bearer test',
+              'User-Agent' => 'Faraday v0.12.1'
+            }
+          ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+      end
+
+      describe 'user is applicant of enrollment' do
+        before do
+          user.add_role(:applicant, enrollment)
+        end
+
+        it 'returns a success response if enrollment can be signed' do
+          enrollment.update(state: 'application_approved')
+          get :convention, params: { id: enrollment.to_param, format: :pdf }
+
+          expect(response).to be_success
+        end
+      end
+
+      describe 'user is not applicant of enrollment' do
+        it 'returns a success response' do
+          get :convention, params: { id: enrollment.to_param }
+
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe 'POST #create' do
     context 'with valid params' do
       it 'forbids enrollment creation' do

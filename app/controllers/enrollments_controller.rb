@@ -2,7 +2,7 @@
 
 class EnrollmentsController < ApplicationController
   before_action :authenticate!
-  before_action :set_enrollment, only: %i[show update trigger destroy]
+  before_action :set_enrollment, only: %i[show convention update trigger destroy]
 
   # GET /enrollments
   def index
@@ -14,6 +14,12 @@ class EnrollmentsController < ApplicationController
   # GET /enrollments/1
   def show
     render json: serialize(@enrollment)
+  end
+
+  # GET /enrollments/1/convention
+  def convention
+    authorize @enrollment, :convention?
+    @filename = 'convention.pdf'
   end
 
   # POST /enrollments
@@ -40,6 +46,7 @@ class EnrollmentsController < ApplicationController
       render json: @enrollment.errors, status: :unprocessable_entity
     end
   end
+
 
   # PATCH /enrollment/1/trigger
   def trigger
