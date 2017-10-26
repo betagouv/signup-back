@@ -30,6 +30,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'rspec-rails'
   gem 'webmock'
+  gem 'simplecov'
 end
 
 group :development do
