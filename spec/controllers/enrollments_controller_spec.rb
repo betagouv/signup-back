@@ -338,12 +338,14 @@ RSpec.describe EnrollmentsController, type: :controller do
               res.delete('updated_at')
               res.delete('created_at')
               res.delete('state')
+              res.delete('messages')
               res.delete('acl')
 
               exp = @controller.serialize(enrollment)
               exp.delete('updated_at')
               exp.delete('created_at')
               exp.delete('state')
+              exp.delete('messages')
               exp.delete('acl')
 
               expect(res).to eq(exp)

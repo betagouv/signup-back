@@ -31,7 +31,8 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate!
-    @current_user = User.find_by(uid: oauth_user['id'].to_s)
+    @current_user ||= User.find_by(uid: oauth_user['id'].to_s)
+    Thread.current[:current_user] ||= @current_user
     raise Dgfip::AccessDenied, 'User not found' unless current_user
   end
 

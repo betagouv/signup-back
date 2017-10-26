@@ -26,6 +26,11 @@ class Enrollment < ApplicationRecord
     state 'application_ready'
     state 'deployed'
 
+    after_transition any => 'waiting_for_approval' do |enrollment, transition|
+      enrollment.messages.create(
+        content: 'votre dossier a été complèté',
+      )
+    end
     event 'complete_application' do
       transition %w[filled_application completed_application] => 'waiting_for_approval'
     end
@@ -34,18 +39,38 @@ class Enrollment < ApplicationRecord
       transition 'completed_application' => 'waiting_for_approval'
     end
 
+    after_transition any => 'application_approved' do |enrollment, transition|
+      enrollment.messages.create(
+        content: 'votre dossier a été complèté',
+      )
+    end
     event 'refuse_application' do
       transition 'waiting_for_approval' => 'filled_application'
     end
 
+    after_transition any => 'application_approved' do |enrollment, transition|
+      enrollment.messages.create(
+        content: 'votre dossier a été approuvé',
+      )
+    end
     event 'approve_application' do
       transition %w[filled_application completed_application waiting_for_approval] => 'application_approved'
     end
 
+    after_transition any => 'application_ready' do |enrollment, transition|
+      enrollment.messages.create(
+        content: 'votre application est prête pour la mise en production',
+      )
+    end
     event 'sign_convention' do
       transition 'application_approved' => 'application_ready'
     end
 
+    after_transition any => 'deployed' do |enrollment, transition|
+      enrollment.messages.create(
+        content: 'Votre application est déployée',
+      )
+    end
     event 'deploy' do
       transition 'application_ready' => 'deployed'
     end
@@ -91,7 +116,6 @@ class Enrollment < ApplicationRecord
     if DOCUMENT_TYPES.all? do |document|
       documents.where(type: document).present?
     end && can_complete_application?
-
       complete_application!
     end
 

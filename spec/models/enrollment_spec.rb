@@ -56,6 +56,16 @@ RSpec.describe Enrollment, type: :model do
   end
 
   describe 'workflow' do
+    describe 'messages' do
+      it 'creates a message when completed_application' do
+        enrollment.complete_application!
+
+        message = enrollment.reload.messages.last
+          expect(message).to be_persisted
+        expect(message.content).to eq('votre dossier a été complèté')
+      end
+    end
+
     it 'should start on initial state' do
       expect(enrollment.state).to eq('filled_application')
     end
@@ -74,6 +84,16 @@ RSpec.describe Enrollment, type: :model do
     describe 'the enrollment is on waiting_for_approval state' do
       let(:enrollment) { FactoryGirl.create(:enrollment, state: 'waiting_for_approval') }
 
+      describe 'messages' do
+        it 'creates a message when application_approved' do
+          enrollment.approve_application!
+
+          message = enrollment.messages.last
+          expect(message).to be_persisted
+          expect(message.content).to eq('votre dossier a été approuvé')
+        end
+      end
+
       it 'can be refused and sent back to filled_application' do
         enrollment.refuse_application!
 
@@ -90,6 +110,15 @@ RSpec.describe Enrollment, type: :model do
     describe 'the enrollment is on application_approved state' do
       let(:enrollment) { FactoryGirl.create(:enrollment, state: 'application_approved') }
 
+      describe 'messages' do
+        it 'creates a message when application_ready' do
+          enrollment.sign_convention!
+
+          message = enrollment.reload.messages.last
+          expect(message).to be_persisted
+          expect(message.content).to eq('votre application est prête pour la mise en production')
+        end
+      end
       it 'can sign convention and send to application_ready state' do
         enrollment.sign_convention!
 
@@ -99,6 +128,16 @@ RSpec.describe Enrollment, type: :model do
 
     describe 'the enrollment is on application_ready state' do
       let(:enrollment) { FactoryGirl.create(:enrollment, state: 'application_ready') }
+
+      describe 'messages' do
+        it 'creates a message when application_deployed' do
+          enrollment.deploy!
+
+          message = enrollment.reload.messages.last
+          expect(message).to be_persisted
+          expect(message.content).to eq('Votre application est déployée')
+        end
+      end
 
       it 'can deploy and send to deployed state' do
         enrollment.deploy!
