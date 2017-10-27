@@ -13,7 +13,6 @@ class Enrollment < ApplicationRecord
   validate :agreement_validation
   validate :applicant_validation
   before_save :clean_json
-  after_touch :document_workflow
   after_save :applicant_workflow
 
   has_many :documents
@@ -21,7 +20,9 @@ class Enrollment < ApplicationRecord
 
   state_machine :state, initial: 'filled_application' do
     state 'filled_application'
-    state 'waiting_for_approval'
+    state 'waiting_for_approval' do
+      validate :document_validation
+    end
     state 'application_approved'
     state 'application_ready'
     state 'deployed'
@@ -112,13 +113,11 @@ class Enrollment < ApplicationRecord
     end
   end
 
-  def document_workflow
-    if DOCUMENT_TYPES.all? do |document|
+  def document_validation
+    unless DOCUMENT_TYPES.all? do |document|
       documents.where(type: document).present?
-    end && can_complete_application?
-      complete_application!
     end
-
-    true
+      errors.add(:documents, 'Vous devez envoyer tous les documents demandés')
+    end
   end
 end

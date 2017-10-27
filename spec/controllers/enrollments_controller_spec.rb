@@ -322,7 +322,12 @@ RSpec.describe EnrollmentsController, type: :controller do
 
           describe 'enrollment can be completed' do
             before do
-              # expect_all_instance_of(Enrollment).to receive(:can_complete_application?).and_return(true)
+              Enrollment::DOCUMENT_TYPES.each do |document_type|
+                enrollment.documents.create(
+                  type: document_type,
+                  attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
+                )
+              end
             end
 
             it 'triggers an event' do
@@ -339,6 +344,7 @@ RSpec.describe EnrollmentsController, type: :controller do
               res.delete('created_at')
               res.delete('state')
               res.delete('messages')
+              res.delete('documents')
               res.delete('acl')
 
               exp = @controller.serialize(enrollment)
@@ -346,9 +352,18 @@ RSpec.describe EnrollmentsController, type: :controller do
               exp.delete('created_at')
               exp.delete('state')
               exp.delete('messages')
+              exp.delete('documents')
               exp.delete('acl')
 
               expect(res).to eq(exp)
+            end
+          end
+
+          describe 'enrollment cannot be completed' do
+            it 'triggers an event' do
+              patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
+
+              expect(response).to have_http_status(:unprocessable_entity)
             end
           end
         end

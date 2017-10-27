@@ -58,6 +58,12 @@ RSpec.describe Enrollment, type: :model do
   describe 'workflow' do
     describe 'messages' do
       it 'creates a message when completed_application' do
+        Enrollment::DOCUMENT_TYPES.each do |document_type|
+          enrollment.documents.create(
+            type: document_type,
+            attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
+          )
+        end
         enrollment.complete_application!
 
         message = enrollment.reload.messages.last
@@ -70,7 +76,11 @@ RSpec.describe Enrollment, type: :model do
       expect(enrollment.state).to eq('filled_application')
     end
 
-    it 'is on completed_application state if all documents uploaded' do
+    it 'cannot completed_application state if all documents uploaded' do
+      expect(enrollment.complete_application).to be_falsey
+    end
+
+    it 'can completed_application state if all documents uploaded' do
       Enrollment::DOCUMENT_TYPES.each do |document_type|
         enrollment.documents.create(
           type: document_type,
@@ -78,11 +88,14 @@ RSpec.describe Enrollment, type: :model do
         )
       end
 
-      expect(enrollment.state).to eq('waiting_for_approval')
+      expect(enrollment.complete_application).to be_truthy
     end
 
     describe 'the enrollment is on waiting_for_approval state' do
-      let(:enrollment) { FactoryGirl.create(:enrollment, state: 'waiting_for_approval') }
+      let(:enrollment) { FactoryGirl.create(:enrollment) }
+      before do
+        enrollment.update_attribute(:state, 'waiting_for_approval')
+      end
 
       describe 'messages' do
         it 'creates a message when application_approved' do

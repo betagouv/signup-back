@@ -52,8 +52,11 @@ class EnrollmentsController < ApplicationController
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
 
-    @enrollment.send("#{event_param}!".to_sym)
-    render json: serialize(@enrollment)
+    if @enrollment.send("#{event_param}".to_sym)
+      render json: serialize(@enrollment)
+    else
+      render status: :unprocessable_entity, json: @enrollment.errors
+    end
   end
 
   # DELETE /enrollments/1
