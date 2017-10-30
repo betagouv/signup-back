@@ -41,11 +41,6 @@ class Enrollment < ApplicationRecord
       transition 'completed_application' => 'waiting_for_approval'
     end
 
-    after_transition any => 'application_approved' do |enrollment, transition|
-      enrollment.messages.create(
-        content: 'votre dossier a été complèté',
-      )
-    end
     event 'refuse_application' do
       transition 'waiting_for_approval' => 'filled_application'
     end

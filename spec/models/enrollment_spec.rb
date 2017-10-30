@@ -99,6 +99,12 @@ RSpec.describe Enrollment, type: :model do
 
       describe 'messages' do
         it 'creates a message when application_approved' do
+          expect do
+            enrollment.approve_application!
+          end.to change { Message.count }.by(1)
+        end
+
+        it 'creates a message with good wording when application_approved' do
           enrollment.approve_application!
 
           message = enrollment.messages.last
