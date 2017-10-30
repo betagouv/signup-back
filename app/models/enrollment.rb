@@ -5,6 +5,7 @@ class Enrollment < ApplicationRecord
     Document::CNILVoucher
     Document::CertificationResults
     Document::FranceConnectCompliance
+    Document::LegalBasis
   ].freeze
 
   resourcify
