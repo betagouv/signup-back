@@ -13,8 +13,11 @@ class DocumentsController < ApplicationController
 
   def document_path # rubocop:disable Metrics/AbcSize
     Rails
-      .root.join('public/uploads')
+      .root
+      .join('public/uploads')
       .join(params[:model]).join(params[:type])
-      .join(params[:mounted_as]).join(params[:id]).join("#{params[:filename]}.#{params[:format]}")
+      .join(params[:mounted_as])
+      .join(params[:id])
+      .join("#{params[:filename]}.#{params[:format]}")
   end
 end

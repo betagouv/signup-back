@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'oauth2'
-
 class ApplicationController < ActionController::Base
   attr_reader :client, :current_user
 
@@ -16,13 +14,13 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  rescue_from Pundit::NotAuthorizedError do |_e|
+  rescue_from Pundit::NotAuthorizedError do |_|
     render status: :forbidden, json: {
       message: ["Vous n'êtes pas authorisé à modifier cette ressource"]
     }
   end
 
-  rescue_from ActiveRecord::RecordNotFound do |_e|
+  rescue_from ActiveRecord::RecordNotFound do |_|
     render status: :not_found, json: {
       message: 'Record not found'
     }
@@ -32,7 +30,6 @@ class ApplicationController < ActionController::Base
 
   def authenticate!
     @current_user ||= User.find_by(uid: oauth_user['id'].to_s)
-    Thread.current[:current_user] ||= @current_user
     raise Dgfip::AccessDenied, 'User not found' unless current_user
   end
 

@@ -81,9 +81,9 @@ class Enrollment < ApplicationRecord
     self.applicant = _clean_json(applicant)
   end
 
-  def _clean_json(h)
-    return h unless h.is_a?(Hash)
-    Hash[h.map do |k, v|
+  def _clean_json(hash)
+    return hash unless hash.is_a?(Hash)
+    Hash[hash.map do |k, v|
       [k, v.blank? ? nil : v]
     end]
   end
