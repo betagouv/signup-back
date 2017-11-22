@@ -10,6 +10,7 @@ class Document < ApplicationRecord
   before_save :overwrite
   after_save :touch_enrollment
 
+  default_scope -> { where(archive: false) }
   private
 
   def touch_enrollment
@@ -20,6 +21,6 @@ class Document < ApplicationRecord
     enrollment
       .documents
       .where(type: type)
-      .delete_all
+      .update_all(archive: true)
   end
 end

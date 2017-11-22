@@ -48,11 +48,12 @@ class EnrollmentsController < ApplicationController
   end
 
 
-  # PATCH /enrollment/1/trigger
+  # PATCH /enrollment/1/trigge
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
 
-    if @enrollment.send("#{event_param}".to_sym)
+    if @enrollment.send(event_param.to_sym)
+      current_user.add_role(event_param.as_event_personified.to_sym, @enrollment)
       render json: serialize(@enrollment)
     else
       render status: :unprocessable_entity, json: @enrollment.errors
@@ -66,7 +67,7 @@ class EnrollmentsController < ApplicationController
 
   def serialize(enrollment)
     enrollment.as_json(
-      include: [{ documents: { methods: :type } }, { messages: { include: :user } }]
+      include: [{ documents: { methods: :type } }, { messages: { include: :sender } }]
     ).merge('acl' => Hash[
       EnrollmentPolicy.acl_methods.map do |method|
         [method.to_s.delete('?'), EnrollmentPolicy.new(current_user, enrollment).send(method)]

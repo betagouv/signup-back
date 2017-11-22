@@ -8,7 +8,7 @@ RSpec.describe MessagePolicy do
   let(:dgfip_user) { FactoryGirl.create(:user, provider: 'dgfip', email: 'dgfip') }
   let(:france_connect_user) { FactoryGirl.create(:user, provider: 'france_connect', email: 'france_connect') }
   let(:enrollment) { FactoryGirl.create(:enrollment) }
-  let(:message) { FactoryGirl.create(:message, user: user, enrollment: enrollment) }
+  let(:message) { FactoryGirl.create(:message, enrollment: enrollment) }
 
   permissions :create? do
     it 'deny access with no user' do

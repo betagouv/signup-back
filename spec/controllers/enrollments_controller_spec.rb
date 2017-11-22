@@ -291,6 +291,7 @@ RSpec.describe EnrollmentsController, type: :controller do
   end
 
   describe 'PATCH #trigger' do
+    # TODO test other events
     describe 'complete_application?' do
       describe 'with a france_connect user' do
         let(:uid) { 1 }
@@ -357,6 +358,12 @@ RSpec.describe EnrollmentsController, type: :controller do
 
               expect(res).to eq(exp)
             end
+
+            it 'user has application completer role' do
+              patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
+
+              expect(user.has_role?(:application_completer, enrollment)).to be_truthy
+            end
           end
 
           describe 'enrollment cannot be completed' do
@@ -368,15 +375,14 @@ RSpec.describe EnrollmentsController, type: :controller do
           end
         end
       end
-    end
 
-    describe 'with a dgfip user' do
-      let(:uid) { 1 }
-      let(:user) { FactoryGirl.create(:user, provider: 'dgfip', uid: uid) }
+      describe 'with a dgfip user' do
+        let(:uid) { 1 }
+        let(:user) { FactoryGirl.create(:user, provider: 'dgfip', uid: uid) }
 
-      before do
-        @request.headers['Authorization'] = 'Bearer test'
-        stub_request(:get, 'http://test.host/api/v1/me')
+        before do
+          @request.headers['Authorization'] = 'Bearer test'
+          stub_request(:get, 'http://test.host/api/v1/me')
           .with(
             headers: {
               'Accept' => '*/*',
@@ -385,12 +391,8 @@ RSpec.describe EnrollmentsController, type: :controller do
               'User-Agent' => 'Faraday v0.12.1'
             }
           ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
-      end
-
-      describe 'user is applicant of enrollment' do
-        before do
-          user.add_role(:applicant, enrollment)
         end
+
         it 'is unauthorized' do
           patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
 
@@ -416,14 +418,14 @@ RSpec.describe EnrollmentsController, type: :controller do
       before do
         @request.headers['Authorization'] = 'Bearer test'
         stub_request(:get, 'http://test.host/api/v1/me')
-          .with(
-            headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization' => 'Bearer test',
-              'User-Agent' => 'Faraday v0.12.1'
-            }
-          ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+        .with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer test',
+            'User-Agent' => 'Faraday v0.12.1'
+          }
+        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
       end
 
       describe 'user is not applicant of enrollment' do

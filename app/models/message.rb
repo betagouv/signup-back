@@ -2,7 +2,16 @@
 
 class Message < ApplicationRecord
   belongs_to :enrollment
-  belongs_to :user, optional: true
 
   validates_presence_of :content
+
+  resourcify
+
+  def sender
+    User.with_role(:sender, self).first
+  end
+
+  def reciepients
+    enrollment.user
+  end
 end

@@ -21,7 +21,7 @@ RSpec.describe MessagesController, type: :controller do
         ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
     end
 
-    let(:message) { FactoryGirl.create(:message, user: user, enrollment: enrollment) }
+    let(:message) { FactoryGirl.create(:message, enrollment: enrollment) }
     let(:valid_attributes) do
       { content: 'test' }
     end
@@ -69,7 +69,7 @@ RSpec.describe MessagesController, type: :controller do
 
         it 'current user own the message' do
           post :create, params: { message: valid_attributes, enrollment_id: enrollment.id }
-          expect(Message.last.user).to eq(user)
+          expect(Message.last.sender).to eq(user)
         end
 
         it 'the message is linked to enrollment' do
@@ -119,7 +119,7 @@ RSpec.describe MessagesController, type: :controller do
         ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
     end
 
-    let(:message) { FactoryGirl.create(:message, user: user, enrollment: enrollment) }
+    let(:message) { FactoryGirl.create(:message, enrollment: enrollment) }
     let(:valid_attributes) do
       { content: 'test' }
     end
@@ -167,7 +167,7 @@ RSpec.describe MessagesController, type: :controller do
 
         it 'current user own the message' do
           post :create, params: { message: valid_attributes, enrollment_id: enrollment.id }
-          expect(Message.last.user).to eq(user)
+          expect(Message.last.sender).to eq(user)
         end
 
         it 'the message is linked to enrollment' do

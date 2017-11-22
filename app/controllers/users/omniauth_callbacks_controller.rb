@@ -14,12 +14,14 @@ module Users
     alias dgfip oauth2_callback
     alias france_connect oauth2_callback
 
+    # TODO: a beautifull page
     def passthru
       render status: :bad_request, json: {
         message: 'authentification provider not supported'
       }
     end
 
+    # TODO: a beautifull page
     def failure
       render status: :unauthorized, json: {
         message: 'you are not authorized to access this api'

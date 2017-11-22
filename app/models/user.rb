@@ -4,7 +4,6 @@ class User < ApplicationRecord
   devise :omniauthable, omniauth_providers: %i[dgfip france_connect]
 
   rolify
-  has_many :messages
 
   def self.from_dgfip_omniauth(data)
     where(
@@ -29,4 +28,14 @@ class User < ApplicationRecord
   def dgfip?
     provider == 'dgfip'
   end
+
+  def sent_messages
+    Message.with_role(:sender, self)
+  end
+
+  # def send_message(enrollment, params)
+  #   message = enrollment.messages.create(params)
+  #   add_role(:sender, message)
+  #   message
+  # end
 end

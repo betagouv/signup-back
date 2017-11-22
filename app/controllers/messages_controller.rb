@@ -20,10 +20,10 @@ class MessagesController < ApplicationController
   # POST /messages
   def create
     @message = Message.new(message_params)
-    @message.user = current_user
     @message.enrollment = @enrollment
 
     if @message.save
+      current_user.add_role(:sender, @message)
       render status: :created, json: @message.to_json(inlcude: :user)
     else
       render status: :unprocessable_entity, json: @message.errors

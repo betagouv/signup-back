@@ -10,7 +10,7 @@ RSpec.describe Enrollment, type: :model do
 
   it 'can have messages attached to it' do
     expect do
-      enrollment.messages.create(user: FactoryGirl.create(:user), content: 'test')
+      enrollment.messages.create(content: 'test')
     end.to change { enrollment.messages.count }
   end
 

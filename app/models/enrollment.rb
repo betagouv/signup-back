@@ -19,6 +19,7 @@ class Enrollment < ApplicationRecord
   has_many :documents
   accepts_nested_attributes_for :documents
 
+  # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: 'filled_application' do
     state 'filled_application'
     state 'waiting_for_approval' do
@@ -28,9 +29,9 @@ class Enrollment < ApplicationRecord
     state 'application_ready'
     state 'deployed'
 
-    after_transition any => 'waiting_for_approval' do |enrollment, transition|
+    after_transition %w[filled_application completed_application] => 'waiting_for_approval' do |enrollment, transition|
       enrollment.messages.create(
-        content: 'votre dossier a été complèté',
+        content: 'votre dossier a été complèté'
       )
     end
     event 'complete_application' do
@@ -41,13 +42,16 @@ class Enrollment < ApplicationRecord
       transition 'completed_application' => 'waiting_for_approval'
     end
 
+    before_transition 'waiting_for_approval' => 'filled_application' do |enrollment, transition|
+      enrollment.messages.create(content: 'Votre dossier a été refusé')
+    end
     event 'refuse_application' do
-      transition 'waiting_for_approval' => 'filled_application'
+      transition %w[filled_application waiting_for_approval] => 'filled_application'
     end
 
     after_transition any => 'application_approved' do |enrollment, transition|
       enrollment.messages.create(
-        content: 'votre dossier a été approuvé',
+        content: 'votre dossier a été approuvé'
       )
     end
     event 'approve_application' do

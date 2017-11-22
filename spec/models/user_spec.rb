@@ -9,10 +9,11 @@ RSpec.describe User, type: :model do
     describe 'with an enrollment' do
       let(:enrollment) { FactoryGirl.create(:enrollment) }
 
-      it 'can have messages' do
+      it 'can have messages sent' do
         expect do
-          user.messages.create(enrollment: enrollment, content: 'test')
-        end.to change { user.messages.count }
+          message = Message.create(enrollment: enrollment, content: 'test')
+          user.add_role(:sender, message)
+        end.to change { user.sent_messages.count }
       end
 
       it 'user can be applicant to an enrollment' do

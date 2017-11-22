@@ -44,17 +44,17 @@ Rails.application.configure do
 
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  # OmniAuth.config.test_mode = true
-  # OmniAuth.config.mock_auth[:france_connect] = OmniAuth::AuthHash.new(
-  #   credentials: { token: 'france_connect' },
-  #   info: { email: 'fc@france_connect.user' },
-  #   provider: 'france_connect',
-  #   uid: 'france_connect'
-  # )
-  # OmniAuth.config.mock_auth[:dgfip] = OmniAuth::AuthHash.new(
-  #   credentials: { token: 'dgfip' },
-  #   info: { email: 'dgfip@dgfip.user' },
-  #   provider: 'dgfip',
-  #   uid: 'dgfip'
-  # )
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.mock_auth[:france_connect] = OmniAuth::AuthHash.new(
+    credentials: { token: 'france_connect' },
+    info: { email: 'fc@france_connect.user' },
+    provider: 'france_connect',
+    uid: 'france_connect'
+  )
+  OmniAuth.config.mock_auth[:dgfip] = OmniAuth::AuthHash.new(
+    credentials: { token: 'dgfip' },
+    info: { email: 'dgfip@dgfip.user' },
+    provider: 'dgfip',
+    uid: 'dgfip'
+  )
 end
