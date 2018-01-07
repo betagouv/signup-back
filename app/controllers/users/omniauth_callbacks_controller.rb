@@ -11,6 +11,7 @@ module Users
       redirect_to "#{FRONT_CONFIG['callback_url']}/#{token}"
     end
 
+    alias service_provider oauth2_callback
     alias dgfip oauth2_callback
     alias france_connect oauth2_callback
 

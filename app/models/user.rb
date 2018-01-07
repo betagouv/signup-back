@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  devise :omniauthable, omniauth_providers: %i[dgfip france_connect]
+  devise :omniauthable, omniauth_providers: %i[service_provider france_connect]
 
   rolify
 
