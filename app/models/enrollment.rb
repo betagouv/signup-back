@@ -13,6 +13,7 @@ class Enrollment < ApplicationRecord
 
   validate :agreement_validation
   validate :applicant_validation
+  validate :step_1
   before_save :clean_json
   after_save :applicant_workflow
 
@@ -90,6 +91,11 @@ class Enrollment < ApplicationRecord
     Hash[hash.map do |k, v|
       [k, v.blank? ? nil : v]
     end]
+  end
+
+  def step_1
+    errors[:service_description] << "Vous devez décrire le service avant de continer" unless service_description['main']
+    errors[:legal_basis] << "Vous devez décrire le fondement légal avant de continer" unless legal_basis['comment']
   end
 
   def agreement_validation
