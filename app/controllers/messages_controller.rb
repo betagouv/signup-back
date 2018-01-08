@@ -8,13 +8,13 @@ class MessagesController < ApplicationController
   # GET /messages
   def index
     @messages = messages_scope.all
-    res = @messages.map { |e| e.as_json(include: :user) }
+    res = @messages.map { |e| e.as_json(methods: [:sender]) }
     render json: res
   end
 
   # GET /messages/1
   def show
-    render json: @message.as_json(inlcude: :user)
+    render json: @message.as_json(methods: [:sender])
   end
 
   # POST /messages
@@ -24,7 +24,7 @@ class MessagesController < ApplicationController
 
     if @message.save
       current_user.add_role(:sender, @message)
-      render status: :created, json: @message.to_json(inlcude: :user)
+      render status: :created, json: @message.to_json(methods: [:sender])
     else
       render status: :unprocessable_entity, json: @message.errors
     end
