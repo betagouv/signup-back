@@ -135,13 +135,32 @@ RSpec.describe Enrollment, type: :model do
 
           message = enrollment.reload.messages.last
           expect(message).to be_persisted
-          expect(message.content).to eq('votre application est prête pour la mise en production')
+          expect(message.content).to eq('vous avez signé la convention')
         end
       end
       it 'can sign convention and send to application_ready state' do
         enrollment.sign_convention!
 
-        expect(enrollment.state).to eq('application_ready')
+        expect(enrollment.state).to eq('technical_validation')
+      end
+    end
+
+    describe 'the enrollment is on technical_validation state' do
+      let(:enrollment) { FactoryGirl.create(:enrollment, state: 'technical_validation') }
+
+      describe 'messages' do
+        it 'creates a message when security_deploy' do
+          enrollment.deploy_security!
+
+          message = enrollment.reload.messages.last
+          expect(message).to be_persisted
+          expect(message.content).to eq('votre application est prête pour la mise en production')
+        end
+      end
+      it 'can sign convention and send to application_ready state' do
+        enrollment.deploy_security!
+
+        expect(enrollment.state).to eq('technical_validation')
       end
     end
 

@@ -52,7 +52,7 @@ class EnrollmentsController < ApplicationController
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
 
-    if @enrollment.send(event_param.to_sym)
+    if @enrollment.update(enrollment_params) && @enrollment.send(event_param.to_sym)
       current_user.add_role(event_param.as_event_personified.to_sym, @enrollment)
       render json: serialize(@enrollment)
     else
@@ -88,12 +88,15 @@ class EnrollmentsController < ApplicationController
   def enrollment_params
     params.require(:enrollment).permit(
       :agreement,
+      :production_certificate,
+      :certification_authority,
+      :production_ips,
       service_provider: {},
       scopes: {},
       legal_basis: {},
       service_description: {},
       documents_attributes: %i[type attachment],
-      applicant: {}
+      applicant: {},
     )
   end
 

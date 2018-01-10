@@ -14,6 +14,7 @@ class Enrollment < ApplicationRecord
   validate :agreement_validation
   validate :applicant_validation
   validate :step_1
+
   before_save :clean_json
   after_save :applicant_workflow
 
@@ -27,7 +28,23 @@ class Enrollment < ApplicationRecord
       validate :document_validation
     end
     state 'application_approved'
-    state 'application_ready'
+    state 'technical_validation' do
+      validates :applicant, presence: true
+    end
+    state 'application_ready' do
+      validate :technical_validation
+      validate :certificate_format
+
+      def technical_validation
+        errors.add(:production_certificate, 'Vous devez fournir le certificat de prodution') unless production_certificate.present?
+        errors.add(:certification_authority, "Vous devez fournir l'autorité de certification") unless certification_authority.present?
+        errors.add(:production_ips, "Vous devez fournir les IPs de production") unless production_ips.present?
+      end
+
+      def certificate_format
+        errors.add(:production_certificate, 'vérifiez le format de votre certificat') unless production_certificate =~ /(-----BEGIN CERTIFICATE-----(?:[\s\S]*?)-----END CERTIFICATE-----)/
+      end
+    end
     state 'deployed'
 
     after_transition %w[filled_application completed_application] => 'waiting_for_approval' do |enrollment, transition|
@@ -59,21 +76,30 @@ class Enrollment < ApplicationRecord
       transition %w[filled_application completed_application waiting_for_approval] => 'application_approved'
     end
 
-    after_transition any => 'application_ready' do |enrollment, transition|
+    after_transition any => 'technical_validation' do |enrollment, transition|
       enrollment.messages.create(
-        content: 'votre application est prête pour la mise en production',
+        content: 'vous avez signé la convention',
       )
     end
     event 'sign_convention' do
-      transition 'application_approved' => 'application_ready'
+      transition 'application_approved' => 'technical_validation'
+    end
+
+    after_transition any => 'application_ready' do |enrollment, transition|
+      enrollment.messages.create(
+        content: "vos données de sécurité sont en cours d'intégration",
+      )
+    end
+    event 'deploy_security' do
+      transition %w[application_ready technical_validation] => 'application_ready'
     end
 
     after_transition any => 'deployed' do |enrollment, transition|
       enrollment.messages.create(
-        content: 'Votre application est déployée',
+        content: 'votre application est prête pour la mise en production',
       )
     end
-    event 'deploy' do
+    event 'deploy_application' do
       transition 'application_ready' => 'deployed'
     end
   end

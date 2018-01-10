@@ -10,11 +10,12 @@ class EnrollmentPolicy < ApplicationPolicy
     res = false
     res = true if record.can_complete_application?
     res = record.applicant&.fetch('email', nil).present? if record.can_sign_convention?
+    res = true if record.can_deploy_security?
     res && user.france_connect?
   end
 
   def convention?
-    record.can_sign_convention? || record.can_deploy? || record.deployed?
+    record.can_sign_convention? || record.can_deploy_security? || record.can_deploy_application? || record.deployed?
   end
 
   def complete_application?
@@ -33,8 +34,20 @@ class EnrollmentPolicy < ApplicationPolicy
     user.france_connect? && record.can_sign_convention?
   end
 
-  def deploy?
-    user.france_connect? && record.can_deploy?
+  def edit_security?
+    user.france_connect? && record.can_deploy_security?
+  end
+
+  def show_security?
+    user && %w[application_ready deployed].include?(record.state)
+  end
+
+  def deploy_security?
+    user.france_connect? && record.can_deploy_security?
+  end
+
+  def deploy_application?
+    user.dgfip? && record.can_deploy_application?
   end
 
   class Scope < Scope
