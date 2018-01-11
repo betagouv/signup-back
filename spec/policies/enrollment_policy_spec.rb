@@ -78,23 +78,17 @@ RSpec.describe EnrollmentPolicy do
   # permissions :deploy? do
   #   let(:user) { FactoryGirl.create(:user) }
   #   let(:enrollment) { FactoryGirl.create(:enrollment) }
-
   #   it 'deny access if not frnace connect user' do
   #     expect(subject).not_to permit(user, enrollment)
   #   end
-
   #   describe 'I have a france connect user' do
   #     let(:user) { FactoryGirl.create(:user, provider: 'france_connect') }
-
   #     it 'deny access if it cannot deploy' do
   #       expect(enrollment).to receive(:can_deploy?).and_return(false)
-
   #       expect(subject).not_to permit(user, enrollment)
   #     end
-
   #     it 'allow access if it can deploy' do
   #       expect(enrollment).to receive(:can_deploy?).and_return(true)
-
   #       expect(subject).to permit(user, enrollment)
   #     end
   #   end
@@ -109,7 +103,7 @@ RSpec.describe EnrollmentPolicy do
     end
 
     describe 'I have a dgfip user' do
-      let(:user) { FactoryGirl.create(:user, provider: 'dgfip') }
+      let(:user) { FactoryGirl.create(:user, provider: 'dgfip', oauth_roles: ['domain']) }
 
       it 'deny access if it cannot approve application' do
         expect(enrollment).to receive(:can_approve_application?).and_return(false)
@@ -134,7 +128,7 @@ RSpec.describe EnrollmentPolicy do
     end
 
     describe 'I have a dgfip user' do
-      let(:user) { FactoryGirl.create(:user, provider: 'dgfip') }
+      let(:user) { FactoryGirl.create(:user, provider: 'dgfip', oauth_roles: ['domain']) }
 
       it 'deny access if it cannot refuse application' do
         expect(enrollment).to receive(:can_refuse_application?).and_return(false)

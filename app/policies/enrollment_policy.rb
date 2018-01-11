@@ -22,12 +22,17 @@ class EnrollmentPolicy < ApplicationPolicy
     user.france_connect? && record.can_complete_application?
   end
 
+  def show_domain?
+    user.france_connect? ||
+      (user.dgfip? && user.oauth_roles.include?('domain'))
+  end
+
   def approve_application?
-    user.dgfip? && record.can_approve_application?
+    user.dgfip? && user.oauth_roles.include?('domain') && record.can_approve_application?
   end
 
   def refuse_application?
-    user.dgfip? && record.can_refuse_application?
+    user.dgfip? && user.oauth_roles.include?('domain') && record.can_refuse_application?
   end
 
   def sign_convention?
@@ -39,7 +44,10 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def show_security?
-    user && %w[application_ready deployed].include?(record.state)
+    (
+      user.france_connect? ||
+      (user.dgfip? && user.oauth_roles.include?('security'))
+    ) && %w[application_ready deployed].include?(record.state)
   end
 
   def deploy_security?
@@ -47,7 +55,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def deploy_application?
-    user.dgfip? && record.can_deploy_application?
+    user.dgfip? && user.oauth_roles.include?('security') && record.can_deploy_application?
   end
 
   class Scope < Scope
