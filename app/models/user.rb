@@ -10,7 +10,9 @@ class User < ApplicationRecord
       provider: data['provider'],
       uid: data['uid'] || data['id'],
       email: data.info['email']
-    ).first_or_create
+    ).first_or_create.update(
+      oauth_roles: data.info['roles']
+    )
   end
 
   def self.from_france_connect_omniauth(data)

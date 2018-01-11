@@ -7,8 +7,8 @@ FactoryGirl.define do
            non_wadge_income: false, family_situation: false, support_payments: false,
            deficit: false, housing_tax: false, total_gross_income: false,
            world_income: false
-    legal_basis comment: nil, attachment: nil
-    service_description main: nil, deployment_date: nil, seasonality: nil,
+    legal_basis comment: 'test', attachment: nil
+    service_description main: 'test', deployment_date: nil, seasonality: [{type: 'year', max_charge: 12}],
                         max_charge: nil
     agreement true
   end

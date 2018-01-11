@@ -86,7 +86,7 @@ class EnrollmentsController < ApplicationController
   end
 
   def enrollment_params
-    params.require(:enrollment).permit(
+    params.fetch(:enrollment, {}).permit(
       :agreement,
       :production_certificate,
       :certification_authority,

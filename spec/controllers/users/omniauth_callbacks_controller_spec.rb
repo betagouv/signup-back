@@ -12,16 +12,24 @@ RSpec.describe Users::OmniauthCallbacksController, type: :controller do
     before do
       request.env['omniauth.auth'] = OmniAuth::AuthHash.new(
         credentials: { token: token },
-        info: { email: 'user@user.user' },
+        info: { email: 'user@user.user', roles: ['test'] },
         provider: 'dgfip',
         uid: '123545'
       )
     end
 
+    it 'creates an user' do
+      get :service_provider
+
+      user = User.find_by(email: 'user@user.user')
+
+      expect(user.oauth_roles).to eq(['test'])
+    end
+
     it 'redirects to front host' do
       front_host = YAML.load_file('config/front.yml')[Rails.env]['callback_url']
 
-      get :dgfip
+      get :service_provider
 
       expect(response).to redirect_to(Regexp.new(front_host))
     end
@@ -29,7 +37,7 @@ RSpec.describe Users::OmniauthCallbacksController, type: :controller do
     it 'redirects with token' do
       front_host = YAML.load_file('config/front.yml')[Rails.env]['host']
 
-      get :dgfip
+      get :service_provider
 
       expect(response).to redirect_to(Regexp.new(token))
     end

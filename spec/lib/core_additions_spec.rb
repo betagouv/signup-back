@@ -10,7 +10,8 @@ describe CoreAdditions do
           application_refuser
           application_approver
           convention_signer
-          deployer
+          security_deployer
+          application_deployer
         ]
       )].each do |event, personified|
         it "should personify event #{event}" do

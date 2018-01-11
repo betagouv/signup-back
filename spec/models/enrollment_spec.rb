@@ -129,6 +129,10 @@ RSpec.describe Enrollment, type: :model do
     describe 'the enrollment is on application_approved state' do
       let(:enrollment) { FactoryGirl.create(:enrollment, state: 'application_approved') }
 
+      before do
+        enrollment.update(applicant: { email: 'test@test.test' })
+      end
+
       describe 'messages' do
         it 'creates a message when application_ready' do
           enrollment.sign_convention!
@@ -146,39 +150,60 @@ RSpec.describe Enrollment, type: :model do
     end
 
     describe 'the enrollment is on technical_validation state' do
-      let(:enrollment) { FactoryGirl.create(:enrollment, state: 'technical_validation') }
+      let(:enrollment) { FactoryGirl.create(:enrollment, state: 'technical_validation', applicant: { email: 'test@test.test' }) }
+
+      before do
+        enrollment.update(
+          production_certificate: """
+-----BEGIN CERTIFICATE-----
+-----END CERTIFICATE-----
+          """,
+          certification_authority: 'test',
+          production_ips: '123'
+        )
+      end
 
       describe 'messages' do
         it 'creates a message when security_deploy' do
-          enrollment.deploy_security!
+          enrollment.deploy_security
+
+          message = enrollment.reload.messages.last
+          expect(message).to be_persisted
+          expect(message.content).to eq("vos données de sécurité sont en cours d'intégration")
+        end
+      end
+
+      it 'can sign convention and send to application_ready state' do
+        enrollment.deploy_security!
+
+        expect(enrollment.state).to eq('application_ready')
+      end
+    end
+
+    describe 'the enrollment is on application_ready state' do
+      let(:enrollment) { FactoryGirl.create(
+        :enrollment,
+        state: 'application_ready',
+        production_certificate: """
+-----BEGIN CERTIFICATE-----
+-----END CERTIFICATE-----
+        """,
+        certification_authority: 'test',
+        production_ips: '123'
+ ) }
+
+      describe 'messages' do
+        it 'creates a message when application_deployed' do
+          enrollment.deploy_application!
 
           message = enrollment.reload.messages.last
           expect(message).to be_persisted
           expect(message.content).to eq('votre application est prête pour la mise en production')
         end
       end
-      it 'can sign convention and send to application_ready state' do
-        enrollment.deploy_security!
-
-        expect(enrollment.state).to eq('technical_validation')
-      end
-    end
-
-    describe 'the enrollment is on application_ready state' do
-      let(:enrollment) { FactoryGirl.create(:enrollment, state: 'application_ready') }
-
-      describe 'messages' do
-        it 'creates a message when application_deployed' do
-          enrollment.deploy!
-
-          message = enrollment.reload.messages.last
-          expect(message).to be_persisted
-          expect(message.content).to eq('Votre application est déployée')
-        end
-      end
 
       it 'can deploy and send to deployed state' do
-        enrollment.deploy!
+        enrollment.deploy_application!
 
         expect(enrollment.state).to eq('deployed')
       end

@@ -13,8 +13,8 @@ module OmniAuth
 
       info do
         {
-          email: raw_info['email']
-          # and anything else you want to return to your API consumers
+          email: raw_info['email'],
+          roles: raw_info['roles']
         }
       end
 

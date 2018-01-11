@@ -120,9 +120,9 @@ class Enrollment < ApplicationRecord
   end
 
   def step_1
-    errors[:service_description] << "Vous devez décrire le service avant de continer" unless service_description['main']
-    errors[:legal_basis] << "Vous devez décrire le fondement légal avant de continer" unless legal_basis['comment']
-    errors[:seasonality] << "Vous devez renseigner la saisonnalité" unless service_description['seasonality']&.count&.positive? && service_description['seasonality'].all? { |e| e['max_charge'].present? }
+    errors[:service_description] << "Vous devez décrire le service avant de continer" unless service_description&.fetch('main')
+    errors[:legal_basis] << "Vous devez décrire le fondement légal avant de continer" unless legal_basis&.fetch('comment')
+    errors[:seasonality] << "Vous devez renseigner la saisonnalité" unless service_description&.fetch('seasonality')&.count&.positive? && service_description['seasonality'].all? { |e| e['max_charge'].present? }
   end
 
   def agreement_validation
