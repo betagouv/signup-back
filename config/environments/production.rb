@@ -91,7 +91,7 @@ Rails.application.configure do
   )
   OmniAuth.config.mock_auth[:service_provider] = OmniAuth::AuthHash.new(
     credentials: { token: 'dgfip' },
-    info: { email: 'dgfip@dgfip.user' },
+    info: { email: 'dgfip@dgfip.user', roles: ['domain', 'security'] },
     provider: 'dgfip',
     uid: 'dgfip'
   )
