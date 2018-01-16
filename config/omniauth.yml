@@ -26,5 +26,7 @@ production:
     site: https://84.39.49.146
     authorize_url: /oauth/authorize
     me_url: /api/v1/me
+    ssl:
+      verify: false
   client_id: 2ab3f15b7503f3d72ab795db01122e6607cd656c0626773001e62203c987f146
   client_secret: 57b91c75d78368570464306e06f7356498187776d9e3f74a82535972b8f66ef8
