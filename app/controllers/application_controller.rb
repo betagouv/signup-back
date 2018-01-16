@@ -7,7 +7,14 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :null_session
 
-  rescue_from Dgfip::AccessDenied do |e|
+  rescue_from 'ResourceProvider::AccessDenied' do |e|
+    render status: :unauthorized, json: {
+      message: "Vous n'êtes pas authorisé à accéder à cette API",
+      detail: e.message
+    }
+  end
+
+  rescue_from 'FranceConnect::AccessDenied' do |e|
     render status: :unauthorized, json: {
       message: "Vous n'êtes pas authorisé à accéder à cette API",
       detail: e.message
@@ -29,19 +36,15 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate!
-    @current_user ||= User.find_by(uid: oauth_user['id'].to_s)
+    @current_user ||= User.find_by(uid: oauth_user['uid'].to_s)
     raise Dgfip::AccessDenied, 'User not found' unless current_user
   end
 
   def oauth_user
     token = authorization_header.gsub(/Bearer /, '')
 
-    if Rails.env.docker? || Rails.env.production?
-      { 'id' => token }
-    else
-      Rails.cache.fetch(token, expires_in: 10.minutes) do
-        client.me(token)
-      end.body
+    Rails.cache.fetch(token, expires_in: 10.minutes) do
+      client.me(token)
     end
   end
 
@@ -56,6 +59,7 @@ class ApplicationController < ActionController::Base
   end
 
   def client
-    @client ||= Dgfip::OauthClient.new
+    oauth_provider = request.headers['X-Oauth-Provider']
+    @client ||= Object.const_get("#{oauth_provider.classify}::OauthClient").new
   end
 end

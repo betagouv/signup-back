@@ -4,10 +4,11 @@ require 'omniauth-oauth2'
 
 module OmniAuth
   module Strategies
-    class ServiceProvider < OmniAuth::Strategies::OAuth2
-      option :name, :service_provider
+    class ResourceProvider < OmniAuth::Strategies::OAuth2
+      option :name, :resource_provider
 
       option :client_options, YAML.load_file(Rails.root.join('config/omniauth.yml'))[Rails.env]['client_options']
+      option :scope, 'enrollments user'
 
       uid { raw_info['id'] }
 

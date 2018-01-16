@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  devise :omniauthable, omniauth_providers: %i[service_provider france_connect]
+  devise :omniauthable, omniauth_providers: %i[resource_provider france_connect]
 
   rolify
 
-  def self.from_dgfip_omniauth(data)
+  def self.from_service_provider_omniauth(data)
     where(
       provider: data['provider'],
       uid: data['uid'] || data['id'],
@@ -18,7 +18,7 @@ class User < ApplicationRecord
   def self.from_france_connect_omniauth(data)
     where(
       provider: data['provider'],
-      uid: data['uid'],
+      uid: data.info['uid'],
       email: data.info['email']
     ).first_or_create
   end
@@ -28,7 +28,7 @@ class User < ApplicationRecord
   end
 
   def dgfip?
-    provider == 'dgfip'
+    provider == 'resource_provider'
   end
 
   def sent_messages

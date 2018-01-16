@@ -2,7 +2,7 @@
 
 require Rails.root.join('lib/omni_auth/strategies/france_connect')
 require Rails.root.join('lib/omni_auth/strategies/dgfip')
-require Rails.root.join('lib/omni_auth/strategies/service_provider')
+require Rails.root.join('lib/omni_auth/strategies/resource_provider')
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
@@ -257,8 +257,8 @@ Devise.setup do |config|
   # up on your models and hooks.
 
   dgfip_config = YAML.load_file(Rails.root.join('config/omniauth.yml'))[Rails.env]
-  config.omniauth :service_provider, dgfip_config['client_id'], dgfip_config['client_secret']
-  config.omniauth :france_connect, 'APP_ID', 'APP_SECRET'
+  config.omniauth :resource_provider, dgfip_config['client_id'], dgfip_config['client_secret']
+  config.omniauth :france_connect, 'C3eYop62ytki4An72LgqELki769kvZGmBeXsEwc7fjfZRiMIcNRi3gKr3CK2rwjm', 'QCQV72mh4MBKkPtQqbNlF8PYbe76vnfzkQa9SyHCXZdphUrnJQWLoNTML2UfCdLy'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
