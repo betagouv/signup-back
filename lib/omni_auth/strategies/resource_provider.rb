@@ -26,7 +26,7 @@ module OmniAuth
       # https://github.com/intridea/omniauth-oauth2/issues/81
       def callback_url
         if Rails.env.production?
-          return 'https://impots.particulier.api.gouv.fr/users/auth/service_provider/callback'
+          return 'https://impots.particulier.api.gouv.fr/users/auth/resource_provider/callback'
         end
         full_host + script_name + callback_path
       end
