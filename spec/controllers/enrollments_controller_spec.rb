@@ -8,6 +8,7 @@ RSpec.describe EnrollmentsController, type: :controller do
   before do
     user
     @request.headers['Authorization'] = 'Bearer test'
+    @request.headers['X-Oauth-Provider'] = 'franceConnect'
     stub_request(:get, 'http://test.host/api/v1/me')
       .with(
         headers: {
@@ -17,6 +18,10 @@ RSpec.describe EnrollmentsController, type: :controller do
           'User-Agent' => 'Faraday v0.12.1'
         }
       ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+
+      stub_request(:get, "https://partenaires.dev.dev-franceconnect.fr/oauth/v1/userinfo").
+        with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Bearer test', 'User-Agent'=>'Faraday v0.12.1'}).
+        to_return(status: 200, body: '{"user":{"email":"test@test.test","uid":1}}', headers: { 'Content-Type' => 'application/json' })
   end
 
   let(:enrollment) { FactoryGirl.create(:enrollment) }
@@ -31,15 +36,9 @@ RSpec.describe EnrollmentsController, type: :controller do
 
   describe 'authentication' do
     it 'redirect to users/access_denied if oauth request fails' do
-      stub_request(:get, 'http://test.host/api/v1/me')
-        .with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer test',
-            'User-Agent' => 'Faraday v0.12.1'
-          }
-        ).to_return(status: 401, body: '', headers: {})
+      stub_request(:get, "https://partenaires.dev.dev-franceconnect.fr/oauth/v1/userinfo").
+        with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Bearer test', 'User-Agent'=>'Faraday v0.12.1'}).
+        to_return(status: 401, body: 'error', headers: {})
 
       get :index
       expect(response).to have_http_status(:unauthorized)
@@ -378,10 +377,11 @@ RSpec.describe EnrollmentsController, type: :controller do
 
       describe 'with a dgfip user' do
         let(:uid) { 1 }
-        let(:user) { FactoryGirl.create(:user, provider: 'dgfip', uid: uid) }
+        let(:user) { FactoryGirl.create(:user, provider: 'resource_provider', uid: uid) }
 
         before do
           @request.headers['Authorization'] = 'Bearer test'
+          @request.headers['X-Oauth-Provider'] = 'resourceProvider'
           stub_request(:get, 'http://test.host/api/v1/me')
           .with(
             headers: {
@@ -390,7 +390,7 @@ RSpec.describe EnrollmentsController, type: :controller do
               'Authorization' => 'Bearer test',
               'User-Agent' => 'Faraday v0.12.1'
             }
-          ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+          ).to_return(status: 200, body: "{\"uid\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
         end
 
         it 'is unauthorized' do

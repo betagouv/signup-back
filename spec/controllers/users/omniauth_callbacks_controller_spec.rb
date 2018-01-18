@@ -19,7 +19,7 @@ RSpec.describe Users::OmniauthCallbacksController, type: :controller do
     end
 
     it 'creates an user' do
-      get :service_provider
+      get :resource_provider
 
       user = User.find_by(email: 'user@user.user')
 
@@ -29,7 +29,7 @@ RSpec.describe Users::OmniauthCallbacksController, type: :controller do
     it 'redirects to front host' do
       front_host = YAML.load_file('config/front.yml')[Rails.env]['callback_url']
 
-      get :service_provider
+      get :resource_provider
 
       expect(response).to redirect_to(Regexp.new(front_host))
     end
@@ -37,7 +37,7 @@ RSpec.describe Users::OmniauthCallbacksController, type: :controller do
     it 'redirects with token' do
       front_host = YAML.load_file('config/front.yml')[Rails.env]['host']
 
-      get :service_provider
+      get :resource_provider
 
       expect(response).to redirect_to(Regexp.new(token))
     end

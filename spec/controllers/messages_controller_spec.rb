@@ -18,7 +18,11 @@ RSpec.describe MessagesController, type: :controller do
             'Authorization' => 'Bearer test',
             'User-Agent' => 'Faraday v0.12.1'
           }
-        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+        ).to_return(status: 200, body: "{\"uid\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+
+        stub_request(:get, "https://partenaires.dev.dev-franceconnect.fr/oauth/v1/userinfo").
+          with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Bearer test', 'User-Agent'=>'Faraday v0.12.1'}).
+          to_return(status: 200, body: '{"user":{"email":"test@test.test","uid":1}}', headers: { 'Content-Type' => 'application/json' })
     end
 
     let(:message) { FactoryGirl.create(:message, enrollment: enrollment) }
@@ -103,7 +107,7 @@ RSpec.describe MessagesController, type: :controller do
 
   describe 'with dgfip user' do
     let(:uid) { 1 }
-    let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'dgfip') }
+    let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'resource_provider') }
     let(:enrollment) { FactoryGirl.create(:enrollment) }
     before do
       user.add_role(:applicant, enrollment)
@@ -116,7 +120,7 @@ RSpec.describe MessagesController, type: :controller do
             'Authorization' => 'Bearer test',
             'User-Agent' => 'Faraday v0.12.1'
           }
-        ).to_return(status: 200, body: "{\"id\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
+        ).to_return(status: 200, body: "{\"uid\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
     end
 
     let(:message) { FactoryGirl.create(:message, enrollment: enrollment) }

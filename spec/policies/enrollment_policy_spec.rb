@@ -103,7 +103,7 @@ RSpec.describe EnrollmentPolicy do
     end
 
     describe 'I have a dgfip user' do
-      let(:user) { FactoryGirl.create(:user, provider: 'dgfip', oauth_roles: ['domain']) }
+      let(:user) { FactoryGirl.create(:user, provider: 'resource_provider', oauth_roles: ['domain']) }
 
       it 'deny access if it cannot approve application' do
         expect(enrollment).to receive(:can_approve_application?).and_return(false)
@@ -128,7 +128,7 @@ RSpec.describe EnrollmentPolicy do
     end
 
     describe 'I have a dgfip user' do
-      let(:user) { FactoryGirl.create(:user, provider: 'dgfip', oauth_roles: ['domain']) }
+      let(:user) { FactoryGirl.create(:user, provider: 'resource_provider', oauth_roles: ['domain']) }
 
       it 'deny access if it cannot refuse application' do
         expect(enrollment).to receive(:can_refuse_application?).and_return(false)

@@ -43,9 +43,9 @@ class ApplicationController < ActionController::Base
   def oauth_user
     token = authorization_header.gsub(/Bearer /, '')
 
-    Rails.cache.fetch(token, expires_in: 10.minutes) do
+    # Rails.cache.fetch(token, expires_in: 10.minutes) do
       client.me(token)
-    end
+    # end
   end
 
   def authorization_header
@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
   end
 
   def client
-    oauth_provider = request.headers['X-Oauth-Provider']
+    oauth_provider = request.headers['X-Oauth-Provider'] || 'resourceProvider'
     @client ||= Object.const_get("#{oauth_provider.classify}::OauthClient").new
   end
 end

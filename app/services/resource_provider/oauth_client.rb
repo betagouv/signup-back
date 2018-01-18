@@ -9,7 +9,7 @@ module ResourceProvider
       base_url = OMNIAUTH_CONFIG['client_options']['site']
       @me_url = OMNIAUTH_CONFIG['client_options']['me_url']
 
-      @conn = Faraday.new(base_url) do |conn|
+      @conn = Faraday.new(base_url, ssl: { verify: false }) do |conn|
         conn.response :json, content_type: /\bjson$/
         conn.adapter Faraday.default_adapter
       end
