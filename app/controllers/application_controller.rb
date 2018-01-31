@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate!
     @current_user ||= User.find_by(uid: oauth_user['uid'].to_s)
-    raise Dgfip::AccessDenied, 'User not found' unless current_user
+    raise ResourceProvider::AccessDenied, 'User not found' unless current_user
   end
 
   def oauth_user
@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
 
   def authorization_header
     res = request.headers['Authorization'] || session_bearer
-    raise Dgfip::AccessDenied, 'You must privide an authorization header' unless res
+    raise ResourceProvider::AccessDenied, 'You must privide an authorization header' unless res
     res
   end
 
@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
   end
 
   def client
-    oauth_provider = request.headers['X-Oauth-Provider'] || 'resourceProvider'
+    oauth_provider = request.headers['X-Oauth-Provider'] || session[:oauth_provider] || 'resourceProvider'
     @client ||= Object.const_get("#{oauth_provider.classify}::OauthClient").new
   end
 end
