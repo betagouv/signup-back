@@ -7,10 +7,7 @@ module OmniAuth
     class FranceConnect < OmniAuth::Strategies::OAuth2
       # change the class name and the :name option to match your application name
       option :name, :france_connect
-      option :client_options, site: 'https://partenaires.dev.dev-franceconnect.fr',
-                              authorize_url: '/oauth/v1/authorize',
-                              token_url: '/oauth/v1/token',
-                              ssl: { verify: false }
+      option :client_options, YAML.load_file(Rails.root.join('config/omniauth.yml'))[Rails.env]['france_connect']['client_options']
 
       option :scope, 'service-providers user'
 

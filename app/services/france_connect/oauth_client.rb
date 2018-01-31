@@ -3,9 +3,10 @@
 module FranceConnect
   class OauthClient
     attr_reader :me_url
+    OMNIAUTH_CONFIG = YAML.load(ERB.new(File.read(Rails.root.join('config/omniauth.yml'))).result)[Rails.env]['france_connect']
 
     def initialize
-      base_url = 'https://partenaires.dev.dev-franceconnect.fr'
+      base_url = OMNIAUTH_CONFIG['client_options']['site']
       @me_url = '/oauth/v1/userinfo'
 
       @conn = Faraday.new(base_url, ssl: { verify: false }) do |conn|
