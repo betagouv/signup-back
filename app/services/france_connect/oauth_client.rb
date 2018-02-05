@@ -16,13 +16,16 @@ module FranceConnect
     end
 
     def me(token)
-      res = @conn.get do |req|
-        req.url me_url
-        req.headers['Authorization'] = "Bearer #{token}"
-      end
+      Rails.cache.fetch(token, expires_in: 10.minutes) do
+        res = @conn.get do |req|
+          req.url me_url
+          req.headers['Authorization'] = "Bearer #{token}"
+        end
 
-      raise AccessDenied, res.body unless res.success?
-      Rails.cache.fetch(token, expires_in: 10.minutes) { res.body['user'] }
+        raise AccessDenied, res.body unless res.success?
+
+        res.body['user']
+      end
     rescue StandardError => e
       raise AccessDenied, e.message
     end
