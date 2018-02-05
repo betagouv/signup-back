@@ -64,6 +64,17 @@ RSpec.describe Enrollment, type: :model do
             attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
           )
         end
+        enrollment.update(cnil_voucher_detail: {
+          reference: 'test',
+          formality: 'test'
+        })
+        enrollment.update(certification_results_detail: {
+          name: 'test',
+          position: 'test',
+          start: 'test',
+          duration: 'test'
+        })
+
         enrollment.complete_application!
 
         message = enrollment.reload.messages.last
@@ -80,13 +91,24 @@ RSpec.describe Enrollment, type: :model do
       expect(enrollment.complete_application).to be_falsey
     end
 
-    it 'can completed_application state if all documents uploaded' do
+    it 'can completed_application state if all documents uploaded and details added' do
       Enrollment::DOCUMENT_TYPES.each do |document_type|
         enrollment.documents.create(
           type: document_type,
           attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
         )
       end
+      enrollment.update(cnil_voucher_detail: {
+        reference: 'test',
+        formality: 'test'
+      })
+      enrollment.update(certification_results_detail: {
+        name: 'test',
+        position: 'test',
+        start: 'test',
+        duration: 'test'
+      })
+
 
       expect(enrollment.complete_application).to be_truthy
     end

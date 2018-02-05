@@ -94,6 +94,8 @@ class EnrollmentsController < ApplicationController
       service_provider: {},
       scopes: {},
       legal_basis: {},
+      cnil_voucher_detail: {},
+      certification_results_detail: {},
       service_description: {},
       documents_attributes: %i[type attachment],
       applicant: {},

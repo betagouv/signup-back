@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180111100539) do
+ActiveRecord::Schema.define(version: 20180201145943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,8 @@ ActiveRecord::Schema.define(version: 20180111100539) do
     t.string "production_certificate"
     t.string "certification_authority"
     t.string "production_ips"
+    t.json "cnil_voucher_detail", default: {}
+    t.json "certification_results_detail", default: {}
   end
 
   create_table "messages", force: :cascade do |t|

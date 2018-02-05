@@ -48,7 +48,6 @@ RSpec.describe EnrollmentsController, type: :controller do
   describe 'GET #index' do
     it 'returns a success response' do
       get :index
-
       expect(response).to be_success
     end
   end
@@ -328,6 +327,16 @@ RSpec.describe EnrollmentsController, type: :controller do
                   attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
                 )
               end
+              enrollment.update(cnil_voucher_detail: {
+                reference: 'test',
+                formality: 'test'
+              })
+              enrollment.update(certification_results_detail: {
+                name: 'test',
+                position: 'test',
+                start: 'test',
+                duration: 'test'
+              })
             end
 
             it 'triggers an event' do
