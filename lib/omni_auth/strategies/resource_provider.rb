@@ -7,7 +7,7 @@ module OmniAuth
     class ResourceProvider < OmniAuth::Strategies::OAuth2
       option :name, :resource_provider
 
-      option :client_options, YAML.load_file(Rails.root.join('config/omniauth.yml'))[Rails.env]['client_options']
+      option :client_options, YAML.load_file(Rails.root.join('config/omniauth.yml'))[Rails.env]['resource_provider']['client_options']
       option :scope, 'enrollments user'
 
       uid { raw_info['id'] }

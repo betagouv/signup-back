@@ -25,7 +25,29 @@ class Enrollment < ApplicationRecord
   state_machine :state, initial: 'filled_application' do
     state 'filled_application'
     state 'waiting_for_approval' do
+      validate :cnil_voucher_detail_validation
+      validate :certification_results_detail_validation
       validate :document_validation
+
+      def cnil_voucher_detail_validation
+        errors.add(:cnil_voucher_detail, "CNIL : la référence de l'avis doit être rempli") unless cnil_voucher_detail['reference'].present?
+        errors.add(:cnil_voucher_detail, "CNIL : la formalité CNIL doit être remplie") unless cnil_voucher_detail['formality'].present?
+      end
+
+      def certification_results_detail_validation
+        errors.add(:certification_results_detail, "HOMOLOGATION : le nom de l'autorité de certification doit être rempli") unless certification_results_detail['name'].present?
+        errors.add(:certification_results_detail, "HOMOLOGATION : la fonction de l'autorité de certification doit être remplie") unless certification_results_detail['position'].present?
+        errors.add(:certification_results_detail, "HOMOLOGATION : la date d'homologation doit être remplie") unless certification_results_detail['start'].present?
+        errors.add(:certification_results_detail, "HOMOLOGATION : la durée d'homologation doit être remplie") unless certification_results_detail['duration'].present?
+      end
+
+      def document_validation
+        unless DOCUMENT_TYPES.all? do |document|
+          documents.where(type: document).present?
+        end
+        errors.add(:documents, 'Vous devez envoyer tous les documents demandés')
+        end
+      end
     end
     state 'application_approved'
     state 'technical_validation' do
@@ -143,14 +165,6 @@ class Enrollment < ApplicationRecord
     if applicant&.fetch('email', nil).present? &&
        can_sign_convention?
       sign_convention!
-    end
-  end
-
-  def document_validation
-    unless DOCUMENT_TYPES.all? do |document|
-      documents.where(type: document).present?
-    end
-      errors.add(:documents, 'Vous devez envoyer tous les documents demandés')
     end
   end
 end

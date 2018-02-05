@@ -3,7 +3,7 @@
 module ResourceProvider
   class OauthClient
     attr_reader :me_url
-    OMNIAUTH_CONFIG = YAML.load_file(Rails.root.join('config/omniauth.yml'))[Rails.env]
+    OMNIAUTH_CONFIG = YAML.load(ERB.new(File.read(Rails.root.join('config/omniauth.yml'))).result)[Rails.env]['resource_provider']
 
     def initialize
       base_url = OMNIAUTH_CONFIG['client_options']['site']

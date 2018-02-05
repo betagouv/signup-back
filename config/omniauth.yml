@@ -1,32 +1,74 @@
 test:
-  client_options:
-    site: http://test.host
-    authorize_url: /oauth/authorize
-    me_url: /api/v1/me
-  client_id: 12345
-  client_secret: 12345
+  resource_provider:
+    client_options:
+      site: http://test.host
+      authorize_url: /oauth/authorize
+      me_url: /api/v1/me
+    client_id: 12345
+    client_secret: 12345
+  france_connect:
+    client_options:
+      site: 'https://partenaires.dev.dev-franceconnect.fr'
+      authorize_url: '/oauth/v1/authorize'
+      token_url: '/oauth/v1/token'
+      ssl:
+        verify: false
+    client_id: 12345
+    client_secret: 12345
+
 development:
-  client_options:
-    site: http://localhost:3001
-    authorize_url: /oauth/authorize
-    me_url: /api/v1/me
-  client_id: f6feea577e55543877f555e35be37a3930ea37c53eec0d5bfb58ea0e80048762
-  client_secret: 2708a12e758090862cde983d513f066a31225cd079620a8cffff24d6b9df5223
+  resource_provider:
+    client_options:
+      site: http://localhost:3001
+      authorize_url: /oauth/authorize
+      me_url: /api/v1/me
+    client_id: 12345
+    client_secret: 12345
+  france_connect:
+    client_options:
+      site: 'https://partenaires.dev.dev-franceconnect.fr'
+      authorize_url: '/oauth/v1/authorize'
+      token_url: '/oauth/v1/token'
+      ssl:
+        verify: false
+    client_id: 12345
+    client_secret: 12345
+
 docker:
-  client_options:
-    site: http://oauth:3001
-    authorize_url: /oauth/authorize
-    me_url: /api/v1/me
-  client_id: 82546188522214c3577d35c283ce8842786649b35a026a9d44908037a597f29b
-  client_secret: 1ff180ba922fbbbb4cf6fe0d3e82efadaa48a14de454a2137e2d656aac5e97c4
+  resource_provider:
+    client_options:
+      site: http://oauth:3001
+      authorize_url: /oauth/authorize
+      me_url: /api/v1/me
+    client_id: 82546188522214c3577d35c283ce8842786649b35a026a9d44908037a597f29b
+    client_secret: 1ff180ba922fbbbb4cf6fe0d3e82efadaa48a14de454a2137e2d656aac5e97c4
+  france_connect:
+    client_options:
+      site: 'https://partenaires.dev.dev-franceconnect.fr'
+      authorize_url: '/oauth/v1/authorize'
+      token_url: '/oauth/v1/token'
+      ssl:
+        verify: false
+    client_id: <%= ENV['FRANCE_CONNECT_CLIENT_ID'] %>
+    client_secret: <%= ENV['FRANCE_CONNECT_CLIENT_SECRET'] %>
 
 
 production:
-  client_options:
-    site: https://84.39.49.146
-    authorize_url: /oauth/authorize
-    me_url: /api/v1/me
-    ssl:
-      verify: false
-  client_id: 2ab3f15b7503f3d72ab795db01122e6607cd656c0626773001e62203c987f146
-  client_secret: 57b91c75d78368570464306e06f7356498187776d9e3f74a82535972b8f66ef8
+  resource_provider:
+    client_options:
+      site: https://impots.particulier.api.gouv.fr
+      authorize_url: /oauth/authorize
+      me_url: /api/v1/me
+      ssl:
+        verify: false
+    client_id: <%= ENV['RESOURCE_PROVIDER_CLIENT_ID'] %>
+    client_secret: <%= ENV['RESOURCE_PROVIDER_CLIENT_SECRET'] %>
+  france_connect:
+    client_options:
+      site: 'https://partenaires.dev.dev-franceconnect.fr'
+      authorize_url: '/oauth/v1/authorize'
+      token_url: '/oauth/v1/token'
+      ssl:
+        verify: false
+    client_id: <%= ENV['FRANCE_CONNECT_CLIENT_ID'] %>
+    client_secret: <%= ENV['FRANCE_CONNECT_CLIENT_SECRET'] %>
