@@ -22,7 +22,7 @@ module ResourceProvider
       end
 
       raise AccessDenied, res.body unless res.success?
-      res.body
+      Rails.cache.fetch(token, expires_in: 10.minutes) { res.body }
     rescue StandardError => e
       raise AccessDenied, e.message
     end

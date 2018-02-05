@@ -2,12 +2,13 @@
 
 class ApplicationController < ActionController::Base
   attr_reader :client, :current_user
+  class AccessDenied < StandardError; end
 
   include Pundit
 
   protect_from_forgery with: :null_session
 
-  rescue_from 'ResourceProvider::AccessDenied' do |e|
+  rescue_from AccessDenied do |e|
     render status: :unauthorized, json: {
       message: "Vous n'êtes pas authorisé à accéder à cette API",
       detail: e.message
@@ -43,15 +44,13 @@ class ApplicationController < ActionController::Base
   def oauth_user
     token = authorization_header.gsub(/Bearer /, '')
 
-    # Rails.cache.fetch(token, expires_in: 10.minutes) do
-      # client.me(token)
+    client.me(token)
     # end
-    { 'uid' => token }
   end
 
   def authorization_header
     res = request.headers['Authorization'] || session_bearer
-    raise ResourceProvider::AccessDenied, 'You must privide an authorization header' unless res
+    raise AccessDenied, 'You must privide an authorization header' unless res
     res
   end
 

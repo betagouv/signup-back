@@ -22,7 +22,7 @@ module FranceConnect
       end
 
       raise AccessDenied, res.body unless res.success?
-      res.body['user']
+      Rails.cache.fetch(token, expires_in: 10.minutes) { res.body['user'] }
     rescue StandardError => e
       raise AccessDenied, e.message
     end
