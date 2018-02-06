@@ -7,6 +7,10 @@ class Enrollment < ApplicationRecord
     Document::FranceConnectCompliance
     Document::LegalBasis
   ].freeze
+  SECURITY_DOCUMENT_TYPES = %w[
+    Document::ProductionCertificatePublicKey
+    Document::CertificationAuthorityPublicKey
+  ].freeze
 
   resourcify
   has_many :messages
@@ -55,16 +59,18 @@ class Enrollment < ApplicationRecord
     end
     state 'application_ready' do
       validate :technical_validation
-      validate :certificate_format
+      validate :document_validation
 
-      def technical_validation
-        errors.add(:production_certificate, 'Vous devez fournir le certificat de prodution') unless production_certificate.present?
-        errors.add(:certification_authority, "Vous devez fournir l'autorité de certification") unless certification_authority.present?
-        errors.add(:production_ips, "Vous devez fournir les IPs de production") unless production_ips.present?
+      def document_validation
+        unless SECURITY_DOCUMENT_TYPES.all? do |document|
+          documents.where(type: document).present?
+        end
+          errors.add(:documents, 'Vous devez envoyer tous les documents demandés')
+        end
       end
 
-      def certificate_format
-        errors.add(:production_certificate, 'vérifiez le format de votre certificat') unless production_certificate =~ /(-----BEGIN CERTIFICATE-----(?:[\s\S]*?)-----END CERTIFICATE-----)/
+      def technical_validation
+        errors.add(:production_ips, 'Vous devez fournir les IPs de production') unless production_ips.present?
       end
     end
     state 'deployed'

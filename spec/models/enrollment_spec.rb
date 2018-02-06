@@ -175,14 +175,13 @@ RSpec.describe Enrollment, type: :model do
       let(:enrollment) { FactoryGirl.create(:enrollment, state: 'technical_validation', applicant: { email: 'test@test.test' }) }
 
       before do
-        enrollment.update(
-          production_certificate: """
------BEGIN CERTIFICATE-----
------END CERTIFICATE-----
-          """,
-          certification_authority: 'test',
-          production_ips: '123'
-        )
+        enrollment.update(production_ips: '123')
+        Enrollment::SECURITY_DOCUMENT_TYPES.each do |document_type|
+          enrollment.documents.create(
+            type: document_type,
+            attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
+          )
+        end
       end
 
       describe 'messages' do
@@ -203,16 +202,21 @@ RSpec.describe Enrollment, type: :model do
     end
 
     describe 'the enrollment is on application_ready state' do
-      let(:enrollment) { FactoryGirl.create(
-        :enrollment,
-        state: 'application_ready',
-        production_certificate: """
------BEGIN CERTIFICATE-----
------END CERTIFICATE-----
-        """,
-        certification_authority: 'test',
-        production_ips: '123'
- ) }
+      let(:enrollment) do
+        enrollment = FactoryGirl.build(
+          :enrollment,
+          state: 'application_ready',
+          production_ips: '123'
+        )
+        Enrollment::SECURITY_DOCUMENT_TYPES.each do |document_type|
+          enrollment.documents.build(
+            type: document_type,
+            attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
+          )
+        end
+        enrollment.save
+        enrollment
+      end
 
       describe 'messages' do
         it 'creates a message when application_deployed' do
