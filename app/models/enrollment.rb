@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'zip'
 
 class Enrollment < ApplicationRecord
   DOCUMENT_TYPES = %w[
@@ -61,6 +62,8 @@ class Enrollment < ApplicationRecord
       validate :technical_validation
       validate :document_validation
 
+      after_save :create_archive
+
       def document_validation
         unless SECURITY_DOCUMENT_TYPES.all? do |document|
           documents.where(type: document).present?
@@ -71,6 +74,25 @@ class Enrollment < ApplicationRecord
 
       def technical_validation
         errors.add(:production_ips, 'Vous devez fournir les IPs de production') unless production_ips.present?
+      end
+
+      def create_archive
+        zip_file = Rails.root.join("tmp/#{SecureRandom.hex}.zip")
+
+        documents_to_zip = documents.select { |e| SECURITY_DOCUMENT_TYPES.include?(e.type) }
+
+        Zip::File.open(zip_file, Zip::File::CREATE) do |zipfile|
+          documents_to_zip.each do |document|
+            zipfile.add("#{SecureRandom.hex}-#{File.basename(document.attachment.path)}", document.attachment.file.path)
+          end
+          zipfile.get_output_stream("production_ips.txt") { |f| f.write production_ips }
+        end
+
+        documents.create(
+          type: 'Document::SecurityArchive',
+          attachment: zip_file.open
+        )
+        FileUtils.rm(zip_file)
       end
     end
     state 'deployed'

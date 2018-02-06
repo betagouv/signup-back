@@ -23,6 +23,7 @@ gem 'rails', '~> 5.1.4'
 gem 'rails-i18n'
 gem 'rmagick'
 gem 'rolify'
+gem 'rubyzip'
 gem 'state_machines-activerecord'
 
 group :development, :test do

@@ -45,7 +45,6 @@ class ApplicationController < ActionController::Base
     token = authorization_header.gsub(/Bearer /, '')
 
     client.me(token)
-    # end
   end
 
   def authorization_header

@@ -199,6 +199,12 @@ RSpec.describe Enrollment, type: :model do
 
         expect(enrollment.state).to eq('application_ready')
       end
+
+      it 'has a security zip file attached to it' do
+        enrollment.deploy_security!
+
+        expect(enrollment.documents.where(type: 'Document::SecurityArchive')).to be_present
+      end
     end
 
     describe 'the enrollment is on application_ready state' do
