@@ -26,6 +26,9 @@ development:
 test:
   <<: *default
   database: dgfip_back-test
+  host: postgres
+  user: postgres
+  password: postgres
 
 production:
   <<: *default
