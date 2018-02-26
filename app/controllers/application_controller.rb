@@ -44,7 +44,8 @@ class ApplicationController < ActionController::Base
   def oauth_user
     token = authorization_header.gsub(/Bearer /, '')
 
-    client.me(token)
+    # client.me(token)
+    { 'uid' => token }
   end
 
   def authorization_header
