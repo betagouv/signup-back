@@ -15,6 +15,13 @@ class ApplicationController < ActionController::Base
     }
   end
 
+  rescue_from ResourceProvider::AccessDenied do |e|
+    render status: :unauthorized, json: {
+      message: "Vous n'êtes pas authorisé à accéder à cette API",
+      detail: e.message
+    }
+  end
+
   rescue_from 'FranceConnect::AccessDenied' do |e|
     render status: :unauthorized, json: {
       message: "Vous n'êtes pas authorisé à accéder à cette API",
