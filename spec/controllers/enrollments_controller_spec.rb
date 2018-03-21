@@ -339,128 +339,113 @@ RSpec.describe EnrollmentsController, type: :controller do
     end
   end
 
-  # describe 'PATCH #trigger' do
-  #   # TODO test other events
-  #   describe 'complete_application?' do
-  #     describe 'with a service_provider user' do
-  #       let(:uid) { 1 }
-  #       let(:user) { FactoryGirl.create(:user, provider: 'service_provider', uid: uid) }
+  describe 'PATCH #trigger' do
+    # TODO test other events
+    describe 'send_application?' do
+      describe 'with a service_provider user' do
+        let(:uid) { 1 }
+        let(:user) { FactoryGirl.create(:user, provider: 'service_provider', uid: uid) }
 
-  #       before do
-  #         @request.headers['Authorization'] = 'Bearer test'
-  #         stub_request(:get, 'http://test.host/api/v1/me')
-  #           .with(
-  #             headers: {
-  #               'Accept' => '*/*',
-  #               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-  #               'Authorization' => 'Bearer test',
-  #               'User-Agent' => 'Faraday v0.12.1'
-  #             }
-  #           ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
-  #       end
+        before do
+          @request.headers['Authorization'] = 'Bearer test'
+          stub_request(:get, 'http://test.host/api/v1/me')
+            .with(
+              headers: {
+                'Accept' => '*/*',
+                'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Authorization' => 'Bearer test',
+                'User-Agent' => 'Faraday v0.12.1'
+              }
+            ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+        end
 
-  #       describe 'user is applicant of enrollment' do
-  #         before do
-  #           user.add_role(:applicant, enrollment)
-  #         end
+        describe 'user is applicant of enrollment' do
+          before do
+            user.add_role(:applicant, enrollment)
+          end
 
-  #         it 'throw a 400 if not an event' do
-  #           patch :trigger, params: { id: enrollment.id, event: 'boom' }
+          it 'throw a 400 if not an event' do
+            patch :trigger, params: { id: enrollment.id, event: 'boom' }
 
-  #           expect(response).to have_http_status(400)
-  #         end
+            expect(response).to have_http_status(400)
+          end
 
-  #         describe 'enrollment can be completed' do
-  #           before do
-  #             Enrollment::DOCUMENT_TYPES.each do |document_type|
-  #               enrollment.documents.create(
-  #                 type: document_type,
-  #                 attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
-  #               )
-  #             end
-  #             enrollment.update(cnil_voucher_detail: {
-  #               reference: 'test',
-  #               formality: 'test'
-  #             })
-  #             enrollment.update(certification_results_detail: {
-  #               name: 'test',
-  #               position: 'test',
-  #               start: 'test',
-  #               duration: 'test'
-  #             })
-  #           end
+          describe 'enrollment can be sent' do
+            let(:enrollment) { FactoryGirl.create(:sent_enrollment, state: :pending) }
 
-  #           it 'triggers an event' do
-  #             patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
+            it 'triggers an event' do
+              patch :trigger, params: { id: enrollment.id, event: 'send_application' }
 
-  #             expect(enrollment.reload.state).to eq('waiting_for_approval')
-  #           end
+              expect(enrollment.reload.state).to eq('sent')
+            end
 
-  #           it 'returns the enrollment' do
-  #             patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
+            it 'returns the enrollment' do
+              patch :trigger, params: { id: enrollment.id, event: 'send_application' }
 
-  #             res = JSON.parse(response.body)
-  #             res.delete('updated_at')
-  #             res.delete('created_at')
-  #             res.delete('state')
-  #             res.delete('messages')
-  #             res.delete('documents')
-  #             res.delete('acl')
+              res = JSON.parse(response.body)
+              res.delete('updated_at')
+              res.delete('created_at')
+              res.delete('state')
+              res.delete('messages')
+              res.delete('documents')
+              res['date_fin_homologation'] = Date.parse(res['date_fin_homologation'])
+              res['date_homologation'] = Date.parse(res['date_homologation'])
+              res.delete('acl')
 
-  #             exp = @controller.serialize(enrollment)
-  #             exp.delete('updated_at')
-  #             exp.delete('created_at')
-  #             exp.delete('state')
-  #             exp.delete('messages')
-  #             exp.delete('documents')
-  #             exp.delete('acl')
+              exp = @controller.serialize(enrollment)
+              exp.delete('updated_at')
+              exp.delete('created_at')
+              exp.delete('state')
+              exp.delete('messages')
+              exp.delete('documents')
+              exp.delete('acl')
 
-  #             expect(res).to eq(exp)
-  #           end
+              expect(res).to eq(exp)
+            end
 
-  #           it 'user has application completer role' do
-  #             patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
+            it 'user has application sender role' do
+              patch :trigger, params: { id: enrollment.id, event: 'send_application' }
 
-  #             expect(user.has_role?(:application_completer, enrollment)).to be_truthy
-  #           end
-  #         end
+              expect(user.has_role?(:application_sender, enrollment)).to be_truthy
+            end
+          end
 
-  #         describe 'enrollment cannot be completed' do
-  #           it 'triggers an event' do
-  #             patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
+          describe 'enrollment cannot be completed' do
+            it 'triggers an event' do
+              patch :trigger, params: { id: enrollment.id, event: 'send_application' }
 
-  #             expect(response).to have_http_status(:unprocessable_entity)
-  #           end
-  #         end
-  #       end
-  #     end
+              expect(response).to have_http_status(:unprocessable_entity)
+            end
+          end
+        end
+      end
 
-  #     describe 'with a dgfip user' do
-  #       let(:uid) { 1 }
-  #       let(:user) { FactoryGirl.create(:user, provider: 'resource_provider', uid: uid) }
+      # describe 'with a dgfip user' do
+      #   let(:uid) { 1 }
+      #   let(:user) { FactoryGirl.create(:user, provider: 'resource_provider', uid: uid) }
 
-  #       before do
-  #         @request.headers['Authorization'] = 'Bearer test'
-  #         @request.headers['X-Oauth-Provider'] = 'resourceProvider'
-  #         stub_request(:get, 'http://test.host/api/v1/me')
-  #         .with(
-  #           headers: {
-  #             'Accept' => '*/*',
-  #             'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-  #             'Authorization' => 'Bearer test',
-  #             'User-Agent' => 'Faraday v0.12.1'
-  #           }
-  #         ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
-  #       end
+      #   before do
+      #     @request.headers['Authorization'] = 'Bearer test'
+      #     @request.headers['X-Oauth-Provider'] = 'resourceProvider'
+      #     stub_request(:get, 'http://test.host/api/v1/me')
+      #     .with(
+      #       headers: {
+      #         'Accept' => '*/*',
+      #         'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      #         'Authorization' => 'Bearer test',
+      #         'User-Agent' => 'Faraday v0.12.1'
+      #       }
+      #     ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+      #   end
 
-  #       it 'is unauthorized' do
-  #         patch :trigger, params: { id: enrollment.id, event: 'complete_application' }
+      #   it 'is unauthorized' do
+      #     patch :trigger, params: { id: enrollment.id, event: 'send_application' }
 
-  #         expect(response).to have_http_status(403)
-  #       end
-  #     end
-  #   end
-  # end
+      #     expect(response).to have_http_status(403)
+      #   end
+      # end
+    end
+  end
 
   describe 'DELETE #destroy' do
     it 'renders a not found' do
