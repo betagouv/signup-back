@@ -92,7 +92,9 @@ class EnrollmentsController < ApplicationController
       :fournisseur_de_service,
       :description_service,
       :fondement_juridique,
-      :scope_RFR,
+      :scope_dgfip_avis_imposition,
+      :scope_cnaf_attestation_droits,
+      :scope_cnaf_quotient_familial,
       :nombre_demandes_annuelle,
       :pic_demandes_par_heure,
       :nombre_demandes_mensuelles_jan,
@@ -114,9 +116,7 @@ class EnrollmentsController < ApplicationController
       :delegue_protection_donnees,
       :validation_de_convention,
       :certificat_pub_production,
-      :autorite_certification,
-      :mise_en_production,
-      ip_production: [],
+      :autorite_certification
     )
   end
 

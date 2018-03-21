@@ -217,7 +217,9 @@ RSpec.describe EnrollmentsController, type: :controller do
             "fournisseur_de_service": "test",
             "description_service": "test",
             "fondement_juridique": "test",
-            "scope_RFR": true,
+            "scope_dgfip_avis_imposition": true,
+            "scope_cnaf_attestation_droits": true,
+            "scope_cnaf_quotient_familial": true,
             "nombre_demandes_annuelle": 34568,
             "pic_demandes_par_heure": 567,
             "nombre_demandes_mensuelles_jan": 45,
@@ -239,9 +241,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             "delegue_protection_donnees": "test",
             "validation_de_convention": true,
             "certificat_pub_production": "test",
-            "autorite_certification": "test",
-            "ip_production": ["test", "test"],
-            "mise_en_production": true
+            "autorite_certification": "test"
           }
             EOF
           )
@@ -269,7 +269,7 @@ RSpec.describe EnrollmentsController, type: :controller do
   describe 'PUT #update' do
     context 'with valid params' do
       let(:new_attributes) do
-        { scope_RFR: true }
+        { scope_dgfip_avis_imposition: true }
       end
 
       let(:documents_attributes) do
@@ -325,7 +325,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             put :update, params: { id: enrollment.to_param, enrollment: new_attributes }
 
             enrollment.reload
-            expect(enrollment.scope_RFR).to be_truthy
+            expect(enrollment.scope_dgfip_avis_imposition).to be_truthy
           end
 
           it 'renders a JSON response with the enrollment' do

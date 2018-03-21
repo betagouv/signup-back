@@ -12,7 +12,9 @@ RSpec.describe Enrollment, type: :model do
         "fournisseur_de_service": "test",
         "description_service": "test",
         "fondement_juridique": "test",
-        "scope_RFR": true,
+        "scope_dgfip_avis_imposition": true,
+        "scope_cnaf_attestation_droits": true,
+        "scope_cnaf_quotient_familial": true,
         "nombre_demandes_annuelle": 34568,
         "pic_demandes_par_heure": 567,
         "nombre_demandes_mensuelles_jan": 45,
@@ -34,9 +36,7 @@ RSpec.describe Enrollment, type: :model do
         "delegue_protection_donnees": "test",
         "validation_de_convention": true,
         "certificat_pub_production": "test",
-        "autorite_certification": "test",
-        "ip_production": ["test", "test"],
-        "mise_en_production": true
+        "autorite_certification": "test"
       }
       EOF
     )

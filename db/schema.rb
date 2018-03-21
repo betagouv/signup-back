@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180320125913) do
+ActiveRecord::Schema.define(version: 20180321103855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,7 +31,6 @@ ActiveRecord::Schema.define(version: 20180320125913) do
     t.string "fournisseur_de_service"
     t.string "description_service"
     t.string "fondement_juridique"
-    t.boolean "scope_RFR"
     t.integer "nombre_demandes_annuelle"
     t.integer "pic_demandes_par_heure"
     t.integer "nombre_demandes_mensuelles_jan"
@@ -53,9 +52,10 @@ ActiveRecord::Schema.define(version: 20180320125913) do
     t.string "delegue_protection_donnees"
     t.string "certificat_pub_production"
     t.string "autorite_certification"
-    t.text "ip_production", array: true
-    t.boolean "mise_en_production"
     t.boolean "validation_de_convention"
+    t.boolean "scope_dgfip_avis_imposition"
+    t.boolean "scope_cnaf_attestation_droits"
+    t.boolean "scope_cnaf_quotient_familial"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -91,7 +91,6 @@ ActiveRecord::Schema.define(version: 20180320125913) do
     t.string "provider"
     t.string "uid"
     t.string "oauth_roles", default: [], array: true
-    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
