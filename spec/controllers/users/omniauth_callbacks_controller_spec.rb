@@ -18,14 +18,6 @@ RSpec.describe Users::OmniauthCallbacksController, type: :controller do
       )
     end
 
-    it 'creates an user' do
-      get :resource_provider
-
-      user = User.find_by(email: 'user@user.user')
-
-      expect(user.oauth_roles).to eq(['test'])
-    end
-
     it 'redirects to front host' do
       front_host = YAML.load_file('config/front.yml')[Rails.env]['callback_url']
 

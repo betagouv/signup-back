@@ -37,7 +37,7 @@ development:
 docker:
   resource_provider:
     client_options:
-      site: http://oauth:3001
+      site: http://courtier-oauth:3000
       authorize_url: /oauth/authorize
       me_url: /api/v1/me
     client_id: 82546188522214c3577d35c283ce8842786649b35a026a9d44908037a597f29b

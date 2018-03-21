@@ -15,6 +15,13 @@ class ApplicationController < ActionController::Base
     }
   end
 
+  rescue_from ResourceProvider::AccessDenied do |e|
+    render status: :unauthorized, json: {
+      message: "Vous n'êtes pas authorisé à accéder à cette API",
+      detail: e.message
+    }
+  end
+
   rescue_from 'FranceConnect::AccessDenied' do |e|
     render status: :unauthorized, json: {
       message: "Vous n'êtes pas authorisé à accéder à cette API",
@@ -37,7 +44,7 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate!
-    @current_user ||= User.find_by(uid: oauth_user['uid'].to_s)
+    @current_user ||= User.from_service_provider_omniauth(oauth_user)
     raise ResourceProvider::AccessDenied, 'User not found' unless current_user
   end
 
