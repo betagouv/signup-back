@@ -151,7 +151,7 @@ RSpec.describe EnrollmentsController, type: :controller do
   # end
 
   describe 'POST #create' do
-    context 'with valid params' do
+    describe 'without a service_provider user' do
       it 'forbids enrollment creation' do
         post :create, params: { enrollment: valid_attributes }
 
