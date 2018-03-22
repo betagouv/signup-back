@@ -4,12 +4,12 @@ class ResourceProvidersController < ApplicationController
   # GET /resource_providers
   def index
     @resource_providers = ResourceProvider.all
-    render json: @resource_providers
+    render json: @resource_providers.map { |e| e.to_json(include: :scopes)}
   end
 
   # GET /resource_providers/1
   def show
-    render json: @resource_provider
+    render json: @resource_provider.to_json(include: :scopes)
   end
 
   private

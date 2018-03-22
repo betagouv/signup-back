@@ -6,6 +6,35 @@
     "description": { "type": "string" },
     "created_at": { "type": "string" },
     "updated_at": { "type": "string" },
-    "id": { "type": "integer"}
-  }
+    "id": { "type": "integer"},
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "human_name": { "type": "string" },
+          "description": { "type": "string" },
+          "created_at": { "type": "string" },
+          "updated_at": { "type": "string" }
+        },
+        "required": [
+          "name",
+          "human_name",
+          "description",
+          "created_at",
+          "updated_at"
+        ]
+      }
+    }
+  },
+  "required": [
+    "short_name",
+    "long_name",
+    "description",
+    "created_at",
+    "updated_at",
+    "id",
+    "scopes"
+  ]
 }
