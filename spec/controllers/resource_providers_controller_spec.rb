@@ -19,7 +19,7 @@ RSpec.describe ResourceProvidersController, type: :controller do
 
     it "returns the right schema" do
       get :show, params: {id: resource_provider.to_param}
-      validator = JSON::Validator.validate!(File.read(Rails.root.join('lib/schemas/resource_provider.json')), response.body)
+      validator = JSON::Validator.validate(File.read(Rails.root.join('lib/schemas/resource_provider.json')), response.body)
 
       expect(validator).to be_truthy
     end
