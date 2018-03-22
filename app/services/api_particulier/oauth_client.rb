@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ResourceProvider
+module ApiParticulier
   class OauthClient
     attr_reader :me_url
     OMNIAUTH_CONFIG = YAML.load(ERB.new(File.read(Rails.root.join('config/omniauth.yml'))).result)[Rails.env]['resource_provider']

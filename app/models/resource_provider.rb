@@ -1,0 +1,2 @@
+class ResourceProvider < ApplicationRecord
+end

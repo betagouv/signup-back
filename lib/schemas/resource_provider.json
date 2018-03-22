@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "short_name": { "type": "string" },
+    "long_name": { "type": "string" },
+    "description": { "type": "string" },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "id": { "type": "integer"}
+  }
+}
