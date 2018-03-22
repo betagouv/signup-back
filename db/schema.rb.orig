@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< 274f09d9ff8cb8837abb8b379f44be06bde23dea
+<<<<<<< df49e6fd348e8879fc10b31ea06273fbab0db9e0
 ActiveRecord::Schema.define(version: 20180323115633) do
 =======
-ActiveRecord::Schema.define(version: 20180322152807) do
->>>>>>> resource providers
+ActiveRecord::Schema.define(version: 20180322165139) do
+>>>>>>> scopes for resource providers
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,7 +94,10 @@ ActiveRecord::Schema.define(version: 20180322152807) do
     t.integer "resource_provider_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+<<<<<<< df49e6fd348e8879fc10b31ea06273fbab0db9e0
     t.json "services", default: [], array: true
+=======
+>>>>>>> scopes for resource providers
   end
 
   create_table "users", force: :cascade do |t|
