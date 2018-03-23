@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  attr_reader :client, :current_user
+  attr_reader :current_user
   class AccessDenied < StandardError; end
 
   include Pundit
@@ -10,28 +10,28 @@ class ApplicationController < ActionController::Base
 
   rescue_from AccessDenied do |e|
     render status: :unauthorized, json: {
-      message: "Vous n'êtes pas authorisé à accéder à cette API",
+      message: "Vous n'êtes pas autorisé à accéder à cette API",
       detail: e.message
     }
   end
 
   rescue_from ResourceProvider::AccessDenied do |e|
     render status: :unauthorized, json: {
-      message: "Vous n'êtes pas authorisé à accéder à cette API",
+      message: "Vous n'êtes pas autorisé à accéder à cette API",
       detail: e.message
     }
   end
 
   rescue_from 'FranceConnect::AccessDenied' do |e|
     render status: :unauthorized, json: {
-      message: "Vous n'êtes pas authorisé à accéder à cette API",
+      message: "Vous n'êtes pas autorisé à accéder à cette API",
       detail: e.message
     }
   end
 
   rescue_from Pundit::NotAuthorizedError do |_|
     render status: :forbidden, json: {
-      message: ["Vous n'êtes pas authorisé à modifier cette ressource"]
+      message: ["Vous n'êtes pas autorisé à modifier cette ressource"]
     }
   end
 
