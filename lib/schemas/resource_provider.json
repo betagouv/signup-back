@@ -6,7 +6,8 @@
     "description": { "type": "string" },
     "created_at": { "type": "string" },
     "updated_at": { "type": "string" },
-    "id": { "type": "integer"},
+    "id": { "type": "integer" },
+    "services": { "type": "array", "items": { "type": "object" } },
     "scopes": {
       "type": "array",
       "items": {
