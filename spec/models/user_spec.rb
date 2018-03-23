@@ -6,6 +6,12 @@ RSpec.describe User, type: :model do
   describe 'with an user' do
     let(:user) { FactoryGirl.create(:user) }
 
+    it 'can be a service_provider' do
+      user.provider = 'service_provider'
+
+      expect(user.service_provider?).to be_truthy
+    end
+
     describe 'with an enrollment' do
       let(:enrollment) { FactoryGirl.create(:enrollment) }
 

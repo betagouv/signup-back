@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180201145943) do
+ActiveRecord::Schema.define(version: 20180321103855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,20 +25,37 @@ ActiveRecord::Schema.define(version: 20180201145943) do
   end
 
   create_table "enrollments", force: :cascade do |t|
-    t.json "service_provider"
-    t.json "scopes"
-    t.json "legal_basis"
-    t.json "service_description"
-    t.boolean "agreement"
     t.string "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.json "applicant"
-    t.string "production_certificate"
-    t.string "certification_authority"
-    t.string "production_ips"
-    t.json "cnil_voucher_detail", default: {}
-    t.json "certification_results_detail", default: {}
+    t.string "fournisseur_de_service"
+    t.string "description_service"
+    t.string "fondement_juridique"
+    t.integer "nombre_demandes_annuelle"
+    t.integer "pic_demandes_par_heure"
+    t.integer "nombre_demandes_mensuelles_jan"
+    t.integer "nombre_demandes_mensuelles_fev"
+    t.integer "nombre_demandes_mensuelles_mar"
+    t.integer "nombre_demandes_mensuelles_avr"
+    t.integer "nombre_demandes_mensuelles_mai"
+    t.integer "nombre_demandes_mensuelles_jui"
+    t.integer "nombre_demandes_mensuelles_jul"
+    t.integer "nombre_demandes_mensuelles_aou"
+    t.integer "nombre_demandes_mensuelles_sep"
+    t.integer "nombre_demandes_mensuelles_oct"
+    t.integer "nombre_demandes_mensuelles_nov"
+    t.integer "nombre_demandes_mensuelles_dec"
+    t.string "autorite_certification_nom"
+    t.string "autorite_certification_fonction"
+    t.date "date_homologation"
+    t.date "date_fin_homologation"
+    t.string "delegue_protection_donnees"
+    t.string "certificat_pub_production"
+    t.string "autorite_certification"
+    t.boolean "validation_de_convention"
+    t.boolean "scope_dgfip_avis_imposition"
+    t.boolean "scope_cnaf_attestation_droits"
+    t.boolean "scope_cnaf_quotient_familial"
   end
 
   create_table "messages", force: :cascade do |t|

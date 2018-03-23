@@ -29,6 +29,10 @@ class User < ApplicationRecord
     provider == 'france_connect'
   end
 
+  def service_provider?
+    provider == 'service_provider'
+  end
+
   def dgfip?
     provider == 'resource_provider'
   end
