@@ -77,6 +77,16 @@ RSpec.describe Enrollment, type: :model do
       expect(enrollment.state).to eq('pending')
     end
 
+    describe 'The enrollment is valid' do
+      let(:enrollment) { FactoryGirl.create(:sent_enrollment, state: :pending) }
+
+      it 'can go on sent state' do
+        enrollment.send_application
+
+        expect(enrollment.state).to eq('sent')
+      end
+    end
+
     describe 'Enrollment is in sent state' do
       let(:enrollment) { FactoryGirl.create(:sent_enrollment) }
       it 'can validate application' do
