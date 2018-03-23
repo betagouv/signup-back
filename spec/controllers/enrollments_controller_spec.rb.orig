@@ -346,6 +346,7 @@ RSpec.describe EnrollmentsController, type: :controller do
         let(:uid) { 1 }
         let(:user) { FactoryGirl.create(:user, provider: 'service_provider', uid: uid) }
 
+<<<<<<< f00024cf3efb3d51f4317bd421b4b4c8b74265d4
         before do
           @request.headers['Authorization'] = 'Bearer test'
           stub_request(:get, 'http://test.host/api/v1/me')
@@ -354,10 +355,24 @@ RSpec.describe EnrollmentsController, type: :controller do
                 'Accept' => '*/*',
                 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                 'Authorization' => 'Bearer test',
-                'User-Agent' => 'Faraday v0.12.2'
+                'User-Agent' => 'Faraday v0.12.1'
               }
             ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
         end
+=======
+  #       before do
+  #         @request.headers['Authorization'] = 'Bearer test'
+  #         stub_request(:get, 'http://test.host/api/v1/me')
+  #           .with(
+  #             headers: {
+  #               'Accept' => '*/*',
+  #               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+  #               'Authorization' => 'Bearer test',
+  #               'User-Agent' => 'Faraday v0.12.2'
+  #             }
+  #           ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+  #       end
+>>>>>>> fixes the mess
 
         describe 'user is applicant of enrollment' do
           before do
@@ -367,8 +382,24 @@ RSpec.describe EnrollmentsController, type: :controller do
           it 'throw a 400 if not an event' do
             patch :trigger, params: { id: enrollment.id, event: 'boom' }
 
+<<<<<<< f00024cf3efb3d51f4317bd421b4b4c8b74265d4
             expect(response).to have_http_status(400)
           end
+=======
+  #       before do
+  #         @request.headers['Authorization'] = 'Bearer test'
+  #         @request.headers['X-Oauth-Provider'] = 'resourceProvider'
+  #         stub_request(:get, 'http://test.host/api/v1/me')
+  #         .with(
+  #           headers: {
+  #             'Accept' => '*/*',
+  #             'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+  #             'Authorization' => 'Bearer test',
+  #             'User-Agent' => 'Faraday v0.12.2'
+  #           }
+  #         ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+  #       end
+>>>>>>> fixes the mess
 
           describe 'enrollment can be sent' do
             let(:enrollment) { FactoryGirl.create(:sent_enrollment, state: :pending) }
