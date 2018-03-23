@@ -65,6 +65,50 @@ RSpec.describe Enrollment, type: :model do
     expect(enrollment_attributes).to eq(attributes)
   end
 
+  describe 'Workflow' do
+    let(:enrollment) { FactoryGirl.create(:enrollment) }
+    it 'should start on pending state' do
+      expect(enrollment.state).to eq('pending')
+    end
+
+    it 'cannot send application if invalid' do
+      enrollment.send_application
+
+      expect(enrollment.state).to eq('pending')
+    end
+
+    describe 'The enrollment is valid' do
+      let(:enrollment) { FactoryGirl.create(:sent_enrollment, state: :pending) }
+
+      it 'can go on sent state' do
+        enrollment.send_application
+
+        expect(enrollment.state).to eq('sent')
+      end
+    end
+
+    describe 'Enrollment is in sent state' do
+      let(:enrollment) { FactoryGirl.create(:sent_enrollment) }
+      it 'can validate application' do
+        enrollment.validate_application
+
+        expect(enrollment.state).to eq('validated')
+      end
+
+      it 'can refuse application' do
+        enrollment.refuse_application
+
+        expect(enrollment.state).to eq('refused')
+      end
+
+      it 'can review application' do
+        enrollment.review_application
+
+        expect(enrollment.state).to eq('pending')
+      end
+    end
+  end
+
   Enrollment::DOCUMENT_TYPES.each do |document_type|
     describe document_type do
       it 'can have document' do

@@ -14,51 +14,63 @@ class Enrollment < ApplicationRecord
 
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
+    state :pending
+    state :sent do
+      validates_presence_of(
+        :validation_de_convention,
+        :fournisseur_de_service,
+        :description_service,
+        :fondement_juridique,
+        :scope_dgfip_avis_imposition,
+        :scope_cnaf_attestation_droits,
+        :scope_cnaf_quotient_familial,
+        :nombre_demandes_annuelle,
+        :pic_demandes_par_heure,
+        :nombre_demandes_mensuelles_jan,
+        :nombre_demandes_mensuelles_fev,
+        :nombre_demandes_mensuelles_mar,
+        :nombre_demandes_mensuelles_avr,
+        :nombre_demandes_mensuelles_mai,
+        :nombre_demandes_mensuelles_jui,
+        :nombre_demandes_mensuelles_jul,
+        :nombre_demandes_mensuelles_aou,
+        :nombre_demandes_mensuelles_sep,
+        :nombre_demandes_mensuelles_oct,
+        :nombre_demandes_mensuelles_nov,
+        :nombre_demandes_mensuelles_dec,
+        :autorite_certification_nom,
+        :autorite_certification_fonction,
+        :date_homologation,
+        :date_fin_homologation,
+        :delegue_protection_donnees,
+        :validation_de_convention,
+        :certificat_pub_production,
+        :autorite_certification
+      )
+    end
+    state :validated
+    state :refused
+
+    event :send_application do
+      transition from: :pending, to: :sent
+    end
+
+    event :validate_application do
+      transition from: :sent, to: :validated
+    end
+
+    event :refuse_application do
+      transition from: :sent, to: :refused
+    end
+
+    event :review_application do
+      transition from: :sent, to: :pending
+    end
   end
 
   private
 
   def convention_validated?
     errors[:validation_de_convention] << "Vous devez valider la convention avant de continuer" unless validation_de_convention?
-  end
-
-  def clean_json
-    self.service_description = _clean_json(service_description)
-    self.legal_basis = _clean_json(legal_basis)
-    self.applicant = _clean_json(applicant)
-  end
-
-  def _clean_json(hash)
-    return hash unless hash.is_a?(Hash)
-    Hash[hash.map do |k, v|
-      [k, v.blank? ? nil : v]
-    end]
-  end
-
-  def step_1
-    errors[:service_description] << "Vous devez décrire le service avant de continer" unless service_description&.fetch('main')
-    errors[:legal_basis] << "Vous devez décrire le fondement légal avant de continer" unless legal_basis&.fetch('comment')
-    errors[:seasonality] << "Vous devez renseigner la saisonnalité" unless service_description&.fetch('seasonality')&.count&.positive? && service_description['seasonality'].all? { |e| e['max_charge'].present? }
-  end
-
-  def agreement_validation
-    return if agreement
-
-    errors.add(:agreement, "Vous devez accepter les conditions d'utilisation")
-  end
-
-  def applicant_validation # rubocop:disable Metrics/AbcSize
-    return unless applicant_changed? && can_sign_convention?
-
-    errors.add(:applicant, "Vous devez renseigner l'Email") unless applicant['email'].present?
-    errors.add(:applicant, 'Vous devez renseigner la Fonction') unless applicant['position'].present?
-    errors.add(:applicant, 'Vous devez accepter la convention') unless applicant['agreement'].present?
-  end
-
-  def applicant_workflow
-    if applicant&.fetch('email', nil).present? &&
-       can_sign_convention?
-      sign_convention!
-    end
   end
 end

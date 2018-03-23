@@ -13,6 +13,10 @@ class EnrollmentPolicy < ApplicationPolicy
     false
   end
 
+  def send_application?
+    user.has_role?(:applicant, record)
+  end
+
   class Scope < Scope
     def resolve
       if user.dgfip?

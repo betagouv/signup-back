@@ -88,7 +88,6 @@ class EnrollmentsController < ApplicationController
   def enrollment_params
     params.fetch(:enrollment, {}).permit(
       :validation_de_convention,
-      :scope_RFR,
       :fournisseur_de_service,
       :description_service,
       :fondement_juridique,
@@ -122,7 +121,7 @@ class EnrollmentsController < ApplicationController
 
   def event_param
     event = params[:event]
-    raise EventNotPermitted unless Enrollment.state_machine.events.map(&:name).include?(event)
+    raise EventNotPermitted unless Enrollment.state_machine.events.map(&:name).include?(event.to_sym)
     event
   end
 
