@@ -6,13 +6,15 @@ class User < ApplicationRecord
   rolify
 
   def self.from_service_provider_omniauth(data)
-    where(
-      provider: data['provider'],
-      uid: data['uid'] || data['id'],
-      email: data.info['email']
-    ).first_or_create.update(
-      oauth_roles: data.info['roles']
+    user = where(
+      provider: data['account_type'],
+      uid: data['uid']
+    ).first_or_create
+    user.update(
+      oauth_roles: data['roles'],
+      email: data['email'] || ''
     )
+    user
   end
 
   def self.from_france_connect_omniauth(data)
