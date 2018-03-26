@@ -6,8 +6,8 @@ class Scope < ApplicationRecord
   private
 
   def services_validation
-    validator = JSON::Validator.validate!(File.read(Rails.root.join('lib/schemas/resource_provider_services.json')), response.body)
-    return if validator
-    errors.add(:services, 'Services ne respecte pas le schema')
+    JSON::Validator.validate!(File.read(Rails.root.join('lib/schemas/resource_provider_services.json')), services)
+  rescue JSON::Schema::ValidationError => e
+    errors.add(:services, e.message)
   end
 end

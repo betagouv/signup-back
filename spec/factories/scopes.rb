@@ -4,6 +4,6 @@ FactoryGirl.define do
     human_name "MyString"
     description "MyText"
     services [{}]
-    resource_provider_id 1
+    resource_provider
   end
 end

@@ -11,6 +11,7 @@ gem 'carrierwave'
 gem 'carrierwave-i18n'
 gem 'devise'
 gem 'faraday_middleware'
+gem 'json-schema'
 gem 'jwt'
 gem 'omniauth-oauth2'
 gem 'pg'
@@ -30,9 +31,8 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'factory_girl_rails'
   gem 'rspec-rails'
-  gem 'webmock'
   gem 'simplecov'
-  gem 'json-schema'
+  gem 'webmock'
 end
 
 group :development do
