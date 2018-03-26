@@ -433,7 +433,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       #         'Accept' => '*/*',
       #         'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
       #         'Authorization' => 'Bearer test',
-      #         'User-Agent' => 'Faraday v0.12.1'
+      #         'User-Agent' => 'Faraday v0.12.2'
       #       }
       #     ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
       #   end
