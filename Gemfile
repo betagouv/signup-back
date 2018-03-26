@@ -32,6 +32,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'webmock'
   gem 'simplecov'
+  gem 'json-schema'
 end
 
 group :development do

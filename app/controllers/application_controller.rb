@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  rescue_from ResourceProvider::AccessDenied do |e|
+  rescue_from ApiParticulier::AccessDenied do |e|
     render status: :unauthorized, json: {
       message: "Vous n'êtes pas autorisé à accéder à cette API",
       detail: e.message
@@ -65,7 +65,7 @@ class ApplicationController < ActionController::Base
   end
 
   def client
-    oauth_provider = request.headers['X-Oauth-Provider'] || session[:oauth_provider] || 'resourceProvider'
+    oauth_provider = request.headers['X-Oauth-Provider'] || session[:oauth_provider] || 'apiParticulier'
     @client ||= Object.const_get("#{oauth_provider.classify}::OauthClient").new
   end
 end

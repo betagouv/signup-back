@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180321103855) do
+ActiveRecord::Schema.define(version: 20180323115633) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,14 @@ ActiveRecord::Schema.define(version: 20180321103855) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "resource_providers", force: :cascade do |t|
+    t.string "short_name"
+    t.string "long_name"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "roles", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -73,6 +81,16 @@ ActiveRecord::Schema.define(version: 20180321103855) do
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
+  end
+
+  create_table "scopes", force: :cascade do |t|
+    t.string "name"
+    t.string "human_name"
+    t.text "description"
+    t.integer "resource_provider_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.json "services", default: [], array: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -91,6 +109,7 @@ ActiveRecord::Schema.define(version: 20180321103855) do
     t.string "provider"
     t.string "uid"
     t.string "oauth_roles", default: [], array: true
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

@@ -22,7 +22,7 @@ RSpec.describe 'Messages', type: :request do
 
   describe 'GET /messages' do
     it 'works! (now write some real specs)' do
-      get enrollment_messages_path(enrollment_id: enrollment.id), headers: { 'Authorization' => bearer, 'X-Oauth-Provider' => 'resourceProvider' }
+      get enrollment_messages_path(enrollment_id: enrollment.id), headers: { 'Authorization' => bearer, 'X-Oauth-Provider' => 'apiParticulier' }
       expect(response).to have_http_status(200)
     end
   end
