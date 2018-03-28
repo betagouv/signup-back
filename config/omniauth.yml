@@ -56,7 +56,7 @@ docker:
 production:
   resource_provider:
     client_options:
-      site: https://impots.particulier.api.gouv.fr
+      site: https://oauth.particulier.api.gouv.fr
       authorize_url: /oauth/authorize
       me_url: /api/v1/me
       ssl:
