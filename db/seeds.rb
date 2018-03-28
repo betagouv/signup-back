@@ -7,6 +7,7 @@ r.scopes << Scope.new(
   name: 'dgfip_avis_imposition',
   human_name: "Avis d'imposition",
   description: "Données issues du service svair de la DGFIP",
+  node_example: "const fetch = require('node-fetch')\nconst queryString = require('query-string')\n\nconst params = queryString.stringify({\n    numeroFiscal: '1562456789521',\n    referenceAvis: '1512456789521'\n})\n\nawait fetch('http://particulier-sandbox.api.gouv.fr/api/impots/svair?' + params, {\n    headers: {'X-API-Key': 'test-token'}\n}).then(res => res.json())",
   services: [
     {
       name: 'BourseSCO',
@@ -27,11 +28,13 @@ r = ResourceProvider.where(
 r.scopes << Scope.new(
   name: 'cnaf_attestation_droits',
   human_name: 'Attestation de droits',
+  node_example: "const fetch = require('node-fetch')\nconst queryString = require('query-string')\n\nconst params = queryString.stringify({\n    numeroAllocataire: '0000354',\n    codePostal: '99148'\n})\n\nawait fetch('http://particulier-sandbox.api.gouv.fr/api/caf/famille?' + params, {\n    headers: {'X-API-Key': 'test-token'}\n}).then(res => res.json())",
   description: "Contient le revenu fiscal de référence, le nombre de part et les déclarants"
 )
 r.scopes << Scope.new(
   name: 'cnaf_quotient_familial',
   human_name: 'Quotient familial',
+  node_example: "const fetch = require('node-fetch')\nconst queryString = require('query-string')\n\nconst params = queryString.stringify({\n    numeroAllocataire: '0000354',\n    codePostal: '99148'\n})\n\nawait fetch('http://particulier-sandbox.api.gouv.fr/api/caf/famille?' + params, {\n    headers: {'X-API-Key': 'test-token'}\n}).then(res => res.json())",
   description: 'Contient le quotient familial du mois précédent'
 )
 r.save
