@@ -1,7 +1,35 @@
 r = ResourceProvider.where(
+  resource_provider_type: 'franceConnect',
   short_name: 'DGFIP',
   long_name: 'Direction Générale des Finances Publiques',
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nulla lorem, maximus vel nisl in, finibus aliquam nunc. Quisque malesuada nisi nec mi interdum rutrum. Maecenas vel magna sit amet nulla volutpat finibus non nec ex. Pellentesque eu lectus tortor. Donec semper malesuada nisl eu elementum. Nulla placerat nisl ut massa luctus consectetur. Praesent varius sit amet sapien at suscipit. Pellentesque bibendum iaculis turpis, at lobortis sem sodales id. Nulla vitae auctor turpis, id tristique elit. Vestibulum euismod dolor dictum nulla maximus, vitae maximus nunc efficitur.'
+  description: "La Direction générale des Finances publiques (DGFiP) est une direction de l'administration publique centrale française qui dépend du ministère de l'Économie et des Finances."
+).first_or_create
+r.scopes << Scope.new(
+  name: "dgfip_fc_rfr",
+  human_name: "Revenu Fiscal de Référence (RFR) et nombre de parts fiscales du foyer",
+  description: "",
+  node_example: "",
+  services: [
+    {
+      name: 'Calcul du quotient familial de la ville de Lyon',
+      url: 'https://www.lyon.fr/demarche/loisirs/calcul-du-quotient-familial-municipal'
+    }
+  ]
+)
+r.scopes << Scope.new(
+  name: "dgfip_fc_taxe_ir",
+  human_name: "Adresse fiscale de taxation au 1er janvier",
+  description: "Ces données peuvent être utilisées, par exemple, pour la délivrance des cartes de stationnement résidentiel",
+  node_example: "",
+  services: []
+)
+r.save
+
+r = ResourceProvider.where(
+  resource_provider_type: 'apiParticulier',
+  short_name: 'DGFIP',
+  long_name: 'Direction Générale des Finances Publiques',
+  description: "La Direction générale des Finances publiques (DGFiP) est une direction de l'administration publique centrale française qui dépend du ministère de l'Économie et des Finances."
 ).first_or_create
 r.scopes << Scope.new(
   name: 'dgfip_avis_imposition',
@@ -21,9 +49,10 @@ r.scopes << Scope.new(
 r.save
 
 r = ResourceProvider.where(
+  resource_provider_type: 'apiParticulier',
   short_name: 'CNAF',
   long_name: 'Caisse Nationale des Allocation Familliales',
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nulla lorem, maximus vel nisl in, finibus aliquam nunc. Quisque malesuada nisi nec mi interdum rutrum. Maecenas vel magna sit amet nulla volutpat finibus non nec ex. Pellentesque eu lectus tortor. Donec semper malesuada nisl eu elementum. Nulla placerat nisl ut massa luctus consectetur. Praesent varius sit amet sapien at suscipit. Pellentesque bibendum iaculis turpis, at lobortis sem sodales id. Nulla vitae auctor turpis, id tristique elit. Vestibulum euismod dolor dictum nulla maximus, vitae maximus nunc efficitur.'
+  description: "La Caisse nationale des allocations familiales (CNAF) forme la branche «famille» de la Sécurité sociale française, qu'elle gère au travers le réseau formé par les 102 caisses d'allocations familiales (CAF) réparties sur tout le territoire."
 ).first_or_create
 r.scopes << Scope.new(
   name: 'cnaf_attestation_droits',

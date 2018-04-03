@@ -10,6 +10,10 @@ class Enrollment < ApplicationRecord
   has_many :documents
   accepts_nested_attributes_for :documents
 
+  validates_presence_of(
+    :fournisseur_de_service,
+    :description_service
+  )
   validate :convention_validated?
 
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
@@ -18,8 +22,6 @@ class Enrollment < ApplicationRecord
     state :sent do
       validates_presence_of(
         :validation_de_convention,
-        :fournisseur_de_service,
-        :description_service,
         :fondement_juridique,
         :scope_dgfip_avis_imposition,
         :scope_cnaf_attestation_droits,
