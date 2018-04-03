@@ -44,7 +44,7 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate!
-    @current_user ||= User.from_service_provider_omniauth(oauth_user)
+    @current_user ||= oauth_user
     raise ResourceProvider::AccessDenied, 'User not found' unless current_user
   end
 

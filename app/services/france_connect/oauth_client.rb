@@ -24,7 +24,7 @@ module FranceConnect
 
         raise AccessDenied, res.body unless res.success?
 
-        res.body['user']
+        User.from_france_connect_omniauth(res.body['user'])
       end
     rescue StandardError => e
       raise AccessDenied, e.message
