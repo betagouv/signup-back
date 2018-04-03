@@ -4,7 +4,7 @@ class ResourceProvidersController < ApplicationController
   # GET /resource_providers
   def index
     @resource_providers = ResourceProvider.all
-    render json: @resource_providers.map { |e| e.as_json(include: :scopes) }
+    render json: Hash[@resource_providers.group_by(&:resource_provider_type).map { |type, resource_providers| [type, resource_providers.map { |e| e.as_json(include: :scopes) }] }]
   end
 
   # GET /resource_providers/1
