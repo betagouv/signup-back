@@ -25,6 +25,10 @@ class EnrollmentPolicy < ApplicationPolicy
     record.can_refuse_application? && user.dgfip?
   end
 
+  def delete?
+    user.has_role?(:applicant, record)
+  end
+
   def review_application?
     record.can_review_application? && user.dgfip?
   end
