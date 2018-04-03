@@ -14,7 +14,19 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def send_application?
-    user.has_role?(:applicant, record)
+    record.can_send_application? && user.has_role?(:applicant, record)
+  end
+
+  def validate_application?
+    record.can_validate_application? && user.dgfip?
+  end
+
+  def refuse_application?
+    record.can_refuse_application? && user.dgfip?
+  end
+
+  def review_application?
+    record.can_review_application? && user.dgfip?
   end
 
   class Scope < Scope
