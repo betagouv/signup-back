@@ -23,7 +23,7 @@ module ApiParticulier
         end
 
         raise AccessDenied, res.body unless res.success?
-        res.body
+        User.from_service_provider_omniauth(res.body)
       end
     rescue StandardError => e
       raise AccessDenied, e.message
