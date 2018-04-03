@@ -3,6 +3,7 @@
 FactoryGirl.define do
   factory :enrollment do
     fournisseur_de_service 'test'
+    description_service "test"
     validation_de_convention true
   end
 
