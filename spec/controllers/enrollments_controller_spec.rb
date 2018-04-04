@@ -61,7 +61,7 @@ RSpec.describe EnrollmentsController, type: :controller do
     it 'returns a success response' do
       get :show, params: { id: enrollment.to_param }
 
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:success)
     end
 
     describe 'with a france_connect user' do
@@ -287,7 +287,7 @@ RSpec.describe EnrollmentsController, type: :controller do
         put :update, params: { id: enrollment.to_param, enrollment: new_attributes }
 
         enrollment.reload
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_http_status(:forbidden)
       end
 
       describe 'with a service_provider user' do
@@ -453,7 +453,7 @@ RSpec.describe EnrollmentsController, type: :controller do
 
       delete :destroy, params: { id: enrollment.to_param }
 
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:forbidden)
     end
 
     describe 'with a france_connect user' do

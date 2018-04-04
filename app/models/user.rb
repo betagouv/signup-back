@@ -34,7 +34,7 @@ class User < ApplicationRecord
   end
 
   def dgfip?
-    provider == 'resource_provider'
+    provider == 'dgfip' || provider == 'resource_provider'
   end
 
   def sent_messages

@@ -62,6 +62,7 @@ class EnrollmentsController < ApplicationController
 
   # DELETE /enrollments/1
   def destroy
+    authorize @enrollment, :delete?
     @enrollment.destroy
   end
 
