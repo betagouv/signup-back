@@ -25,6 +25,14 @@ class EnrollmentPolicy < ApplicationPolicy
     record.can_refuse_application? && user.dgfip?
   end
 
+  def send_technical_inputs?
+    record.can_send_technical_inputs? && user.has_role?(:applicant, record)
+  end
+
+  def deploy_application?
+    record.can_deploy_application? && user.dgfip?
+  end
+
   def delete?
     user.has_role?(:applicant, record)
   end

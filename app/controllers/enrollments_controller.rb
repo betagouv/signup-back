@@ -68,7 +68,8 @@ class EnrollmentsController < ApplicationController
 
   def serialize(enrollment)
     enrollment.as_json(
-      include: [{ documents: { methods: :type } }, { messages: { include: :sender } }]
+      include: [{ documents: { methods: :type } }, { messages: { include: :sender } }],
+      methods: [:applicant]
     ).merge('acl' => Hash[
       EnrollmentPolicy.acl_methods.map do |method|
         [method.to_s.delete('?'), EnrollmentPolicy.new(current_user, enrollment).send(method)]
@@ -116,7 +117,8 @@ class EnrollmentsController < ApplicationController
       :delegue_protection_donnees,
       :validation_de_convention,
       :certificat_pub_production,
-      :autorite_certification
+      :autorite_certification,
+      :ips_de_production
     )
   end
 
