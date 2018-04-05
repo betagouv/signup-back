@@ -21,9 +21,8 @@ module Users
 
     def france_connect
       token = request.env['omniauth.auth']['credentials'].token
-      session[:token] = token
       @current_user = User.from_france_connect_omniauth(request.env['omniauth.auth'])
-      redirect_to "#{FRONT_CONFIG['callback_url']}/#{token}"
+      redirect_to "#{FRONT_CONFIG['callback_url']}?token=#{token}"
     end
 
     alias dgfip oauth2_callback

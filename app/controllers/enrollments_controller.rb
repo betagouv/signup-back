@@ -118,7 +118,8 @@ class EnrollmentsController < ApplicationController
       :validation_de_convention,
       :certificat_pub_production,
       :autorite_certification,
-      :ips_de_production
+      :ips_de_production,
+      documents_attributes: [:attachment, :type]
     )
   end
 
