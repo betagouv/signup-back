@@ -235,6 +235,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             "nombre_demandes_mensuelles_nov": 45,
             "nombre_demandes_mensuelles_dec": 45,
             "autorite_certification_nom": "test",
+            "ips_de_production": "test",
             "autorite_certification_fonction": "test",
             "date_homologation": "2018-06-01",
             "date_fin_homologation": "2019-06-01",
@@ -391,6 +392,7 @@ RSpec.describe EnrollmentsController, type: :controller do
               res['date_fin_homologation'] = Date.parse(res['date_fin_homologation'])
               res['date_homologation'] = Date.parse(res['date_homologation'])
               res.delete('acl')
+              res.delete('applicant')
 
               exp = @controller.serialize(enrollment)
               exp.delete('updated_at')
@@ -399,6 +401,7 @@ RSpec.describe EnrollmentsController, type: :controller do
               exp.delete('messages')
               exp.delete('documents')
               exp.delete('acl')
+              exp.delete('applicant')
 
               expect(res).to eq(exp)
             end

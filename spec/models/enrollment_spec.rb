@@ -30,6 +30,7 @@ RSpec.describe Enrollment, type: :model do
         "nombre_demandes_mensuelles_nov": 45,
         "nombre_demandes_mensuelles_dec": 45,
         "autorite_certification_nom": "test",
+        "ips_de_production": "test",
         "autorite_certification_fonction": "test",
         "date_homologation": "2018-06-01",
         "date_fin_homologation": "2019-06-01",
