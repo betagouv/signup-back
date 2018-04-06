@@ -236,6 +236,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             "nombre_demandes_mensuelles_dec": 45,
             "autorite_certification_nom": "test",
             "ips_de_production": "test",
+            "recette_fonctionnelle": true,
             "autorite_certification_fonction": "test",
             "date_homologation": "2018-06-01",
             "date_fin_homologation": "2019-06-01",
