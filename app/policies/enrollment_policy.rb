@@ -100,6 +100,7 @@ class EnrollmentPolicy < ApplicationPolicy
 
     res
   end
+
   class Scope < Scope
     def resolve
       if user.dgfip?
