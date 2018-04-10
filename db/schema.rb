@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180403084803) do
+ActiveRecord::Schema.define(version: 20180406114320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,11 @@ ActiveRecord::Schema.define(version: 20180403084803) do
     t.boolean "scope_dgfip_avis_imposition"
     t.boolean "scope_cnaf_attestation_droits"
     t.boolean "scope_cnaf_quotient_familial"
+    t.string "ips_de_production"
+    t.boolean "recette_fonctionnelle"
+    t.boolean "scope_dgfip_adresse_fiscale_taxation"
+    t.boolean "scope_dgfip_RFR"
+    t.boolean "demarche_cnil"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -91,7 +96,7 @@ ActiveRecord::Schema.define(version: 20180403084803) do
     t.integer "resource_provider_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.json "services", default: [], array: true
+    t.json "services", array: true
     t.string "node_example"
   end
 
@@ -111,6 +116,7 @@ ActiveRecord::Schema.define(version: 20180403084803) do
     t.string "provider"
     t.string "uid"
     t.string "oauth_roles", default: [], array: true
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

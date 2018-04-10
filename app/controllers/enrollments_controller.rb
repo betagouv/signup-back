@@ -68,7 +68,8 @@ class EnrollmentsController < ApplicationController
 
   def serialize(enrollment)
     enrollment.as_json(
-      include: [{ documents: { methods: :type } }, { messages: { include: :sender } }]
+      include: [{ documents: { methods: :type } }, { messages: { include: :sender } }],
+      methods: [:applicant]
     ).merge('acl' => Hash[
       EnrollmentPolicy.acl_methods.map do |method|
         [method.to_s.delete('?'), EnrollmentPolicy.new(current_user, enrollment).send(method)]
@@ -87,37 +88,7 @@ class EnrollmentsController < ApplicationController
   end
 
   def enrollment_params
-    params.fetch(:enrollment, {}).permit(
-      :validation_de_convention,
-      :fournisseur_de_service,
-      :description_service,
-      :fondement_juridique,
-      :scope_dgfip_avis_imposition,
-      :scope_cnaf_attestation_droits,
-      :scope_cnaf_quotient_familial,
-      :nombre_demandes_annuelle,
-      :pic_demandes_par_heure,
-      :nombre_demandes_mensuelles_jan,
-      :nombre_demandes_mensuelles_fev,
-      :nombre_demandes_mensuelles_mar,
-      :nombre_demandes_mensuelles_avr,
-      :nombre_demandes_mensuelles_mai,
-      :nombre_demandes_mensuelles_jui,
-      :nombre_demandes_mensuelles_jul,
-      :nombre_demandes_mensuelles_aou,
-      :nombre_demandes_mensuelles_sep,
-      :nombre_demandes_mensuelles_oct,
-      :nombre_demandes_mensuelles_nov,
-      :nombre_demandes_mensuelles_dec,
-      :autorite_certification_nom,
-      :autorite_certification_fonction,
-      :date_homologation,
-      :date_fin_homologation,
-      :delegue_protection_donnees,
-      :validation_de_convention,
-      :certificat_pub_production,
-      :autorite_certification
-    )
+    params.fetch(:enrollment, {}).permit(policy(@enrollment || Enrollment.new).permitted_attributes)
   end
 
   def event_param

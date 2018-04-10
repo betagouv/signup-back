@@ -9,6 +9,8 @@ describe CoreAdditions do
           application_validater
           application_refuser
           application_reviewer
+          technical_inputs_sender
+          application_deployer
         ]
       )].each do |event, personified|
         it "should personify event #{event}" do
