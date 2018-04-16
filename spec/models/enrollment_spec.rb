@@ -10,11 +10,14 @@ RSpec.describe Enrollment, type: :model do
       <<-EOF
       {
         "fournisseur_de_service": "test",
+        "demarche_cnil": true,
         "description_service": "test",
         "fondement_juridique": "test",
         "scope_dgfip_avis_imposition": true,
         "scope_cnaf_attestation_droits": true,
         "scope_cnaf_quotient_familial": true,
+        "scope_dgfip_RFR": true,
+        "scope_dgfip_adresse_fiscale_taxation": true,
         "nombre_demandes_annuelle": 34568,
         "pic_demandes_par_heure": 567,
         "nombre_demandes_mensuelles_jan": 45,
