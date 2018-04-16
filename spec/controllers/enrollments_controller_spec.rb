@@ -215,7 +215,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             <<-EOF
           {
             "fournisseur_de_service": "test",
-            "demarche_cnil": true,
+            "type_fournisseur_donnees": "api-particulier",
             "description_service": "test",
             "fondement_juridique": "test",
             "scope_dgfip_avis_imposition": true,
@@ -238,6 +238,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             "nombre_demandes_mensuelles_nov": 45,
             "nombre_demandes_mensuelles_dec": 45,
             "autorite_certification_nom": "test",
+            "demarche_cnil": true,
             "ips_de_production": "test",
             "recette_fonctionnelle": true,
             "autorite_certification_fonction": "test",

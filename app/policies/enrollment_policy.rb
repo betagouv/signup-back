@@ -59,6 +59,7 @@ class EnrollmentPolicy < ApplicationPolicy
       res.concat([
         :validation_de_convention,
         :fournisseur_de_service,
+        :type_fournisseur_donnees,
         :description_service,
         :fondement_juridique,
         :scope_dgfip_avis_imposition,
