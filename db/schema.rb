@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180417080126) do
+ActiveRecord::Schema.define(version: 20180417091651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(version: 20180417080126) do
     t.boolean "scope_dgfip_adresse_fiscale_taxation"
     t.boolean "scope_dgfip_RFR"
     t.boolean "demarche_cnil"
-    t.string "fournisseur_donnees"
+    t.string "fournisseur_de_donnees"
   end
 
   create_table "messages", force: :cascade do |t|
