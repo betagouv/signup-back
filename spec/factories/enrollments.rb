@@ -37,5 +37,6 @@ FactoryGirl.define do
     certificat_pub_production "test"
     autorite_certification "test"
     state 'sent'
+    fournisseur_de_donnees "api-particulier"
   end
 end
