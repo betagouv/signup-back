@@ -42,7 +42,7 @@ RSpec.describe Enrollment, type: :model do
         "validation_de_convention": true,
         "certificat_pub_production": "test",
         "autorite_certification": "test",
-        "type_fournisseur_donnees": "api-particulier"
+        "fournisseur_donnees": "api-particulier"
       }
       EOF
     )

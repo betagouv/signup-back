@@ -215,7 +215,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             <<-EOF
           {
             "fournisseur_de_service": "test",
-            "type_fournisseur_donnees": "api-particulier",
+            "fournisseur_donnees": "api-particulier",
             "description_service": "test",
             "fondement_juridique": "test",
             "scope_dgfip_avis_imposition": true,

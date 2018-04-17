@@ -2,7 +2,7 @@
   "type": "object",
   "properties": {
     "fournisseur_de_service": { "type": "string" },
-    "type_fournisseur_donnees": { "type": "string" },
+    "fournisseur_donnees": { "type": "string" },
     "description_service": { "type": "string" },
     "fondement_juridique": { "type": "string" },
     "scope_RFR": { "type": "boolean" },
