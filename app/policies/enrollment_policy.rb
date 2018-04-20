@@ -74,6 +74,7 @@ class EnrollmentPolicy < ApplicationPolicy
           :dgfip_revenu_net_avant_corrections,
           :dgfip_montant_impot,
           :dgfip_revenu_fiscal_reference,
+          :dgfip_avis_imposition,
           :cnaf_quotient_familial,
           :cnaf_attestation_droits
         ],
