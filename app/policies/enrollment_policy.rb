@@ -58,39 +58,34 @@ class EnrollmentPolicy < ApplicationPolicy
     if create? || update?
       res.concat([
         :validation_de_convention,
-        :fournisseur_de_service,
-        :description_service,
-        :fondement_juridique,
-        :scope_dgfip_avis_imposition,
-        :scope_cnaf_attestation_droits,
-        :scope_cnaf_quotient_familial,
-        :scope_dgfip_adresse_fiscale_taxation,
-        :scope_dgfip_RFR,
-        :nombre_demandes_annuelle,
-        :pic_demandes_par_heure,
-        :nombre_demandes_mensuelles_jan,
-        :nombre_demandes_mensuelles_fev,
-        :nombre_demandes_mensuelles_mar,
-        :nombre_demandes_mensuelles_avr,
-        :nombre_demandes_mensuelles_mai,
-        :nombre_demandes_mensuelles_jui,
-        :nombre_demandes_mensuelles_jul,
-        :nombre_demandes_mensuelles_aou,
-        :nombre_demandes_mensuelles_sep,
-        :nombre_demandes_mensuelles_oct,
-        :nombre_demandes_mensuelles_nov,
-        :nombre_demandes_mensuelles_dec,
-        :demarche_cnil,
-        :autorite_certification_nom,
-        :autorite_certification_fonction,
-        :date_homologation,
-        :date_fin_homologation,
-        :delegue_protection_donnees,
-        :validation_de_convention,
-        :certificat_pub_production,
-        :autorite_certification,
-        :ips_de_production,
-        :recette_fonctionnelle
+        :validation_delegue_a_la_protection_des_données,
+        :siren,
+        contacts: [:id, :heading, :nom, :email],
+        scopes: [
+          :dgfip_declarants,
+          :dgfip_foyer_fiscal,
+          :dgfip_date_recouvrement,
+          :dgfip_date_etablissement,
+          :dgfip_nombre_parts,
+          :dgfip_situation_famille,
+          :dgfip_nombre_personnes_charge,
+          :dgfip_revenu_brut_global,
+          :dgfip_revenu_imposable,
+          :dgfip_revenu_net_avant_corrections,
+          :dgfip_montant_impot,
+          :dgfip_revenu_fiscal_reference,
+          :cnaf_quotient_familial,
+          :cnaf_attestation_droits
+        ],
+        demarche: [
+          :intitule,
+          :fondement_juridique,
+          :description
+        ],
+        donnees: [
+          :conservation,
+          :destinataires
+        ]
       ])
     end
 
