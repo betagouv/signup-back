@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180417091651) do
+ActiveRecord::Schema.define(version: 20180420135406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,43 +25,15 @@ ActiveRecord::Schema.define(version: 20180417091651) do
   end
 
   create_table "enrollments", force: :cascade do |t|
-    t.string "state"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "fournisseur_de_service"
-    t.string "description_service"
+    t.json "scopes"
+    t.json "contacts", array: true
+    t.string "siren"
+    t.json "demarche"
+    t.json "donnees"
     t.string "fondement_juridique"
-    t.integer "nombre_demandes_annuelle"
-    t.integer "pic_demandes_par_heure"
-    t.integer "nombre_demandes_mensuelles_jan"
-    t.integer "nombre_demandes_mensuelles_fev"
-    t.integer "nombre_demandes_mensuelles_mar"
-    t.integer "nombre_demandes_mensuelles_avr"
-    t.integer "nombre_demandes_mensuelles_mai"
-    t.integer "nombre_demandes_mensuelles_jui"
-    t.integer "nombre_demandes_mensuelles_jul"
-    t.integer "nombre_demandes_mensuelles_aou"
-    t.integer "nombre_demandes_mensuelles_sep"
-    t.integer "nombre_demandes_mensuelles_oct"
-    t.integer "nombre_demandes_mensuelles_nov"
-    t.integer "nombre_demandes_mensuelles_dec"
-    t.string "autorite_certification_nom"
-    t.string "autorite_certification_fonction"
-    t.date "date_homologation"
-    t.date "date_fin_homologation"
-    t.string "delegue_protection_donnees"
-    t.string "certificat_pub_production"
-    t.string "autorite_certification"
+    t.string "state"
     t.boolean "validation_de_convention"
-    t.boolean "scope_dgfip_avis_imposition"
-    t.boolean "scope_cnaf_attestation_droits"
-    t.boolean "scope_cnaf_quotient_familial"
-    t.string "ips_de_production"
-    t.boolean "recette_fonctionnelle"
-    t.boolean "scope_dgfip_adresse_fiscale_taxation"
-    t.boolean "scope_dgfip_RFR"
-    t.boolean "demarche_cnil"
-    t.string "fournisseur_de_donnees"
+    t.boolean "validation_delegue_a_la_protection_des_données"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -97,7 +69,7 @@ ActiveRecord::Schema.define(version: 20180417091651) do
     t.integer "resource_provider_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.json "services", array: true
+    t.json "services", default: [], array: true
     t.string "node_example"
   end
 
@@ -117,7 +89,6 @@ ActiveRecord::Schema.define(version: 20180417091651) do
     t.string "provider"
     t.string "uid"
     t.string "oauth_roles", default: [], array: true
-    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
