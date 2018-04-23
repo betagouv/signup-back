@@ -58,7 +58,7 @@ class EnrollmentPolicy < ApplicationPolicy
     if create? || update?
       res.concat([
         :validation_de_convention,
-        :validation_delegue_a_la_protection_des_données,
+        :validation_delegue_a_la_protection_des_donnees,
         :siren,
         contacts: [:id, :heading, :nom, :email],
         scopes: [
