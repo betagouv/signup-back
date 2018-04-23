@@ -60,6 +60,5 @@ class Enrollment < ApplicationRecord
 
   def agreements_validation
     errors[:validation_de_convention] << "Vous devez valider la convention avant de continuer" unless validation_de_convention?
-    errors[:validation_delegue_a_la_protection_des_donnees] << "Le Délégué à la protection des données doit avoir pris connaissance de la démarche avant de continuer" unless validation_delegue_a_la_protection_des_donnees?
   end
 end

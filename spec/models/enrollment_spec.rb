@@ -16,7 +16,6 @@ RSpec.describe Enrollment, type: :model do
         "scopes": {},
         "siren": "12345",
         "donnees": {},
-        "validation_delegue_a_la_protection_des_donnees": true,
         "validation_de_convention": true
       }
       EOF

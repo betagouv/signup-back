@@ -221,7 +221,6 @@ RSpec.describe EnrollmentsController, type: :controller do
               "scopes": {"dgfip_avis_imposition": "true"},
               "siren": "12345",
               "donnees": {"conservation": "12"},
-              "validation_delegue_a_la_protection_des_donnees": true,
               "validation_de_convention": true
             }
             EOF
