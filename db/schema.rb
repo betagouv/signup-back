@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20180423145051) do
     t.json "donnees"
     t.string "state"
     t.boolean "validation_de_convention"
+    t.string "fournisseur_de_donnees"
   end
 
   create_table "messages", force: :cascade do |t|
