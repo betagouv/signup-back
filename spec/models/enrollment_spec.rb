@@ -16,7 +16,8 @@ RSpec.describe Enrollment, type: :model do
         "scopes": {},
         "siren": "12345",
         "donnees": {},
-        "validation_de_convention": true
+        "validation_de_convention": true,
+        "fournisseur_de_donnees": "api-particulier"
       }
       EOF
     )
