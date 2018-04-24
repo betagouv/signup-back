@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe MessagesController, type: :controller do
   describe 'with fc user' do
     let(:uid) { 1 }
-    let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'france_connect') }
-    let(:enrollment) { FactoryGirl.create(:enrollment) }
+    let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'service_provider') }
+    let(:enrollment) { FactoryGirl.create(:enrollment, fournisseur_de_donnees: 'api-particulier') }
     before do
       user.add_role(:applicant, enrollment)
       @request.headers['Authorization'] = 'Bearer test'
@@ -107,8 +107,8 @@ RSpec.describe MessagesController, type: :controller do
 
   describe 'with dgfip user' do
     let(:uid) { 1 }
-    let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'resource_provider') }
-    let(:enrollment) { FactoryGirl.create(:enrollment) }
+    let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'dgfip') }
+    let(:enrollment) { FactoryGirl.create(:enrollment, fournisseur_de_donnees: 'dgfip') }
     before do
       user.add_role(:applicant, enrollment)
       @request.headers['Authorization'] = 'Bearer test'
@@ -120,7 +120,7 @@ RSpec.describe MessagesController, type: :controller do
             'Authorization' => 'Bearer test',
             'User-Agent' => 'Faraday v0.12.2'
           }
-        ).to_return(status: 200, body: "{\"uid\": #{uid}, \"account_type\": \"resource_provider\"}", headers: { 'Content-Type' => 'application/json' })
+        ).to_return(status: 200, body: "{\"uid\": #{uid}, \"account_type\": \"dgfip\"}", headers: { 'Content-Type' => 'application/json' })
     end
 
     let(:message) { FactoryGirl.create(:message, enrollment: enrollment) }

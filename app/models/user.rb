@@ -34,7 +34,15 @@ class User < ApplicationRecord
   end
 
   def dgfip?
-    provider == 'dgfip' || provider == 'resource_provider'
+    provider == 'dgfip'
+  end
+
+  def api_particulier?
+    provider == 'api_particulier'
+  end
+
+  def api_entreprise?
+    provider == 'api_entreprise'
   end
 
   def sent_messages

@@ -20,10 +20,10 @@ RSpec.describe EnrollmentsController, type: :controller do
 
     stub_request(:get, "https://partenaires.dev.dev-franceconnect.fr/oauth/v1/userinfo").
       with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Bearer test', 'User-Agent'=>'Faraday v0.12.2'}).
-      to_return(status: 200, body: '{"user":{"email":"test@test.test","uid":1}}', headers: { 'Content-Type' => 'application/json' })
+      to_return(status: 200, body: '{"user":{"email":"test@test.test","uid":'+uid.to_s+'}}', headers: { 'Content-Type' => 'application/json' })
   end
 
-  let(:enrollment) { FactoryGirl.create(:enrollment) }
+  let(:enrollment) { FactoryGirl.create(:enrollment, fournisseur_de_donnees: 'dgfip') }
 
   let(:valid_attributes) do
     enrollment.attributes
@@ -51,6 +51,54 @@ RSpec.describe EnrollmentsController, type: :controller do
   end
 
   describe 'GET #index' do
+    describe "I have dgfip api_particulier and api_entreprise enrollments" do
+      let(:dgfip_enrollments) { FactoryGirl.create_list(:enrollment, 3, fournisseur_de_donnees: 'dgfip') }
+      let(:api_particulier_enrollments) { FactoryGirl.create_list(:enrollment, 4, fournisseur_de_donnees: 'api-particulier') }
+      let(:api_entreprise_enrollments) { FactoryGirl.create_list(:enrollment, 5, fournisseur_de_donnees: 'api-entreprise') }
+
+      describe "I have a dgfip user" do
+        let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'dgfip', email: 'test@test.test') }
+
+        it 'returns a success response' do
+          dgfip_enrollments
+          api_particulier_enrollments
+          api_entreprise_enrollments
+          get :index
+
+          json = JSON.parse(response.body)
+          expect(json.count).to eq(3)
+        end
+      end
+
+      describe "I have a api_particulier user" do
+        let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'api_particulier', email: 'test@test.test') }
+
+        it 'returns a success response' do
+          dgfip_enrollments
+          api_particulier_enrollments
+          api_entreprise_enrollments
+          get :index
+
+          json = JSON.parse(response.body)
+          expect(json.count).to eq(4)
+        end
+      end
+
+      describe "I have a api_entreprise user" do
+        let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'api_entreprise', email: 'test@test.test') }
+
+        it 'returns a success response' do
+          dgfip_enrollments
+          api_particulier_enrollments
+          api_entreprise_enrollments
+          get :index
+
+          json = JSON.parse(response.body)
+          expect(json.count).to eq(5)
+        end
+      end
+    end
+
     it 'returns a success response' do
       get :index
       expect(response).to be_success
