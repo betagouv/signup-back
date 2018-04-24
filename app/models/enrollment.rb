@@ -75,7 +75,7 @@ class Enrollment < ApplicationRecord
   end
 
   def fournisseur_de_donnees_validation
-    errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche['intitule'].present?
+    errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche&.fetch('intitule', nil).present?
     errors[:fournisseur_de_donnees] << "Vous devez renseigner le fournisseur de données avant de continuer" unless fournisseur_de_donnees.present?
   end
 end
