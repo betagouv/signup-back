@@ -10,15 +10,28 @@ class Enrollment < ApplicationRecord
   has_many :documents
   accepts_nested_attributes_for :documents
 
-  validates_presence_of(
-    :demarche
-  )
+  validate :fournisseur_de_donnees_validation
   validate :agreements_validation
 
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
     state :pending
     state :sent do
+      validate :fields_validation
+
+      def fields_validation
+        %w[dpo technique responsable_traitement]. each do |contact_type|
+          contact = contacts.find { |e| e['id'] == contact_type }
+          errors[:contacts] << "Vous devez renseigner le #{contact&.fetch('heading', nil)} avant de continuer" unless contact&.fetch('nom', false)&.present? && contact&.fetch('email', false)&.present?
+        end
+
+        errors[:siren] << "Vous devez renseigner le SIREN de votre organisation avant de continuer" unless siren.present?
+        errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche['intitule'].present?
+        errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche['description'].present?
+        errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless demarche['fondement_juridique'].present?
+        errors[:donnees] << "Vous devez renseigner la conservation des données avant de continuer" unless donnees['conservation'].present?
+        errors[:donnees] << "Vous devez renseigner les destinataires des données avant de continuer" unless donnees['destinataires'].present?
+      end
     end
     state :validated
     state :refused
@@ -60,5 +73,9 @@ class Enrollment < ApplicationRecord
 
   def agreements_validation
     errors[:validation_de_convention] << "Vous devez valider la convention avant de continuer" unless validation_de_convention?
+  end
+
+  def fournisseur_de_donnees_validation
+    errors[:fournisseur_de_donnees] << "Vous devez renseigner le fournisseur de données avant de continuer" unless fournisseur_de_donnees.present?
   end
 end
