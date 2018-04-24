@@ -9,39 +9,14 @@ RSpec.describe Enrollment, type: :model do
     JSON.parse(
       <<-EOF
       {
-        "fournisseur_de_service": "test",
-        "demarche_cnil": true,
-        "description_service": "test",
-        "fondement_juridique": "test",
-        "scope_dgfip_avis_imposition": true,
-        "scope_cnaf_attestation_droits": true,
-        "scope_cnaf_quotient_familial": true,
-        "scope_dgfip_RFR": true,
-        "scope_dgfip_adresse_fiscale_taxation": true,
-        "nombre_demandes_annuelle": 34568,
-        "pic_demandes_par_heure": 567,
-        "nombre_demandes_mensuelles_jan": 45,
-        "nombre_demandes_mensuelles_fev": 45,
-        "nombre_demandes_mensuelles_mar": 45,
-        "nombre_demandes_mensuelles_avr": 45,
-        "nombre_demandes_mensuelles_mai": 45,
-        "nombre_demandes_mensuelles_jui": 45,
-        "nombre_demandes_mensuelles_jul": 45,
-        "nombre_demandes_mensuelles_aou": 45,
-        "nombre_demandes_mensuelles_sep": 45,
-        "nombre_demandes_mensuelles_oct": 45,
-        "nombre_demandes_mensuelles_nov": 45,
-        "nombre_demandes_mensuelles_dec": 45,
-        "autorite_certification_nom": "test",
-        "recette_fonctionnelle": true,
-        "ips_de_production": "test",
-        "autorite_certification_fonction": "test",
-        "date_homologation": "2018-06-01",
-        "date_fin_homologation": "2019-06-01",
-        "delegue_protection_donnees": "test",
+        "demarche": {
+        "intitule": "test"
+        },
+        "contacts": [],
+        "scopes": {},
+        "siren": "12345",
+        "donnees": {},
         "validation_de_convention": true,
-        "certificat_pub_production": "test",
-        "autorite_certification": "test",
         "fournisseur_de_donnees": "api-particulier"
       }
       EOF
@@ -65,8 +40,6 @@ RSpec.describe Enrollment, type: :model do
     enrollment_attributes.delete('updated_at')
     enrollment_attributes.delete('id')
     attributes['state'] = 'pending'
-    attributes['date_fin_homologation'] = Date.parse(attributes['date_fin_homologation'])
-    attributes['date_homologation'] = Date.parse(attributes['date_homologation'])
 
     expect(enrollment_attributes).to eq(attributes)
   end
@@ -77,11 +50,11 @@ RSpec.describe Enrollment, type: :model do
       expect(enrollment.state).to eq('pending')
     end
 
-    it 'cannot send application if invalid' do
-      enrollment.send_application
+    # it 'cannot send application if invalid' do
+    #   enrollment.send_application
 
-      expect(enrollment.state).to eq('pending')
-    end
+    #   expect(enrollment.state).to eq('pending')
+    # end
 
     describe 'The enrollment is valid' do
       let(:enrollment) { FactoryGirl.create(:sent_enrollment, state: :pending) }

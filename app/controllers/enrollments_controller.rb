@@ -88,7 +88,7 @@ class EnrollmentsController < ApplicationController
   end
 
   def enrollment_params
-    params.fetch(:enrollment, {}).permit(policy(@enrollment || Enrollment.new).permitted_attributes)
+    params.fetch(:enrollment, {}).permit(*policy(@enrollment || Enrollment.new).permitted_attributes)
   end
 
   def event_param

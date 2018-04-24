@@ -11,19 +11,14 @@ class Enrollment < ApplicationRecord
   accepts_nested_attributes_for :documents
 
   validates_presence_of(
-    :fournisseur_de_service,
-    :description_service
+    :demarche
   )
-  validate :convention_validated?
+  validate :agreements_validation
 
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
     state :pending
     state :sent do
-      validates_presence_of(
-        :validation_de_convention,
-        :fondement_juridique,
-      )
     end
     state :validated
     state :refused
@@ -63,7 +58,7 @@ class Enrollment < ApplicationRecord
 
   private
 
-  def convention_validated?
+  def agreements_validation
     errors[:validation_de_convention] << "Vous devez valider la convention avant de continuer" unless validation_de_convention?
   end
 end
