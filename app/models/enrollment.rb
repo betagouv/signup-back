@@ -26,7 +26,6 @@ class Enrollment < ApplicationRecord
         end
 
         errors[:siren] << "Vous devez renseigner le SIREN de votre organisation avant de continuer" unless siren.present?
-        errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche['intitule'].present?
         errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche['description'].present?
         errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless demarche['fondement_juridique'].present?
         errors[:donnees] << "Vous devez renseigner la conservation des données avant de continuer" unless donnees['conservation'].present?
@@ -76,6 +75,7 @@ class Enrollment < ApplicationRecord
   end
 
   def fournisseur_de_donnees_validation
+    errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche['intitule'].present?
     errors[:fournisseur_de_donnees] << "Vous devez renseigner le fournisseur de données avant de continuer" unless fournisseur_de_donnees.present?
   end
 end
