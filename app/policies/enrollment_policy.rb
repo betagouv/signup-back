@@ -30,7 +30,9 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def send_technical_inputs?
-    record.can_send_technical_inputs? && user.has_role?(:applicant, record)
+    record.can_send_technical_inputs? &&
+      !record.short_workflow? &&
+      user.has_role?(:applicant, record)
   end
 
   def show_technical_inputs?

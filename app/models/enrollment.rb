@@ -64,6 +64,10 @@ class Enrollment < ApplicationRecord
     end
   end
 
+  def short_workflow?
+    fournisseur_de_donnees == 'api-entreprise'
+  end
+
   def applicant
     User.with_role(:applicant, self).first
   end
