@@ -25,3 +25,4 @@
 *.orig
 
 /coverage
+rspec_results.html
