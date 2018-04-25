@@ -59,7 +59,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       describe "I have a dgfip user" do
         let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'dgfip', email: 'test@test.test') }
 
-        it 'returns a success response' do
+        it 'returns the dgfip enrollments' do
           dgfip_enrollments
           api_particulier_enrollments
           api_entreprise_enrollments
@@ -73,7 +73,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       describe "I have a api_particulier user" do
         let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'api_particulier', email: 'test@test.test') }
 
-        it 'returns a success response' do
+        it 'returns api_particulier enrollments' do
           dgfip_enrollments
           api_particulier_enrollments
           api_entreprise_enrollments
@@ -87,7 +87,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       describe "I have a api_entreprise user" do
         let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'api_entreprise', email: 'test@test.test') }
 
-        it 'returns a success response' do
+        it 'returns the api_entreprise enrollments' do
           dgfip_enrollments
           api_particulier_enrollments
           api_entreprise_enrollments
