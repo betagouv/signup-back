@@ -38,4 +38,26 @@ RSpec.describe EnrollmentPolicy do
       end
     end
   end
+
+  permissions :send_technical_inputs? do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:service_provider_user) { FactoryGirl.create(:user, provider: 'service_provider') }
+    let(:enrollment) { FactoryGirl.create(:sent_enrollment, state: 'validated') }
+
+    describe 'user is applicant of enrollment' do
+      before do
+        user.add_role(:applicant, enrollment)
+      end
+
+      it 'deny access if short_workflow' do
+        enrollment.fournisseur_de_donnees = 'api-entreprise'
+        expect(subject).not_to permit(user, enrollment)
+      end
+
+
+      it 'allow access' do
+        expect(subject).to permit(user, enrollment)
+      end
+    end
+  end
 end
