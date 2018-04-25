@@ -101,11 +101,11 @@ class EnrollmentPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if user.dgfip?
-        scope.all
-      else
-        scope.with_role(:applicant, user)
+      %w[dgfip api_particulier api_entreprise].each do |provider|
+        return scope.send(provider.to_sym) if user.send("#{provider}?".to_sym)
       end
+
+      scope.with_role(:applicant, user)
     end
   end
 end

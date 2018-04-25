@@ -13,6 +13,10 @@ class Enrollment < ApplicationRecord
   validate :fournisseur_de_donnees_validation
   validate :agreements_validation
 
+  scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
+  scope :api_entreprise, -> { where(fournisseur_de_donnees: 'api-entreprise') }
+  scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
+
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
     state :pending
