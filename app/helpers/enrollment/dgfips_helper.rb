@@ -1,0 +1,2 @@
+module Enrollment::DgfipsHelper
+end

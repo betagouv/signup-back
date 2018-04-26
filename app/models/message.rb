@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Message < ApplicationRecord
-  belongs_to :enrollment
+  belongs_to :enrollment, optional: true
+  belongs_to :dgfip, optional: true, class_name: 'Enrollment::Dgfip'
 
   validates_presence_of :content
 
