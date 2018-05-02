@@ -3,6 +3,6 @@ test:
 development:
   callback_url: http://localhost:4200
 docker:
-  callback_url: http://localhost:3000/contractualisation-fc
+  callback_url: http://localhost:3000/dgfip
 production:
-  callback_url: https://next.particulier.api.gouv.fr/contractualisation-fc
+  callback_url: https://signup.api.gouv.fr/dgfip
