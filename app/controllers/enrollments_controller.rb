@@ -88,7 +88,12 @@ class EnrollmentsController < ApplicationController
   end
 
   def enrollment_params
-    params.fetch(:enrollment, {}).permit(*policy(@enrollment || Enrollment.new).permitted_attributes)
+    params
+      .fetch(:enrollment, {})
+      .permit(*policy(@enrollment || Enrollment.new).permitted_attributes)
+      .tap do |whitelisted|
+        whitelisted[:scopes] = params.fetch(:enrollment, {})[:scopes]&.permit! || {}
+      end
   end
 
   def event_param
