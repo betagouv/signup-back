@@ -11,15 +11,6 @@ Rails.application.routes.draw do
       end
     end
 
-    namespace :enrollment do
-      resources :dgfips do
-        member do
-          get :convention
-          patch :trigger
-        end
-      end
-    end
-
     get 'users/access_denied'
   end
 

@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :enrollment_dgfip, class: 'Enrollment::Dgfip' do
+    fournisseur_de_donnees 'dgfip'
     fournisseur_de_service 'test'
     description_service "test"
     validation_de_convention true

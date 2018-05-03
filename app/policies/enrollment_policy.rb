@@ -88,7 +88,11 @@ class EnrollmentPolicy < ApplicationPolicy
         return scope.send(provider.to_sym) if user.send("#{provider}?".to_sym)
       end
 
-      scope.with_role(:applicant, user)
+      begin
+        scope.with_role(:applicant, user)
+      rescue Exception => e
+        Enrollment.with_role(:applicant, user)
+      end
     end
   end
 end

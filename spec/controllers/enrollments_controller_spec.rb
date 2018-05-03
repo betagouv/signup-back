@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe EnrollmentsController, type: :controller do
   let(:uid) { 1 }
-  let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'dgfip', email: 'test@test.test') }
+  let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'api_particulier', email: 'test@test.test') }
   before do
     user
     @request.headers['Authorization'] = 'Bearer test'
@@ -23,7 +23,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       to_return(status: 200, body: '{"user":{"email":"test@test.test","uid":'+uid.to_s+'}}', headers: { 'Content-Type' => 'application/json' })
   end
 
-  let(:enrollment) { FactoryGirl.create(:enrollment, fournisseur_de_donnees: 'dgfip') }
+  let(:enrollment) { FactoryGirl.create(:enrollment) }
 
   let(:valid_attributes) do
     enrollment.attributes
@@ -279,12 +279,13 @@ RSpec.describe EnrollmentsController, type: :controller do
         it "creates an enrollment with all data" do
           user
           post :create, params: { enrollment: schema_attributes }
-
           enrollment = Enrollment.last
           enrollment_attributes = enrollment.as_json
           enrollment_attributes.delete('created_at')
           enrollment_attributes.delete('updated_at')
           enrollment_attributes.delete('id')
+          enrollment_attributes.delete('applicant')
+          enrollment_attributes.delete('documents')
           schema_attributes['state'] = 'pending'
 
           expect(enrollment_attributes).to eq(schema_attributes)

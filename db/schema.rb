@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180427151321) do
+ActiveRecord::Schema.define(version: 20180503093322) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,8 +25,16 @@ ActiveRecord::Schema.define(version: 20180427151321) do
     t.integer "dgfip_id"
   end
 
-  create_table "enrollment_dgfips", force: :cascade do |t|
+  create_table "enrollments", force: :cascade do |t|
+    t.json "scopes"
+    t.json "contacts", array: true
+    t.string "siren"
+    t.json "demarche"
+    t.json "donnees"
+    t.string "state"
+    t.boolean "validation_de_convention"
     t.string "fournisseur_de_donnees"
+    t.string "type"
     t.string "fournisseur_de_service"
     t.string "description_service"
     t.string "fondement_juridique"
@@ -55,22 +63,10 @@ ActiveRecord::Schema.define(version: 20180427151321) do
     t.string "autorite_certification"
     t.string "ips_de_production"
     t.boolean "mise_en_production"
-    t.boolean "validation_de_convention"
     t.boolean "recette_fonctionnelle"
     t.string "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "enrollments", force: :cascade do |t|
-    t.json "scopes", default: {}
-    t.json "contacts", array: true
-    t.string "siren"
-    t.json "demarche"
-    t.json "donnees"
-    t.string "state"
-    t.boolean "validation_de_convention"
-    t.string "fournisseur_de_donnees"
   end
 
   create_table "messages", force: :cascade do |t|

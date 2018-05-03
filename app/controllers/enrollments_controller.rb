@@ -6,9 +6,7 @@ class EnrollmentsController < ApplicationController
 
   # GET /enrollments
   def index
-    @enrollments = enrollments_scope.to_a.concat(
-      Enrollment::DgfipPolicy::Scope.new(current_user, Enrollment::Dgfip).resolve.to_a
-    )
+    @enrollments = enrollments_scope
 
     render json: @enrollments.map { |e| serialize(e) }
   end
@@ -32,7 +30,7 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.save
       current_user.add_role(:applicant, @enrollment)
-      render json: @enrollment, status: :created, location: @enrollment
+      render json: @enrollment, status: :created, location: enrollment_url(@enrollment)
     else
       render json: @enrollment.errors, status: :unprocessable_entity
     end
@@ -84,22 +82,29 @@ class EnrollmentsController < ApplicationController
     @enrollment = enrollments_scope.find(params[:id])
   end
 
+  def enrollment_class
+    type = params.fetch(:enrollment, {})[:fournisseur_de_donnees]
+    class_name = type ? "Enrollment::#{type.underscore.classify}" : 'Enrollment'
+    Object.const_get(class_name)
+  end
+
   def enrollments_scope
-    EnrollmentPolicy::Scope.new(current_user, Enrollment).resolve
+    EnrollmentPolicy::Scope.new(current_user, enrollment_class).resolve
   end
 
   def enrollment_params
     params
       .fetch(:enrollment, {})
-      .permit(*policy(@enrollment || Enrollment.new).permitted_attributes)
-      .tap do |whitelisted|
-        whitelisted[:scopes] = params.fetch(:enrollment, {})[:scopes]&.permit! || {}
-      end
+      .permit(*policy(@enrollment || enrollment_class.new).permitted_attributes)
+      .tap do |whitelisted_params|
+        scopes = params.fetch(:enrollment, {})[:scopes]
+        whitelisted_params[:scopes] = scopes.permit! if scopes.present?
+    end
   end
 
   def event_param
     event = params[:event]
-    raise EventNotPermitted unless Enrollment.state_machine.events.map(&:name).include?(event.to_sym)
+    raise EventNotPermitted unless enrollment_class.state_machine.events.map(&:name).include?(event.to_sym)
     event
   end
 
