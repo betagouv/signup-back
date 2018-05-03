@@ -6,7 +6,9 @@ class EnrollmentsController < ApplicationController
 
   # GET /enrollments
   def index
-    @enrollments = enrollments_scope
+    @enrollments = enrollments_scope.to_a.concat(
+      Enrollment::DgfipPolicy::Scope.new(current_user, Enrollment::Dgfip).resolve.to_a
+    )
 
     render json: @enrollments.map { |e| serialize(e) }
   end
@@ -46,7 +48,6 @@ class EnrollmentsController < ApplicationController
       render json: @enrollment.errors, status: :unprocessable_entity
     end
   end
-
 
   # PATCH /enrollment/1/trigge
   def trigger

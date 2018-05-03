@@ -52,7 +52,7 @@ RSpec.describe EnrollmentsController, type: :controller do
 
   describe 'GET #index' do
     describe "I have dgfip api_particulier and api_entreprise enrollments" do
-      let(:dgfip_enrollments) { FactoryGirl.create_list(:enrollment, 3, fournisseur_de_donnees: 'dgfip') }
+      let(:dgfip_enrollments) { FactoryGirl.create_list(:enrollment_dgfip, 3) }
       let(:api_particulier_enrollments) { FactoryGirl.create_list(:enrollment, 4, fournisseur_de_donnees: 'api-particulier') }
       let(:api_entreprise_enrollments) { FactoryGirl.create_list(:enrollment, 5, fournisseur_de_donnees: 'api-entreprise') }
 
