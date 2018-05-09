@@ -56,7 +56,7 @@ RSpec.describe EnrollmentPolicy do
 
 
       it 'allow access' do
-        expect(subject).to permit(user, enrollment)
+        expect(subject).not_to permit(user, enrollment)
       end
     end
   end

@@ -32,18 +32,6 @@ RSpec.describe Enrollment, type: :model do
     end.to change { enrollment.messages.count }
   end
 
-  it "has a valid schema" do
-    enrollment = Enrollment.create(attributes)
-
-    enrollment_attributes = enrollment.as_json
-    enrollment_attributes.delete('created_at')
-    enrollment_attributes.delete('updated_at')
-    enrollment_attributes.delete('id')
-    attributes['state'] = 'pending'
-
-    expect(enrollment_attributes).to eq(attributes)
-  end
-
   describe 'Workflow' do
     let(:enrollment) { FactoryGirl.create(:enrollment) }
     it 'should start on pending state' do
