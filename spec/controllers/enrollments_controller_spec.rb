@@ -24,8 +24,13 @@ RSpec.describe EnrollmentsController, type: :controller do
   end
 
   let(:enrollment) { FactoryGirl.create(:enrollment) }
+  let(:enrollment_dgfip) { FactoryGirl.create(:enrollment_dgfip) }
 
   let(:valid_attributes) do
+    enrollment.attributes
+  end
+
+  let(:dgfip_valid_attributes) do
     enrollment.attributes
   end
 
@@ -36,14 +41,14 @@ RSpec.describe EnrollmentsController, type: :controller do
   describe 'authentication' do
     it 'redirect to users/access_denied if oauth request fails' do
       stub_request(:get, 'http://test.host/api/v1/me')
-      .with(
-        headers: {
-          'Accept' => '*/*',
-          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization' => 'Bearer test',
-          'User-Agent' => 'Faraday v0.12.2'
-        }
-      ).to_return(status: 401, body: 'error', headers: {})
+        .with(
+          headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization' => 'Bearer test',
+            'User-Agent' => 'Faraday v0.12.2'
+          }
+        ).to_return(status: 401, body: 'error', headers: {})
 
       get :index
       expect(response).to have_http_status(:unauthorized)
@@ -233,6 +238,13 @@ RSpec.describe EnrollmentsController, type: :controller do
           end.to change(Enrollment, :count).by(1)
         end
 
+        it 'creates a new DGFIP Enrollment' do
+          dgfip_valid_attributes
+          expect do
+            post :create, params: { enrollment: dgfip_valid_attributes }
+          end.to change(Enrollment, :count).by(1)
+        end
+
         it 'renders a JSON response with the new enrollment' do
           post :create, params: { enrollment: valid_attributes }
 
@@ -300,6 +312,10 @@ RSpec.describe EnrollmentsController, type: :controller do
         { scopes: { dgfip_avis_imposition: true } }
       end
 
+      let(:new_dgfip_attributes) do
+        { nombre_demandes_annuelle: 36 }
+      end
+
       let(:documents_attributes) do
         [{
           type: 'Document::LegalBasis',
@@ -347,6 +363,21 @@ RSpec.describe EnrollmentsController, type: :controller do
         describe 'user is applicant of enrollment' do
           before do
             user.add_role(:applicant, enrollment)
+            user.add_role(:applicant, enrollment_dgfip)
+          end
+
+          it 'updates the requested enrollment' do
+            put :update, params: { id: enrollment.to_param, enrollment: new_attributes }
+
+            enrollment.reload
+            expect(enrollment.scopes['dgfip_avis_imposition']).to be_truthy
+          end
+
+          it 'updates the requested dgfip enrollment' do
+            put :update, params: { id: enrollment_dgfip.to_param, enrollment: new_dgfip_attributes }
+
+            enrollment_dgfip.reload
+            expect(enrollment_dgfip.nombre_demandes_annuelle).to eq(36)
           end
 
           it 'updates the requested enrollment' do
@@ -357,7 +388,7 @@ RSpec.describe EnrollmentsController, type: :controller do
           end
 
           it 'renders a JSON response with the enrollment' do
-            put :update, params: { id: enrollment.to_param, enrollment: valid_attributes }
+            put :update, params: { id: enrollment.to_param, enrollment: new_attributes }
 
             expect(response).to have_http_status(:ok)
             expect(response.content_type).to eq('application/json')

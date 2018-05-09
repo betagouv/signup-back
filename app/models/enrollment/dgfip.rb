@@ -90,6 +90,7 @@ class Enrollment::Dgfip < Enrollment
       'nombre_demandes_mensuelles_dec' => nombre_demandes_mensuelles_dec,
       'autorite_certification_nom' => autorite_certification_nom,
       'autorite_certification_fonction' => autorite_certification_fonction,
+      'demarche_cnil' => demarche_cnil,
       'date_homologation' => date_homologation,
       'date_fin_homologation' => date_fin_homologation,
       'delegue_protection_donnees' => delegue_protection_donnees,
