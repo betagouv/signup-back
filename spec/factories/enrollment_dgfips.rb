@@ -11,6 +11,9 @@ FactoryGirl.define do
       scope_dgfip_adresse_fiscale_taxation true
       nombre_demandes_annuelle 34568
       pic_demandes_par_heure 567
+      france_connect true
+      administration true
+      autorisation_legale true
       nombre_demandes_mensuelles_jan 45
       nombre_demandes_mensuelles_fev 45
       nombre_demandes_mensuelles_mar 45
