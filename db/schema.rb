@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 20180509130502) do
   end
 
   create_table "enrollments", force: :cascade do |t|
-    t.json "scopes"
+    t.json "scopes", default: {}
     t.json "contacts", array: true
     t.string "siren"
     t.json "demarche"
@@ -64,9 +64,6 @@ ActiveRecord::Schema.define(version: 20180509130502) do
     t.string "ips_de_production"
     t.boolean "mise_en_production"
     t.boolean "recette_fonctionnelle"
-    t.string "state"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.boolean "demarche_cnil"
     t.boolean "administration"
     t.boolean "france_connect"
