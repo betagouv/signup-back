@@ -29,6 +29,15 @@ require 'database_cleaner'
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
+module RoutingTestHelpers
+  def get_path(path)
+    parsed_params = Rails.application.routes.recognize_path path
+    parsed_params.delete(:controller)
+    action = parsed_params.delete(:action)
+    get(action, params: parsed_params)
+  end
+end
+
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -48,6 +57,8 @@ RSpec.configure do |config|
   end
 
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include RoutingTestHelpers, type: :controller
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
