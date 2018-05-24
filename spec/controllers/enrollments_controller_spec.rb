@@ -280,7 +280,7 @@ RSpec.describe EnrollmentsController, type: :controller do
               "contacts": [{"nom": "test"}],
               "scopes": {"dgfip_avis_imposition": "true"},
               "siren": "12345",
-              "donnees": {"conservation": "12"},
+              "donnees": {"conservation": "12", "destinataires": {}},
               "fournisseur_de_donnees": "api-particulier",
               "validation_de_convention": true
             }
@@ -288,7 +288,7 @@ RSpec.describe EnrollmentsController, type: :controller do
           )
         end
 
-        it "creates an enrollment with all data" do
+        it "creates an enrollment with good schema" do
           user
           post :create, params: { enrollment: schema_attributes }
           enrollment = Enrollment.last

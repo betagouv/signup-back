@@ -73,7 +73,7 @@ class Enrollment::ApiEntreprise < Enrollment
       'contacts' => contacts,
       'siren' => siren,
       'demarche' => demarche,
-      'donnees' => donnees,
+      'donnees' => donnees&.merge('destinataires' => donnees&.fetch('destinataires', {})),
       'state' => state,
       'documents' => documents.as_json(methods: :type)
     }
