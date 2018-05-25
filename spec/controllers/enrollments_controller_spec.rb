@@ -280,7 +280,9 @@ RSpec.describe EnrollmentsController, type: :controller do
               "contacts": [{"nom": "test"}],
               "scopes": {"dgfip_avis_imposition": "true"},
               "siren": "12345",
-              "donnees": {"conservation": "12", "destinataires": {}},
+              "donnees": {"conservation": "12", "destinataires": {
+                "destinataire_dgfip_avis_imposition": "Destinaire Test"
+                }},
               "fournisseur_de_donnees": "api-particulier",
               "validation_de_convention": true
             }

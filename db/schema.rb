@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180509130502) do
+ActiveRecord::Schema.define(version: 20180525103419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20180509130502) do
     t.json "contacts", array: true
     t.string "siren"
     t.json "demarche"
-    t.json "donnees"
+    t.json "donnees", default: {"destinaires"=>{}}
     t.string "state"
     t.boolean "validation_de_convention"
     t.string "fournisseur_de_donnees"
