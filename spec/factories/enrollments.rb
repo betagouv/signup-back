@@ -9,7 +9,7 @@ FactoryGirl.define do
     factory :sent_enrollment do
       siren '12345'
       state 'sent'
-      donnees "conservation" => 12, "destinataires" => "test"
+      donnees "conservation" => 12, "destinataires" => { "dgfip_avis_imposition" => "Destinaires des données"}
       scopes dgfip_avis_imposition: true
       contacts [
         {"id"=>"dpo", "heading"=>"Délégué à la protection des données", "nom" => "test", "email" => "test"},
