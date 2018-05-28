@@ -49,7 +49,11 @@ class Enrollment < ApplicationRecord
   end
 
   def can_send_technical_inputs?
-    false
+    if self.class.abstract?
+      false
+    else
+      super
+    end
   end
 
   def self.with_role(type, user)
