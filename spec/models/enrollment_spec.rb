@@ -4,115 +4,41 @@ require 'rails_helper'
 
 RSpec.describe Enrollment, type: :model do
   let(:enrollment) { FactoryGirl.create(:enrollment) }
+  let(:enrollment_dgfip) { FactoryGirl.create(:enrollment_dgfip) }
 
-  let(:attributes) do
-    JSON.parse(
-      <<-EOF
-      {
-        "demarche": {
-        "intitule": "test"
-        },
-        "contacts": [],
-        "scopes": {},
-        "siren": "12345",
-        "donnees": {},
-        "validation_de_convention": true,
-        "fournisseur_de_donnees": "api-particulier"
-      }
-      EOF
-    )
-  end
-  after do
-    DocumentUploader.new(Enrollment, :attachment).remove!
-  end
+  describe '#self.with_role' do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:result) { described_class.with_role(:applicant, user) }
 
-  it 'can have messages attached to it' do
-    expect do
-      enrollment.messages.create(content: 'test')
-    end.to change { enrollment.messages.count }
-  end
-
-  describe 'Workflow' do
-    let(:enrollment) { FactoryGirl.create(:enrollment) }
-    it 'should start on pending state' do
-      expect(enrollment.state).to eq('pending')
+    it 'returns an ActiveRecord::Relation' do
+      expect(result).to match_array([])
     end
 
-    # it 'cannot send application if invalid' do
-    #   enrollment.send_application
-
-    #   expect(enrollment.state).to eq('pending')
-    # end
-
-    describe 'The enrollment is valid' do
-      let(:enrollment) { FactoryGirl.create(:sent_enrollment, state: :pending) }
-
-      it 'can go on sent state' do
-        enrollment.send_application
-
-        expect(enrollment.state).to eq('sent')
-      end
+    it 'result is empty' do
+      expect(result).to be_empty
     end
 
-    describe 'Enrollment is in sent state' do
-      let(:enrollment) { FactoryGirl.create(:sent_enrollment) }
-      it 'can validate application' do
-        enrollment.validate_application
-
-        expect(enrollment.state).to eq('validated')
+    describe 'user is applicant of enrollment and enrollment_dgfip' do
+      before do
+        user.add_role(:applicant, enrollment)
+        user.add_role(:applicant, enrollment_dgfip)
       end
 
-      it 'can refuse application' do
-        enrollment.refuse_application
-
-        expect(enrollment.state).to eq('refused')
-      end
-
-      it 'can review application' do
-        enrollment.review_application
-
-        expect(enrollment.state).to eq('pending')
+      it 'return enrollment and enrollment_dgfip with user as applicant' do
+        expect(result.include?(enrollment)).to be_truthy
+        expect(result.include?(enrollment_dgfip)).to be_truthy
       end
     end
   end
 
-  Enrollment::DOCUMENT_TYPES.each do |document_type|
-    describe document_type do
-      it 'can have document' do
-        expect do
-          enrollment.documents.create(
-            type: document_type,
-            attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
-          )
-        end.to(change { enrollment.documents.count })
-      end
+  describe '#self.absract?' do
+    it 'is abstract' do
+      expect(described_class.abstract?).to be_truthy
+    end
 
-      it 'can only have a document' do
-        enrollment.documents.create(
-          type: document_type,
-          attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
-        )
-
-        expect do
-          enrollment.documents.create(
-            type: document_type,
-            attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
-          )
-        end.not_to(change { enrollment.documents.count })
-      end
-
-      it 'overwrites the document' do
-        enrollment.documents.create(
-          type: document_type,
-          attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
-        )
-
-        document = enrollment.documents.create(
-          type: document_type,
-          attachment: Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf')
-        )
-
-        expect(enrollment.documents.last).to eq(document)
+    it 'has subclasses that are not abstract' do
+      described_class.subclasses.each do |subclass|
+        expect(subclass.abstract?).to be_falsey
       end
     end
   end

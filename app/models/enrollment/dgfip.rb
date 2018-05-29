@@ -55,10 +55,6 @@ class Enrollment::Dgfip < Enrollment
     end
   end
 
-  def applicant
-    User.with_role(:applicant, self).first
-  end
-
   def as_json(*params)
     {
       'id' => id,

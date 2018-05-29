@@ -25,10 +25,6 @@ class Enrollment::ApiEntreprise < Enrollment
     end
     state :validated
     state :refused
-    state :technical_inputs do
-      validates_presence_of :ips_de_production
-    end
-    state :deployed
 
     event :send_application do
       transition from: :pending, to: :sent
@@ -45,22 +41,10 @@ class Enrollment::ApiEntreprise < Enrollment
     event :review_application do
       transition from: :sent, to: :pending
     end
-
-    event :send_technical_inputs do
-      transition from: :validated, to: :technical_inputs
-    end
-
-    event :deploy_application do
-      transition from: :technical_inputs, to: :deployed
-    end
   end
 
   def short_workflow?
-    fournisseur_de_donnees == 'api-entreprise'
-  end
-
-  def applicant
-    User.with_role(:applicant, self).first
+    true
   end
 
   def as_json(*params)
