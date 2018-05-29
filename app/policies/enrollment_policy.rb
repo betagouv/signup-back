@@ -13,12 +13,8 @@ class EnrollmentPolicy < ApplicationPolicy
     record.can_send_technical_inputs? && user.has_role?(:applicant, record)
   end
 
-  def convention?
-    false
-  end
-
   def send_application?
-    record.can_send_application? && user.has_role?(:applicant, record)
+    false
   end
 
   def validate_application?
@@ -26,10 +22,6 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def refuse_application?
-    false
-  end
-
-  def show_technical_inputs?
     false
   end
 
@@ -47,8 +39,12 @@ class EnrollmentPolicy < ApplicationPolicy
       user.has_role?(:applicant, record)
   end
 
+  def show_technical_inputs?
+    false
+  end
+
   def delete?
-    user.has_role?(:applicant, record)
+    false
   end
 
   def permitted_attributes

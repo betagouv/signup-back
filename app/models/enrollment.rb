@@ -11,6 +11,7 @@ class Enrollment < ApplicationRecord
   has_many :documents
   accepts_nested_attributes_for :documents
 
+  # Be aware with the duplication of attribute with type
   scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
   scope :api_entreprise, -> { where(fournisseur_de_donnees: 'api-entreprise') }
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
@@ -49,11 +50,16 @@ class Enrollment < ApplicationRecord
   end
 
   def can_send_technical_inputs?
-    if self.class.abstract?
-      false
-    else
-      super
-    end
+    return false if self.class.abstract?
+    super
+  end
+
+  def applicant
+    User.with_role(:applicant, self).first
+  end
+
+  def short_workflow?
+    false
   end
 
   def self.with_role(type, user)
@@ -67,11 +73,11 @@ class Enrollment < ApplicationRecord
     where(id: enrollment_ids)
   end
 
-  protected
-
   def self.abstract?
     name == 'Enrollment'
   end
+
+  protected
 
   def abstract_class_validation
     errors[:base] << "Vous devez fournir un type d'enrôlement" if self.class.abstract?

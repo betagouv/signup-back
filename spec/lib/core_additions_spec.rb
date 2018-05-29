@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe CoreAdditions do
   describe String do
-    describe "#as_event_personified" do
+    describe "#as_personified_event" do
       Hash[Enrollment.state_machine.events.map(&:name).zip(
         %w[
           application_sender
@@ -14,7 +14,7 @@ describe CoreAdditions do
         ]
       )].each do |event, personified|
         it "should personify event #{event}" do
-          expect(event.to_s.as_event_personified).to eq(personified)
+          expect(event.to_s.as_personified_event).to eq(personified)
         end
       end
     end

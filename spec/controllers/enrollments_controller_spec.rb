@@ -31,7 +31,7 @@ RSpec.describe EnrollmentsController, type: :controller do
   end
 
   let(:dgfip_valid_attributes) do
-    enrollment.attributes
+    enrollment_dgfip.attributes
   end
 
   let(:invalid_attributes) do
@@ -549,12 +549,12 @@ RSpec.describe EnrollmentsController, type: :controller do
           user.add_role(:applicant, enrollment)
         end
 
-        it 'destroys the requested enrollment' do
+        it 'do not destroy the requested enrollment' do
           enrollment
 
           expect do
             delete :destroy, params: { id: enrollment.to_param }
-          end.to change(Enrollment, :count).by(-1)
+          end.not_to change(Enrollment, :count)
         end
       end
     end

@@ -52,7 +52,7 @@ class EnrollmentsController < ApplicationController
     authorize @enrollment, "#{event_param}?".to_sym
 
     if @enrollment.update(enrollment_params) && @enrollment.send(event_param.to_sym)
-      current_user.add_role(event_param.as_event_personified.to_sym, @enrollment)
+      current_user.add_role(event_param.as_personified_event.to_sym, @enrollment)
       render json: serialize(@enrollment)
     else
       render status: :unprocessable_entity, json: @enrollment.errors

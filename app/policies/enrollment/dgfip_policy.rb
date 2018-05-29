@@ -1,18 +1,6 @@
 # frozen_string_literal: true
 
-class Enrollment::DgfipPolicy < ApplicationPolicy
-  def create?
-    user.service_provider?
-  end
-
-  def update?
-    (record.pending? && user.has_role?(:applicant, record)) || upload?
-  end
-
-  def upload?
-    record.can_send_technical_inputs? && user.has_role?(:applicant, record)
-  end
-
+class Enrollment::DgfipPolicy < EnrollmentPolicy
   def convention?
     false
   end
@@ -104,15 +92,5 @@ class Enrollment::DgfipPolicy < ApplicationPolicy
     end
 
     res
-  end
-
-  class Scope < Scope
-    def resolve
-      if user.dgfip?
-        scope.all
-      else
-        scope.with_role(:applicant, user)
-      end
-    end
   end
 end

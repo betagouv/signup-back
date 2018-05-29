@@ -1,4 +1,8 @@
 class Enrollment::ApiEntreprisePolicy < EnrollmentPolicy
+  def send_application?
+    record.can_send_application? && user.has_role?(:applicant, record)
+  end
+
   def validate_application?
     record.can_validate_application? && user.api_entreprise?
   end
