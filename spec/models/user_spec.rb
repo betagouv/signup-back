@@ -34,35 +34,113 @@ RSpec.describe User, type: :model do
       end
     end
 
-    describe "#self.from_service_provider_omniauth" do
+    describe '#self.from_service_provider_omniauth' do
       subject { described_class }
 
       describe 'There is a service_provider user in database' do
-        let(:valid_data) { { 'account_type' => 'service_provider', 'uid' => '12' } }
-        let(:invalid_data) { { 'account_type' => 'service_provider', 'uid' => '666', 'email' => 'invalid@user.user' } }
-        let(:user) { FactoryGirl.create(:user, provider: 'service_provider', uid: '12') }
+        let(:in_database_data) do
+          OmniAuth::AuthHash.new(
+            credentials: { token: 'service_provider' },
+            'account_type' => 'service_provider',
+            'uid' => 'service_provider',
+            provider: 'service_provider'
+          )
+        end
+        let(:not_in_database_data) do
+          OmniAuth::AuthHash.new(
+            credentials: { token: 'service_provider' },
+            'account_type' => 'service_provider',
+            'uid' => '666',
+            'email' => 'not_in_database@service_provider.user'
+          )
+        end
+        let(:user) do
+          FactoryGirl.create(
+            :user,
+            provider: 'service_provider',
+            uid: 'service_provider'
+          )
+        end
         before do
           user
         end
 
         it 'returns the user given valid data' do
-          current_user = subject.from_service_provider_omniauth(valid_data)
+          current_user = subject.from_service_provider_omniauth(in_database_data)
 
           expect(current_user).to eq(user)
         end
 
         it 'creates an user if not exists' do
           expect do
-            subject.from_service_provider_omniauth(invalid_data)
+            subject.from_service_provider_omniauth(not_in_database_data)
           end.to change(User, :count).by(1)
         end
 
         it 'the created user match given data' do
-          current_user = subject.from_service_provider_omniauth(invalid_data)
+          current_user = subject.from_service_provider_omniauth(not_in_database_data)
 
-          expect(current_user.email).to eq(invalid_data['email'])
-          expect(current_user.uid).to eq(invalid_data['uid'])
-          expect(current_user.provider).to eq(invalid_data['account_type'])
+          expect(current_user.email).to eq(not_in_database_data['email'])
+          expect(current_user.uid).to eq(not_in_database_data['uid'])
+          expect(current_user.provider).to eq(not_in_database_data['account_type'])
+        end
+      end
+    end
+
+    describe '#self.from_france_connect_omniauth' do
+      subject { described_class }
+
+      describe 'There is a france_connect user in database' do
+        let(:user) do
+          FactoryGirl.create(
+            :user,
+            provider: 'france_connect',
+            uid: 'france_connect',
+            'email' => 'test@france_connect.user'
+          )
+        end
+        before do
+          user
+        end
+        let(:in_database_data) do
+          OmniAuth::AuthHash.new(
+            credentials: { token: 'france_connect' },
+            info: {
+              'uid' => 'france_connect',
+              'email' => 'test@france_connect.user'
+            },
+            provider: 'france_connect'
+          )
+        end
+        let(:not_in_database_data) do
+          OmniAuth::AuthHash.new(
+            credentials: { token: 'france_connect' },
+            info: {
+              'uid' => 'france_connect_not_in_database',
+              'email' => 'not_in_database@france_connect.user'
+            },
+            provider: 'france_connect'
+          )
+        end
+
+        it 'returns the user given valid data' do
+          current_user = subject.from_france_connect_omniauth(in_database_data)
+
+          expect(current_user).to eq(user)
+        end
+
+        it 'creates an user if not exists' do
+          expect do
+            subject.from_france_connect_omniauth(not_in_database_data)
+          end.to change(User, :count).by(1)
+        end
+
+        it 'the created user match given data' do
+          current_user = subject.from_france_connect_omniauth(not_in_database_data)
+
+          expect(current_user.email).to eq(not_in_database_data.info['email'])
+          expect(current_user.uid).to eq(not_in_database_data.info['uid'])
+          expect(current_user.provider).to eq(not_in_database_data['provider'])
         end
       end
     end
