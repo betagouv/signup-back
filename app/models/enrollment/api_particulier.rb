@@ -55,10 +55,6 @@ class Enrollment::ApiParticulier < Enrollment
     end
   end
 
-  def short_workflow?
-    fournisseur_de_donnees == 'api-entreprise'
-  end
-
   def applicant
     User.with_role(:applicant, self).first
   end
@@ -77,6 +73,10 @@ class Enrollment::ApiParticulier < Enrollment
       'state' => state,
       'documents' => documents.as_json(methods: :type)
     }
+  end
+
+  def short_workflow?
+    true
   end
 
   private

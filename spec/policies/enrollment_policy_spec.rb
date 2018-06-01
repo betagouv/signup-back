@@ -50,13 +50,7 @@ RSpec.describe EnrollmentPolicy do
       end
 
       it 'deny access if short_workflow' do
-        enrollment.fournisseur_de_donnees = 'api-entreprise'
         expect(subject).not_to permit(user, enrollment)
-      end
-
-
-      it 'allow access' do
-        expect(subject).to permit(user, enrollment)
       end
     end
   end
