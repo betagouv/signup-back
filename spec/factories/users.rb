@@ -2,7 +2,8 @@
 
 FactoryGirl.define do
   factory :user do
-    email { "test#{rand(1..10_000)}@test.test" }
+    email { nano_timestamp_string }
+    uid   { nano_timestamp_string }
 
     factory :user_dgfip do
       provider 'dgfip'
