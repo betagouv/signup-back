@@ -23,7 +23,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a api_particulier user' do
-          let(:user) { create(:user_api_particulier) }
+          let(:user) { create(:user, provider: 'api_particulier') }
           subject { described_class.new(user, relation) }
 
           it 'returns api_particulier enrollments' do
@@ -32,7 +32,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a dgfip user' do
-          let(:user) { create(:user_dgfip) }
+          let(:user) { create(:user, provider: 'dgfip') }
           subject { described_class.new(user, relation) }
 
           it 'returns dgfip enrollments' do
@@ -41,7 +41,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a api_entreprise user' do
-          let(:user) { create(:user_api_entreprise) }
+          let(:user) { create(:user, provider: 'api_entreprise') }
           subject { described_class.new(user, relation) }
 
           it 'returns api_entreprise enrollments' do
@@ -85,7 +85,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a api_particulier user' do
-          let(:user) { create(:user_api_particulier) }
+          let(:user) { create(:user, provider: 'api_particulier') }
           subject { described_class.new(user, relation) }
 
           it 'returns api_particulier enrollments' do
@@ -129,7 +129,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a api_entreprise user' do
-          let(:user) { create(:user_api_entreprise) }
+          let(:user) { create(:user, provider: 'api_entreprise') }
           subject { described_class.new(user, relation) }
 
           it 'returns api_entreprise enrollments' do
@@ -173,7 +173,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a dgfip user' do
-          let(:user) { create(:user_dgfip) }
+          let(:user) { create(:user, provider: 'dgfip') }
           subject { described_class.new(user, relation) }
 
           it 'returns dgfip enrollments' do
