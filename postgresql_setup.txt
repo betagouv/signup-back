@@ -1,0 +1,4 @@
+CREATE ROLE signup WITH LOGIN CREATEDB PASSWORD 'password';
+CREATE DATABASE signup_production WITH OWNER signup;
+CREATE DATABASE signup_development WITH OWNER signup;
+CREATE DATABASE signup_test WITH OWNER signup;
