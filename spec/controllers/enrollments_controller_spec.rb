@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe EnrollmentsController, type: :controller do
-  let(:uid) { 1 }
-  let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'api_particulier', email: 'test@test.test') }
+  let(:user) { create(:user, provider: 'api_particulier') }
+
   before do
     user
     @request.headers['Authorization'] = 'Bearer test'
@@ -16,11 +16,11 @@ RSpec.describe EnrollmentsController, type: :controller do
         'Authorization' => 'Bearer test',
         'User-Agent' => 'Faraday v0.12.2'
       }
-    ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+    ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
 
     stub_request(:get, "https://partenaires.dev.dev-franceconnect.fr/oauth/v1/userinfo").
       with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Bearer test', 'User-Agent'=>'Faraday v0.12.2'}).
-      to_return(status: 200, body: '{"user":{"email":"test@test.test","uid":'+uid.to_s+'}}', headers: { 'Content-Type' => 'application/json' })
+      to_return(status: 200, body: '{"user":{"email":"test@test.test","uid":'+user.uid.to_s+'}}', headers: { 'Content-Type' => 'application/json' })
   end
 
   let(:enrollment) { FactoryGirl.create(:enrollment) }
@@ -62,7 +62,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       let(:api_entreprise_enrollments) { FactoryGirl.create_list(:enrollment, 5, fournisseur_de_donnees: 'api-entreprise') }
 
       describe "I have a dgfip user" do
-        let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'dgfip', email: 'test@test.test') }
+        let(:user) { create(:user, provider: 'dgfip') }
 
         it 'returns the dgfip enrollments' do
           dgfip_enrollments
@@ -76,7 +76,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       end
 
       describe "I have a api_particulier user" do
-        let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'api_particulier', email: 'test@test.test') }
+        let(:user) { create(:user, provider: 'api_particulier') }
 
         it 'returns api_particulier enrollments' do
           dgfip_enrollments
@@ -90,7 +90,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       end
 
       describe "I have a api_entreprise user" do
-        let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'api_entreprise', email: 'test@test.test') }
+        let(:user) { create(:user, provider: 'api_entreprise') }
 
         it 'returns the api_entreprise enrollments' do
           dgfip_enrollments
@@ -118,8 +118,7 @@ RSpec.describe EnrollmentsController, type: :controller do
     end
 
     describe 'with a france_connect user' do
-      let(:uid) { 1 }
-      let(:user) { FactoryGirl.create(:user, provider: 'france_connect', uid: uid) }
+      let(:user) { create(:user, provider: 'france_connect') }
 
       before do
         @request.headers['Authorization'] = 'Bearer test'
@@ -131,7 +130,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             'Authorization' => 'Bearer test',
             'User-Agent' => 'Faraday v0.12.2'
           }
-        ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+        ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
       end
 
       describe 'user is applicant of enrollment' do
@@ -165,7 +164,7 @@ RSpec.describe EnrollmentsController, type: :controller do
 
   #   describe 'with a france_connect user' do
   #     let(:uid) { 1 }
-  #     let(:user) { FactoryGirl.create(:user, provider: 'france_connect', uid: uid) }
+  #     let(:user) { FactoryGirl.create(:user, provider: 'france_connect', uid: user.uid) }
 
   #     before do
   #       @request.headers['Authorization'] = 'Bearer test'
@@ -177,7 +176,7 @@ RSpec.describe EnrollmentsController, type: :controller do
   #             'Authorization' => 'Bearer test',
   #             'User-Agent' => 'Faraday v0.12.2'
   #           }
-  #         ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+  #         ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
   #     end
 
   #     describe 'user is applicant of enrollment' do
@@ -213,8 +212,7 @@ RSpec.describe EnrollmentsController, type: :controller do
     end
 
     describe 'with a service_provider user' do
-      let(:uid) { 1 }
-      let(:user) { FactoryGirl.create(:user, provider: 'service_provider', uid: uid) }
+      let(:user) { FactoryGirl.create(:user, provider: 'service_provider') }
 
       before do
         user
@@ -227,7 +225,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             'Authorization' => 'Bearer test',
             'User-Agent' => 'Faraday v0.12.2'
           }
-        ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+        ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
       end
 
       context 'with valid params' do
@@ -337,8 +335,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       end
 
       describe 'with a service_provider user' do
-        let(:uid) { 1 }
-        let(:user) { FactoryGirl.create(:user, provider: 'service_provider', uid: uid) }
+        let(:user) { FactoryGirl.create(:user, provider: 'service_provider') }
 
         before do
           @request.headers['Authorization'] = 'Bearer test'
@@ -350,7 +347,7 @@ RSpec.describe EnrollmentsController, type: :controller do
                 'Authorization' => 'Bearer test',
                 'User-Agent' => 'Faraday v0.12.2'
               }
-          ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+          ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
         end
 
         describe 'user is not applicant of enrollment' do
@@ -404,8 +401,7 @@ RSpec.describe EnrollmentsController, type: :controller do
     # TODO test other events
     describe 'send_application?' do
       describe 'with a service_provider user' do
-        let(:uid) { 1 }
-        let(:user) { FactoryGirl.create(:user, provider: 'service_provider', uid: uid) }
+        let(:user) { FactoryGirl.create(:user, provider: 'service_provider') }
 
         before do
           @request.headers['Authorization'] = 'Bearer test'
@@ -417,7 +413,7 @@ RSpec.describe EnrollmentsController, type: :controller do
                 'Authorization' => 'Bearer test',
                 'User-Agent' => 'Faraday v0.12.2'
               }
-            ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+            ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
         end
 
         describe 'user is applicant of enrollment' do
@@ -483,7 +479,7 @@ RSpec.describe EnrollmentsController, type: :controller do
 
       # describe 'with a dgfip user' do
       #   let(:uid) { 1 }
-      #   let(:user) { FactoryGirl.create(:user, provider: 'resource_provider', uid: uid) }
+      #   let(:user) { FactoryGirl.create(:user, provider: 'resource_provider', uid: user.uid) }
 
       #   before do
       #     @request.headers['Authorization'] = 'Bearer test'
@@ -496,7 +492,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       #         'Authorization' => 'Bearer test',
       #         'User-Agent' => 'Faraday v0.12.2'
       #       }
-      #     ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+      #     ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
       #   end
 
       #   it 'is unauthorized' do
@@ -518,8 +514,7 @@ RSpec.describe EnrollmentsController, type: :controller do
     end
 
     describe 'with a france_connect user' do
-      let(:uid) { 1 }
-      let(:user) { FactoryGirl.create(:user, provider: 'france_connect', uid: uid) }
+      let(:user) { FactoryGirl.create(:user, provider: 'france_connect') }
 
       before do
         @request.headers['Authorization'] = 'Bearer test'
@@ -531,7 +526,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             'Authorization' => 'Bearer test',
             'User-Agent' => 'Faraday v0.12.2'
           }
-        ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+        ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
       end
 
       describe 'user is not applicant of enrollment' do
