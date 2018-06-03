@@ -13,8 +13,8 @@ describe Enrollment::ApiEntreprisePolicy do
   )
   permissions :send_application? do
     describe 'with a basic user applicant of an enrollment' do
-      let(:enrollment) { FactoryGirl.create(:enrollment_api_entreprise) }
-      let(:user) { FactoryGirl.create(:user) }
+      let(:enrollment) { create(:enrollment_api_entreprise) }
+      let(:user) { create(:user) }
       before do
         user.add_role(:applicant, enrollment)
       end
@@ -28,8 +28,8 @@ describe Enrollment::ApiEntreprisePolicy do
   %i[sent_enrollment_api_entreprise validated_enrollment_api_entreprise refused_enrollment_api_entreprise].each do |enrollment_factory|
     permissions :send_application? do
       describe "with a basic user applicant of an #{enrollment_factory}" do
-        let(:enrollment) { FactoryGirl.create(enrollment_factory) }
-        let(:user) { FactoryGirl.create(:user) }
+        let(:enrollment) { create(enrollment_factory) }
+        let(:user) { create(:user) }
         before do
           user.add_role(:applicant, enrollment)
         end
@@ -61,8 +61,8 @@ describe Enrollment::ApiEntreprisePolicy do
     %i[enrollment_api_entreprise sent_enrollment_api_entreprise validated_enrollment_api_entreprise refused_enrollment_api_entreprise].each do |enrollment_factory|
       permissions action do
         describe "with a basic user applicant of an #{enrollment_factory}" do
-          let(:enrollment) { FactoryGirl.create(enrollment_factory) }
-          let(:user) { FactoryGirl.create(:user) }
+          let(:enrollment) { create(enrollment_factory) }
+          let(:user) { create(:user) }
           before do
             user.add_role(:applicant, enrollment)
           end

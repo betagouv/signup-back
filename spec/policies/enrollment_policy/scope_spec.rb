@@ -6,15 +6,15 @@ describe EnrollmentPolicy::Scope do
       let(:relation) { Enrollment.all }
 
       describe 'there are api_particulier, api_entreprise and dgfip enrollments in database' do
-        let(:api_particulier_enrollments) { FactoryGirl.create_list(:enrollment_api_particulier, 3) }
-        let(:dgfip_enrollments) { FactoryGirl.create_list(:enrollment_dgfip, 4) }
-        let(:api_entreprise_enrollments) { FactoryGirl.create_list(:enrollment_api_entreprise, 5) }
+        let(:api_particulier_enrollments) { create_list(:enrollment_api_particulier, 3) }
+        let(:dgfip_enrollments) { create_list(:enrollment_dgfip, 4) }
+        let(:api_entreprise_enrollments) { create_list(:enrollment_api_entreprise, 5) }
         before do
           api_particulier_enrollments && api_entreprise_enrollments && dgfip_enrollments
         end
 
         describe 'with a basic user' do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { create(:user) }
           subject { described_class.new(user, relation) }
 
           it 'returns an empty relation' do
@@ -23,7 +23,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a api_particulier user' do
-          let(:user) { FactoryGirl.create(:user_api_particulier) }
+          let(:user) { create(:user_api_particulier) }
           subject { described_class.new(user, relation) }
 
           it 'returns api_particulier enrollments' do
@@ -32,7 +32,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a dgfip user' do
-          let(:user) { FactoryGirl.create(:user_dgfip) }
+          let(:user) { create(:user_dgfip) }
           subject { described_class.new(user, relation) }
 
           it 'returns dgfip enrollments' do
@@ -41,7 +41,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a api_entreprise user' do
-          let(:user) { FactoryGirl.create(:user_api_entreprise) }
+          let(:user) { create(:user_api_entreprise) }
           subject { described_class.new(user, relation) }
 
           it 'returns api_entreprise enrollments' do
@@ -50,7 +50,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a user applicant of the api_particulier enrollments' do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { create(:user) }
           let(:enrollment) { api_particulier_enrollments.first }
           subject { described_class.new(user, relation) }
           before do
@@ -68,15 +68,15 @@ describe EnrollmentPolicy::Scope do
       let(:relation) { Enrollment::ApiParticulier.all }
 
       describe 'there are api_particulier, api_entreprise and dgfip enrollments in database' do
-        let(:api_particulier_enrollments) { FactoryGirl.create_list(:enrollment_api_particulier, 3) }
-        let(:dgfip_enrollments) { FactoryGirl.create_list(:enrollment_dgfip, 4) }
-        let(:api_entreprise_enrollments) { FactoryGirl.create_list(:enrollment_api_entreprise, 5) }
+        let(:api_particulier_enrollments) { create_list(:enrollment_api_particulier, 3) }
+        let(:dgfip_enrollments) { create_list(:enrollment_dgfip, 4) }
+        let(:api_entreprise_enrollments) { create_list(:enrollment_api_entreprise, 5) }
         before do
           api_particulier_enrollments && api_entreprise_enrollments && dgfip_enrollments
         end
 
         describe 'with a basic user' do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { create(:user) }
           subject { described_class.new(user, relation) }
 
           it 'returns an empty relation' do
@@ -85,7 +85,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a api_particulier user' do
-          let(:user) { FactoryGirl.create(:user_api_particulier) }
+          let(:user) { create(:user_api_particulier) }
           subject { described_class.new(user, relation) }
 
           it 'returns api_particulier enrollments' do
@@ -94,7 +94,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a user applicant of the api_particulier enrollments' do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { create(:user) }
           let(:enrollment) { api_particulier_enrollments.first }
           subject { described_class.new(user, relation) }
           before do
@@ -112,15 +112,15 @@ describe EnrollmentPolicy::Scope do
       let(:relation) { Enrollment::ApiEntreprise.all }
 
       describe 'there are api_particulier, api_entreprise and dgfip enrollments in database' do
-        let(:api_particulier_enrollments) { FactoryGirl.create_list(:enrollment_api_particulier, 3) }
-        let(:dgfip_enrollments) { FactoryGirl.create_list(:enrollment_dgfip, 4) }
-        let(:api_entreprise_enrollments) { FactoryGirl.create_list(:enrollment_api_entreprise, 5) }
+        let(:api_particulier_enrollments) { create_list(:enrollment_api_particulier, 3) }
+        let(:dgfip_enrollments) { create_list(:enrollment_dgfip, 4) }
+        let(:api_entreprise_enrollments) { create_list(:enrollment_api_entreprise, 5) }
         before do
           api_particulier_enrollments && api_entreprise_enrollments && dgfip_enrollments
         end
 
         describe 'with a basic user' do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { create(:user) }
           subject { described_class.new(user, relation) }
 
           it 'returns an empty relation' do
@@ -129,7 +129,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a api_entreprise user' do
-          let(:user) { FactoryGirl.create(:user_api_entreprise) }
+          let(:user) { create(:user_api_entreprise) }
           subject { described_class.new(user, relation) }
 
           it 'returns api_entreprise enrollments' do
@@ -138,7 +138,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a user applicant of the api_entreprise enrollments' do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { create(:user) }
           let(:enrollment) { api_entreprise_enrollments.first }
           subject { described_class.new(user, relation) }
           before do
@@ -156,15 +156,15 @@ describe EnrollmentPolicy::Scope do
       let(:relation) { Enrollment::Dgfip.all }
 
       describe 'there are api_particulier, api_entreprise and dgfip enrollments in database' do
-        let(:api_particulier_enrollments) { FactoryGirl.create_list(:enrollment_api_particulier, 3) }
-        let(:dgfip_enrollments) { FactoryGirl.create_list(:enrollment_dgfip, 4) }
-        let(:api_entreprise_enrollments) { FactoryGirl.create_list(:enrollment_api_entreprise, 5) }
+        let(:api_particulier_enrollments) { create_list(:enrollment_api_particulier, 3) }
+        let(:dgfip_enrollments) { create_list(:enrollment_dgfip, 4) }
+        let(:api_entreprise_enrollments) { create_list(:enrollment_api_entreprise, 5) }
         before do
           api_particulier_enrollments && api_entreprise_enrollments && dgfip_enrollments
         end
 
         describe 'with a basic user' do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { create(:user) }
           subject { described_class.new(user, relation) }
 
           it 'returns an empty relation' do
@@ -173,7 +173,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a dgfip user' do
-          let(:user) { FactoryGirl.create(:user_dgfip) }
+          let(:user) { create(:user_dgfip) }
           subject { described_class.new(user, relation) }
 
           it 'returns dgfip enrollments' do
@@ -182,7 +182,7 @@ describe EnrollmentPolicy::Scope do
         end
 
         describe 'with a user applicant of the dgfip enrollments' do
-          let(:user) { FactoryGirl.create(:user) }
+          let(:user) { create(:user) }
           let(:enrollment) { dgfip_enrollments.first }
           subject { described_class.new(user, relation) }
           before do

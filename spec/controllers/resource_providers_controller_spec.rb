@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ResourceProvidersController, type: :controller do
 
-  let(:resource_provider) { FactoryGirl.create(:resource_provider) }
+  let(:resource_provider) { create(:resource_provider) }
 
   describe "GET #index" do
     it "returns a success response" do

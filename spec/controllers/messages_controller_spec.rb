@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe MessagesController, type: :controller do
   describe 'with fc user' do
     let(:uid) { 1 }
-    let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'service_provider') }
-    let(:enrollment) { FactoryGirl.create(:enrollment, fournisseur_de_donnees: 'api-particulier') }
+    let(:user) { create(:user, uid: uid, provider: 'service_provider') }
+    let(:enrollment) { create(:enrollment, fournisseur_de_donnees: 'api-particulier') }
     before do
       user.add_role(:applicant, enrollment)
       @request.headers['Authorization'] = 'Bearer test'
@@ -25,7 +25,7 @@ RSpec.describe MessagesController, type: :controller do
           to_return(status: 200, body: '{"user":{"email":"test@test.test","uid":1}}', headers: { 'Content-Type' => 'application/json' })
     end
 
-    let(:message) { FactoryGirl.create(:message, enrollment: enrollment) }
+    let(:message) { create(:message, enrollment: enrollment) }
     let(:valid_attributes) do
       { content: 'test' }
     end
@@ -50,7 +50,7 @@ RSpec.describe MessagesController, type: :controller do
       end
 
       describe 'the user do not own the message' do
-        let(:message) { FactoryGirl.create(:message) }
+        let(:message) { create(:message) }
         it 'returns an error' do
           get :show, params: { id: message.to_param, enrollment_id: enrollment.id }
           expect(response).not_to be_success
@@ -107,8 +107,8 @@ RSpec.describe MessagesController, type: :controller do
 
   describe 'with dgfip user' do
     let(:uid) { 1 }
-    let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'dgfip') }
-    let(:enrollment) { FactoryGirl.create(:enrollment, fournisseur_de_donnees: 'dgfip') }
+    let(:user) { create(:user, uid: uid, provider: 'dgfip') }
+    let(:enrollment) { create(:enrollment, fournisseur_de_donnees: 'dgfip') }
     before do
       user.add_role(:applicant, enrollment)
       @request.headers['Authorization'] = 'Bearer test'
@@ -123,7 +123,7 @@ RSpec.describe MessagesController, type: :controller do
         ).to_return(status: 200, body: "{\"uid\": #{uid}, \"account_type\": \"dgfip\"}", headers: { 'Content-Type' => 'application/json' })
     end
 
-    let(:message) { FactoryGirl.create(:message, enrollment: enrollment) }
+    let(:message) { create(:message, enrollment: enrollment) }
     let(:valid_attributes) do
       { content: 'test' }
     end
@@ -148,7 +148,7 @@ RSpec.describe MessagesController, type: :controller do
       end
 
       describe 'the user do not own the message' do
-        let(:message) { FactoryGirl.create(:message, enrollment: enrollment) }
+        let(:message) { create(:message, enrollment: enrollment) }
         it 'returns an error' do
           get :show, params: { id: message.to_param, enrollment_id: enrollment.id }
           expect(response).to be_success

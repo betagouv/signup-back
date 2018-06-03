@@ -4,11 +4,11 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   describe 'with an user' do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { create(:user) }
 
     %w[service_provider france_connect dgfip api_particulier api_entreprise].each do |provider|
       describe "with a #{provider} provider" do
-        subject { FactoryGirl.create(:user, provider: provider) }
+        subject { create(:user, provider: provider) }
 
         it "is a #{provider}" do
           expect(subject.send("#{provider}?")).to be_truthy
@@ -25,7 +25,7 @@ RSpec.describe User, type: :model do
     end
 
     describe 'with an enrollment' do
-      let(:enrollment) { FactoryGirl.create(:enrollment) }
+      let(:enrollment) { create(:enrollment) }
 
       it 'user can be applicant to an enrollment' do
         user.add_role(:applicant, enrollment)
@@ -55,7 +55,7 @@ RSpec.describe User, type: :model do
           )
         end
         let(:user) do
-          FactoryGirl.create(
+          create(
             :user,
             provider: 'service_provider',
             uid: 'service_provider'
@@ -92,7 +92,7 @@ RSpec.describe User, type: :model do
 
       describe 'There is a france_connect user in database' do
         let(:user) do
-          FactoryGirl.create(
+          create(
             :user,
             provider: 'france_connect',
             uid: 'france_connect',

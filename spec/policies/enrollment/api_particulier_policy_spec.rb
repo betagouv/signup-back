@@ -13,8 +13,8 @@ describe Enrollment::ApiParticulierPolicy do
   )
   permissions :send_application? do
     describe 'with a basic user applicant of an enrollment' do
-      let(:enrollment) { FactoryGirl.create(:enrollment_api_particulier) }
-      let(:user) { FactoryGirl.create(:user) }
+      let(:enrollment) { create(:enrollment_api_particulier) }
+      let(:user) { create(:user) }
       before do
         user.add_role(:applicant, enrollment)
       end
@@ -44,8 +44,8 @@ describe Enrollment::ApiParticulierPolicy do
     )
     permissions action do
       describe 'with a basic user applicant of an enrollment' do
-        let(:enrollment) { FactoryGirl.create(:enrollment_api_particulier) }
-        let(:user) { FactoryGirl.create(:user) }
+        let(:enrollment) { create(:enrollment_api_particulier) }
+        let(:user) { create(:user) }
         before do
           user.add_role(:applicant, enrollment)
         end
@@ -67,8 +67,8 @@ describe Enrollment::ApiParticulierPolicy do
   )
   permissions :show_technical_inputs? do
     describe 'with a basic user applicant of a validated enrollment' do
-      let(:enrollment) { FactoryGirl.create(:validated_enrollment_api_particulier) }
-      let(:user) { FactoryGirl.create(:user) }
+      let(:enrollment) { create(:validated_enrollment_api_particulier) }
+      let(:user) { create(:user) }
       before do
         user.add_role(:applicant, enrollment)
       end
@@ -89,8 +89,8 @@ describe Enrollment::ApiParticulierPolicy do
   )
   permissions :send_technical_inputs? do
     describe 'with a basic user applicant of a validated enrollment' do
-      let(:enrollment) { FactoryGirl.create(:validated_enrollment_api_particulier) }
-      let(:user) { FactoryGirl.create(:user) }
+      let(:enrollment) { create(:validated_enrollment_api_particulier) }
+      let(:user) { create(:user) }
       before do
         user.add_role(:applicant, enrollment)
       end
@@ -119,8 +119,8 @@ describe Enrollment::ApiParticulierPolicy do
   )
   permissions :deploy_application? do
     describe 'with a basic user applicant of a validated enrollment' do
-      let(:enrollment) { FactoryGirl.create(:validated_enrollment_api_particulier) }
-      let(:user) { FactoryGirl.create(:user) }
+      let(:enrollment) { create(:validated_enrollment_api_particulier) }
+      let(:user) { create(:user) }
       before do
         user.add_role(:applicant, enrollment)
       end
