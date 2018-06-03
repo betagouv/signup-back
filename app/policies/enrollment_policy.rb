@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class EnrollmentPolicy < ApplicationPolicy
+  PARAMS_BY_EVENT = {
+      'review_application' => {
+          messages_attributes: [:content]
+      }
+  }
+
   def create?
     user.service_provider?
   end
