@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe Enrollment, type: :model do
-  let(:enrollment) { FactoryGirl.create(:enrollment) }
-  let(:enrollment_dgfip) { FactoryGirl.create(:enrollment_dgfip) }
+  let(:enrollment) { create(:enrollment) }
+  let(:enrollment_dgfip) { create(:enrollment_dgfip) }
 
   describe '#self.with_role' do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { create(:user) }
     let(:result) { described_class.with_role(:applicant, user) }
 
     it 'returns an ActiveRecord::Relation' do

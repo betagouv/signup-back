@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Enrollment::Dgfip, type: :model do
-  let(:enrollment) { FactoryGirl.create(:enrollment_api_particulier) }
+  let(:enrollment) { create(:enrollment_api_particulier) }
 
   let(:attributes) do
     enrollment.attributes
@@ -21,7 +21,7 @@ RSpec.describe Enrollment::Dgfip, type: :model do
 
    describe 'Workflow' do
     let(:new_enrollment) { Enrollment::ApiParticulier.new }
-    let(:enrollment) { FactoryGirl.create(:enrollment_api_particulier) }
+    let(:enrollment) { create(:enrollment_api_particulier) }
 
     it 'should start on pending state' do
       expect(enrollment.state).to eq('pending')
@@ -34,7 +34,7 @@ RSpec.describe Enrollment::Dgfip, type: :model do
     end
 
     describe 'The enrollment is valid to be sent' do
-      let(:enrollment) { FactoryGirl.create(:sent_enrollment, state: :pending) }
+      let(:enrollment) { create(:sent_enrollment, state: :pending) }
 
       it 'can go on sent state' do
         enrollment.send_application
@@ -44,7 +44,7 @@ RSpec.describe Enrollment::Dgfip, type: :model do
     end
 
     describe 'Enrollment is in sent state' do
-      let(:enrollment) { FactoryGirl.create(:sent_enrollment) }
+      let(:enrollment) { create(:sent_enrollment) }
       it 'can validate application' do
         enrollment.validate_application
 
@@ -65,7 +65,7 @@ RSpec.describe Enrollment::Dgfip, type: :model do
     end
 
     describe 'Enrollment is in validated state' do
-      let(:enrollment) { FactoryGirl.create(:validated_enrollment_api_particulier) }
+      let(:enrollment) { create(:validated_enrollment_api_particulier) }
 
       before do
         enrollment.update_attribute(:state, 'validated')
@@ -87,7 +87,7 @@ RSpec.describe Enrollment::Dgfip, type: :model do
     end
 
     describe 'Enrollment is in technical_inputs state' do
-      let(:enrollment) { FactoryGirl.create(:technical_inputs_enrollment_api_particulier) }
+      let(:enrollment) { create(:technical_inputs_enrollment_api_particulier) }
 
       it 'can deploy application' do
         expect(enrollment.deploy_application).to be_truthy

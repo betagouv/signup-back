@@ -3,18 +3,18 @@
 require 'rails_helper'
 
 RSpec.describe Message, type: :model do
-  let(:message) { FactoryGirl.create(:message) }
+  let(:message) { create(:message) }
 
   it 'should have an enrollment' do
     expect(message.enrollment).to be_present
   end
 
   it 'should not save with no content' do
-    expect { FactoryGirl.create(:message, content: '') }.to raise_error(ActiveRecord::RecordInvalid)
+    expect { create(:message, content: '') }.to raise_error(ActiveRecord::RecordInvalid)
   end
 
   describe "an user send the message" do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { create(:user) }
     before do
       user.add_role(:sender, message)
     end

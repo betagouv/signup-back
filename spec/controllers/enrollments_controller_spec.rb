@@ -23,8 +23,8 @@ RSpec.describe EnrollmentsController, type: :controller do
       to_return(status: 200, body: '{"user":{"email":"test@test.test","uid":'+user.uid.to_s+'}}', headers: { 'Content-Type' => 'application/json' })
   end
 
-  let(:enrollment) { FactoryGirl.create(:enrollment) }
-  let(:enrollment_dgfip) { FactoryGirl.create(:enrollment_dgfip) }
+  let(:enrollment) { create(:enrollment) }
+  let(:enrollment_dgfip) { create(:enrollment_dgfip) }
 
   let(:valid_attributes) do
     enrollment.attributes
@@ -57,9 +57,9 @@ RSpec.describe EnrollmentsController, type: :controller do
 
   describe 'GET #index' do
     describe "I have dgfip api_particulier and api_entreprise enrollments" do
-      let(:dgfip_enrollments) { FactoryGirl.create_list(:enrollment_dgfip, 3) }
-      let(:api_particulier_enrollments) { FactoryGirl.create_list(:enrollment, 4, fournisseur_de_donnees: 'api-particulier') }
-      let(:api_entreprise_enrollments) { FactoryGirl.create_list(:enrollment, 5, fournisseur_de_donnees: 'api-entreprise') }
+      let(:dgfip_enrollments) { create_list(:enrollment_dgfip, 3) }
+      let(:api_particulier_enrollments) { create_list(:enrollment, 4, fournisseur_de_donnees: 'api-particulier') }
+      let(:api_entreprise_enrollments) { create_list(:enrollment, 5, fournisseur_de_donnees: 'api-entreprise') }
 
       describe "I have a dgfip user" do
         let(:user) { create(:user, provider: 'dgfip') }
@@ -164,7 +164,7 @@ RSpec.describe EnrollmentsController, type: :controller do
 
   #   describe 'with a france_connect user' do
   #     let(:uid) { 1 }
-  #     let(:user) { FactoryGirl.create(:user, provider: 'france_connect', uid: user.uid) }
+  #     let(:user) { create(:user, provider: 'france_connect', uid: user.uid) }
 
   #     before do
   #       @request.headers['Authorization'] = 'Bearer test'
@@ -212,7 +212,7 @@ RSpec.describe EnrollmentsController, type: :controller do
     end
 
     describe 'with a service_provider user' do
-      let(:user) { FactoryGirl.create(:user, provider: 'service_provider') }
+      let(:user) { create(:user, provider: 'service_provider') }
 
       before do
         user
@@ -336,7 +336,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       end
 
       describe 'with a service_provider user' do
-        let(:user) { FactoryGirl.create(:user, provider: 'service_provider') }
+        let(:user) { create(:user, provider: 'service_provider') }
 
         before do
           @request.headers['Authorization'] = 'Bearer test'
@@ -402,7 +402,7 @@ RSpec.describe EnrollmentsController, type: :controller do
     # TODO test other events
     describe 'send_application?' do
       describe 'with a service_provider user' do
-        let(:user) { FactoryGirl.create(:user, provider: 'service_provider') }
+        let(:user) { create(:user, provider: 'service_provider') }
 
         before do
           @request.headers['Authorization'] = 'Bearer test'
@@ -429,7 +429,7 @@ RSpec.describe EnrollmentsController, type: :controller do
           end
 
           describe 'enrollment can be sent' do
-            let(:enrollment) { FactoryGirl.create(:sent_enrollment, state: :pending) }
+            let(:enrollment) { create(:sent_enrollment, state: :pending) }
 
             it 'triggers an event' do
               patch :trigger, params: { id: enrollment.id, event: 'send_application' }
@@ -480,7 +480,7 @@ RSpec.describe EnrollmentsController, type: :controller do
 
       # describe 'with a dgfip user' do
       #   let(:uid) { 1 }
-      #   let(:user) { FactoryGirl.create(:user, provider: 'resource_provider', uid: user.uid) }
+      #   let(:user) { create(:user, provider: 'resource_provider', uid: user.uid) }
 
       #   before do
       #     @request.headers['Authorization'] = 'Bearer test'
@@ -515,7 +515,7 @@ RSpec.describe EnrollmentsController, type: :controller do
     end
 
     describe 'with a france_connect user' do
-      let(:user) { FactoryGirl.create(:user, provider: 'france_connect') }
+      let(:user) { create(:user, provider: 'france_connect') }
 
       before do
         @request.headers['Authorization'] = 'Bearer test'

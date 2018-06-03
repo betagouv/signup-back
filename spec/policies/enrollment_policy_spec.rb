@@ -6,9 +6,9 @@ RSpec.describe EnrollmentPolicy do
   subject { described_class }
 
   permissions :create? do
-    let(:user) { FactoryGirl.create(:user) }
-    let(:service_provider_user) { FactoryGirl.create(:user, provider: 'service_provider') }
-    let(:enrollment) { FactoryGirl.create(:enrollment) }
+    let(:user) { create(:user) }
+    let(:service_provider_user) { create(:user, provider: 'service_provider') }
+    let(:enrollment) { create(:enrollment) }
 
     it 'deny access if not service_provider' do
       expect(subject).not_to permit(user, enrollment)
@@ -20,9 +20,9 @@ RSpec.describe EnrollmentPolicy do
   end
 
   permissions :update? do
-    let(:user) { FactoryGirl.create(:user) }
-    let(:service_provider_user) { FactoryGirl.create(:user, provider: 'service_provider') }
-    let(:enrollment) { FactoryGirl.create(:enrollment) }
+    let(:user) { create(:user) }
+    let(:service_provider_user) { create(:user, provider: 'service_provider') }
+    let(:enrollment) { create(:enrollment) }
 
     it 'deny access if not service_provider' do
       expect(subject).not_to permit(user, enrollment)
@@ -52,8 +52,8 @@ RSpec.describe EnrollmentPolicy do
 
     permissions action do
       describe 'with a basic user applicant of the enrollment' do
-        let(:user) { FactoryGirl.create(:user) }
-        let(:enrollment) { FactoryGirl.create(:enrollment) }
+        let(:user) { create(:user) }
+        let(:enrollment) { create(:enrollment) }
         before do
           user.add_role(:applicant, enrollment)
         end
