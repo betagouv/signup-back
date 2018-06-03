@@ -5,22 +5,32 @@ require 'rails_helper'
 RSpec.describe EnrollmentsController, type: :controller do
   let(:user) { create(:user, provider: 'api_particulier') }
 
+  let(:faraday_request_headers) do
+    {
+      'Accept' => '*/*',
+      'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      'Authorization' => 'Bearer test',
+      'User-Agent' => 'Faraday v0.12.2'
+    }
+  end
+
+  let(:me_request_successful_response) do
+    {
+      status: 200,
+      body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}",
+      headers: { 'Content-Type' => 'application/json' }
+    }
+  end
+
   before do
-    user
     @request.headers['Authorization'] = 'Bearer test'
-    stub_request(:get, 'http://test.host/api/v1/me')
-    .with(
-      headers: {
-        'Accept' => '*/*',
-        'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-        'Authorization' => 'Bearer test',
-        'User-Agent' => 'Faraday v0.12.2'
-      }
-    ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+    stub_request(:get, 'http://test.host/api/v1/me').
+      with(headers: faraday_request_headers).
+      to_return(me_request_successful_response)
 
     stub_request(:get, "https://partenaires.dev.dev-franceconnect.fr/oauth/v1/userinfo").
-      with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Bearer test', 'User-Agent'=>'Faraday v0.12.2'}).
-      to_return(status: 200, body: '{"user":{"email":"test@test.test","uid":'+user.uid.to_s+'}}', headers: { 'Content-Type' => 'application/json' })
+      with(headers: faraday_request_headers).
+      to_return(status: 200, body: %Q[{"user": { "email":"#{user.email}", "uid":"#{user.uid}" } }], headers: { 'Content-Type' => 'application/json' })
   end
 
   let(:enrollment) { create(:enrollment) }
@@ -40,15 +50,9 @@ RSpec.describe EnrollmentsController, type: :controller do
 
   describe 'authentication' do
     it 'redirect to users/access_denied if oauth request fails' do
-      stub_request(:get, 'http://test.host/api/v1/me')
-        .with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer test',
-            'User-Agent' => 'Faraday v0.12.2'
-          }
-        ).to_return(status: 401, body: 'error', headers: {})
+      stub_request(:get, 'http://test.host/api/v1/me').
+        with(headers: faraday_request_headers).
+        to_return(status: 401, body: 'error', headers: {})
 
       get :index
       expect(response).to have_http_status(:unauthorized)
@@ -122,15 +126,9 @@ RSpec.describe EnrollmentsController, type: :controller do
 
       before do
         @request.headers['Authorization'] = 'Bearer test'
-        stub_request(:get, 'http://test.host/api/v1/me')
-        .with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer test',
-            'User-Agent' => 'Faraday v0.12.2'
-          }
-        ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+        stub_request(:get, 'http://test.host/api/v1/me').
+          with(headers: faraday_request_headers).
+          to_return(me_request_successful_response)
       end
 
       describe 'user is applicant of enrollment' do
@@ -155,52 +153,6 @@ RSpec.describe EnrollmentsController, type: :controller do
     end
   end
 
-  # describe 'GET #convention' do
-  #   it 'returns a success response' do
-  #     get :convention, params: { id: enrollment.to_param }
-
-  #     expect(response).to have_http_status(:not_found)
-  #   end
-
-  #   describe 'with a france_connect user' do
-  #     let(:uid) { 1 }
-  #     let(:user) { create(:user, provider: 'france_connect', uid: user.uid) }
-
-  #     before do
-  #       @request.headers['Authorization'] = 'Bearer test'
-  #       stub_request(:get, 'http://test.host/api/v1/me')
-  #         .with(
-  #           headers: {
-  #             'Accept' => '*/*',
-  #             'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-  #             'Authorization' => 'Bearer test',
-  #             'User-Agent' => 'Faraday v0.12.2'
-  #           }
-  #         ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
-  #     end
-
-  #     describe 'user is applicant of enrollment' do
-  #       before do
-  #         user.add_role(:applicant, enrollment)
-  #       end
-
-  #       it 'returns a success response if enrollment can be signed' do
-  #         enrollment.update(state: 'application_approved')
-  #         get :convention, params: { id: enrollment.to_param, format: :pdf }
-
-  #         expect(response).to be_success
-  #       end
-  #     end
-
-  #     describe 'user is not applicant of enrollment' do
-  #       it 'returns a success response' do
-  #         get :convention, params: { id: enrollment.to_param }
-
-  #         expect(response).to have_http_status(:not_found)
-  #       end
-  #     end
-  #   end
-  # end
 
   describe 'POST #create' do
     describe 'without a service_provider user' do
@@ -217,15 +169,9 @@ RSpec.describe EnrollmentsController, type: :controller do
       before do
         user
         @request.headers['Authorization'] = 'Bearer test'
-        stub_request(:get, 'http://test.host/api/v1/me')
-        .with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer test',
-            'User-Agent' => 'Faraday v0.12.2'
-          }
-        ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+        stub_request(:get, 'http://test.host/api/v1/me').
+          with(headers: faraday_request_headers).
+          to_return(me_request_successful_response)
       end
 
       context 'with valid params' do
@@ -340,15 +286,10 @@ RSpec.describe EnrollmentsController, type: :controller do
 
         before do
           @request.headers['Authorization'] = 'Bearer test'
-          stub_request(:get, 'http://test.host/api/v1/me')
-            .with(
-              headers: {
-                'Accept' => '*/*',
-                'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                'Authorization' => 'Bearer test',
-                'User-Agent' => 'Faraday v0.12.2'
-              }
-          ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+
+          stub_request(:get, 'http://test.host/api/v1/me').
+            with(headers: faraday_request_headers).
+            to_return(me_request_successful_response)
         end
 
         describe 'user is not applicant of enrollment' do
@@ -406,15 +347,9 @@ RSpec.describe EnrollmentsController, type: :controller do
 
         before do
           @request.headers['Authorization'] = 'Bearer test'
-          stub_request(:get, 'http://test.host/api/v1/me')
-            .with(
-              headers: {
-                'Accept' => '*/*',
-                'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                'Authorization' => 'Bearer test',
-                'User-Agent' => 'Faraday v0.12.2'
-              }
-            ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+          stub_request(:get, 'http://test.host/api/v1/me').
+            with(headers: faraday_request_headers).
+            to_return(me_request_successful_response)
         end
 
         describe 'user is applicant of enrollment' do
@@ -519,15 +454,9 @@ RSpec.describe EnrollmentsController, type: :controller do
 
       before do
         @request.headers['Authorization'] = 'Bearer test'
-        stub_request(:get, 'http://test.host/api/v1/me')
-        .with(
-          headers: {
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => 'Bearer test',
-            'User-Agent' => 'Faraday v0.12.2'
-          }
-        ).to_return(status: 200, body: "{\"account_type\": \"#{user.provider}\", \"uid\": #{user.uid}, \"email\": \"#{user.email}\"}", headers: { 'Content-Type' => 'application/json' })
+        stub_request(:get, 'http://test.host/api/v1/me').
+          with(headers: faraday_request_headers).
+          to_return(me_request_successful_response)
       end
 
       describe 'user is not applicant of enrollment' do
@@ -555,4 +484,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       end
     end
   end
+
+  # XXX TODO FIXME
+  it 'tests GET #convention', pending: true
 end
