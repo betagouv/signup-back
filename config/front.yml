@@ -3,6 +3,6 @@ test:
 development:
   callback_url: http://localhost:4200
 docker:
-  callback_url: http://localhost:4200/#/oauth-callback
+  callback_url: http://localhost:3000/dgfip.html
 production:
-  callback_url: https://impots.particulier.api.gouv.fr/#/oauth-callback
+  callback_url: https://signup.api.gouv.fr/dgfip.html

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  attr_reader :client, :current_user
+  attr_reader :current_user
   class AccessDenied < StandardError; end
 
   include Pundit
@@ -10,28 +10,28 @@ class ApplicationController < ActionController::Base
 
   rescue_from AccessDenied do |e|
     render status: :unauthorized, json: {
-      message: "Vous n'êtes pas authorisé à accéder à cette API",
+      message: "Vous n'êtes pas autorisé à accéder à cette API",
       detail: e.message
     }
   end
 
-  rescue_from ResourceProvider::AccessDenied do |e|
+  rescue_from ApiParticulier::AccessDenied do |e|
     render status: :unauthorized, json: {
-      message: "Vous n'êtes pas authorisé à accéder à cette API",
+      message: "Vous n'êtes pas autorisé à accéder à cette API",
       detail: e.message
     }
   end
 
   rescue_from 'FranceConnect::AccessDenied' do |e|
     render status: :unauthorized, json: {
-      message: "Vous n'êtes pas authorisé à accéder à cette API",
+      message: "Vous n'êtes pas autorisé à accéder à cette API",
       detail: e.message
     }
   end
 
   rescue_from Pundit::NotAuthorizedError do |_|
     render status: :forbidden, json: {
-      message: ["Vous n'êtes pas authorisé à modifier cette ressource"]
+      message: ["Vous n'êtes pas autorisé à modifier cette ressource"]
     }
   end
 
@@ -44,13 +44,14 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate!
-    @current_user ||= User.from_service_provider_omniauth(oauth_user)
+    @current_user ||= oauth_user
     raise ResourceProvider::AccessDenied, 'User not found' unless current_user
   end
 
   def oauth_user
-    token = authorization_header.gsub(/Bearer /, '')
+    token = params[:token] || session[:token] || authorization_header.gsub(/Bearer /, '')
 
+    session[:token] = token
     client.me(token)
   end
 
@@ -65,7 +66,7 @@ class ApplicationController < ActionController::Base
   end
 
   def client
-    oauth_provider = request.headers['X-Oauth-Provider'] || session[:oauth_provider] || 'resourceProvider'
+    oauth_provider = request.headers['X-Oauth-Provider'] || session[:oauth_provider] || 'apiParticulier'
     @client ||= Object.const_get("#{oauth_provider.classify}::OauthClient").new
   end
 end

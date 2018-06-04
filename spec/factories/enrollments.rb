@@ -1,15 +1,21 @@
 # frozen_string_literal: true
 
 FactoryGirl.define do
-  factory :enrollment do
-    service_provider name: 'test'
-    scopes number_of_tax_shares: false, tax_address: false,
-           non_wadge_income: false, family_situation: false, support_payments: false,
-           deficit: false, housing_tax: false, total_gross_income: false,
-           world_income: false
-    legal_basis comment: 'test', attachment: nil
-    service_description main: 'test', deployment_date: nil, seasonality: [{type: 'year', max_charge: 12}],
-                        max_charge: nil
-    agreement true
+  factory :enrollment, class: Enrollment::ApiParticulier do
+    fournisseur_de_donnees 'api-particulier'
+    demarche "intitule" => "test", "description" => "test", "fondement_juridique" => "test"
+    validation_de_convention true
+
+    factory :sent_enrollment do
+      siren '12345'
+      state 'sent'
+      donnees "conservation" => 12, "destinataires" => { "dgfip_avis_imposition" => "Destinaires des données"}
+      scopes dgfip_avis_imposition: true
+      contacts [
+        {"id"=>"dpo", "heading"=>"Délégué à la protection des données", "nom" => "test", "email" => "test"},
+        {"id"=>"responsable_traitement", "heading"=>"Responsable de traitement", "nom" => "test", "email" => "test"},
+        {"id"=>"technique", "heading"=>"Responsable technique", "nom" => "test", "email" => "test"},
+      ]
+    end
   end
 end

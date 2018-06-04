@@ -2,68 +2,92 @@
 
 class EnrollmentPolicy < ApplicationPolicy
   def create?
-    return false unless user.france_connect?
-    true
+    user.service_provider?
   end
 
   def update?
-    res = false
-    res = true if record.can_complete_application?
-    res = record.applicant&.fetch('email', nil).present? if record.can_sign_convention?
-    res = true if record.can_deploy_security?
-    res && user.france_connect?
+    (record.pending? && user.has_role?(:applicant, record)) || upload?
+  end
+
+  def upload?
+    record.can_send_technical_inputs? && user.has_role?(:applicant, record)
   end
 
   def convention?
-    record.can_sign_convention? || record.can_deploy_security? || record.can_deploy_application? || record.deployed?
+    false
   end
 
-  def complete_application?
-    user.france_connect? && record.can_complete_application?
+  def send_application?
+    record.can_send_application? && user.has_role?(:applicant, record)
   end
 
-  def show_domain?
-    user.france_connect? ||
-      (user.dgfip? && user.oauth_roles.include?('domain'))
-  end
-
-  def approve_application?
-    user.dgfip? && user.oauth_roles.include?('domain') && record.can_approve_application?
+  def validate_application?
+    false
   end
 
   def refuse_application?
-    user.dgfip? && user.oauth_roles.include?('domain') && record.can_refuse_application?
+    false
   end
 
-  def sign_convention?
-    user.france_connect? && record.can_sign_convention?
-  end
-
-  def edit_security?
-    user.france_connect? && record.can_deploy_security?
-  end
-
-  def show_security?
-    (
-      user.france_connect? ||
-      (user.dgfip? && user.oauth_roles.include?('security'))
-    ) && %w[application_ready deployed].include?(record.state)
-  end
-
-  def deploy_security?
-    user.france_connect? && record.can_deploy_security?
+  def show_technical_inputs?
+    false
   end
 
   def deploy_application?
-    user.dgfip? && user.oauth_roles.include?('security') && record.can_deploy_application?
+    false
+  end
+
+  def review_application?
+    false
+  end
+
+  def send_technical_inputs?
+    record.can_send_technical_inputs? &&
+      !record.short_workflow? &&
+      user.has_role?(:applicant, record)
+  end
+
+  def delete?
+    user.has_role?(:applicant, record)
+  end
+
+  def permitted_attributes
+    res = []
+    if create? || update?
+      res.concat([
+        :validation_de_convention,
+        :fournisseur_de_donnees,
+        :siren,
+        contacts: [:id, :heading, :nom, :email],
+        demarche: [
+          :intitule,
+          :fondement_juridique,
+          :description
+        ],
+        donnees: [
+          :conservation,
+          :destinataires
+        ]
+      ])
+    end
+
+    if upload?
+      res.push(documents_attributes: [:attachment, :type])
+    end
+
+    res
   end
 
   class Scope < Scope
     def resolve
-      if user.dgfip?
-        scope.all
-      else
+      %w[dgfip api_particulier api_entreprise].each do |provider|
+        return scope.send(provider.to_sym) if user.send("#{provider}?".to_sym)
+      end
+
+      begin
         scope.with_role(:applicant, user)
+      rescue Exception => e
+        Enrollment.with_role(:applicant, user)
       end
     end
   end

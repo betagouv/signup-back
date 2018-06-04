@@ -15,14 +15,14 @@ RSpec.describe 'Messages', type: :request do
           'Accept' => '*/*',
           'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
           'Authorization' => bearer,
-          'User-Agent' => 'Faraday v0.12.1'
+          'User-Agent' => 'Faraday v0.12.2'
         }
       ).to_return(status: 200, body: "{\"uid\": #{uid}}", headers: { 'Content-Type' => 'application/json' })
   end
 
   describe 'GET /messages' do
     it 'works! (now write some real specs)' do
-      get enrollment_messages_path(enrollment_id: enrollment.id), headers: { 'Authorization' => bearer, 'X-Oauth-Provider' => 'resourceProvider' }
+      get enrollment_messages_path(enrollment_id: enrollment.id), headers: { 'Authorization' => bearer, 'X-Oauth-Provider' => 'apiParticulier' }
       expect(response).to have_http_status(200)
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180201145943) do
+ActiveRecord::Schema.define(version: 20180525103419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,23 +22,52 @@ ActiveRecord::Schema.define(version: 20180201145943) do
     t.integer "enrollment_id"
     t.string "type"
     t.boolean "archive", default: false
+    t.integer "dgfip_id"
   end
 
   create_table "enrollments", force: :cascade do |t|
-    t.json "service_provider"
-    t.json "scopes"
-    t.json "legal_basis"
-    t.json "service_description"
-    t.boolean "agreement"
+    t.json "scopes", default: {}
+    t.json "contacts", array: true
+    t.string "siren"
+    t.json "demarche"
+    t.json "donnees", default: {"destinaires"=>{}}
     t.string "state"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.json "applicant"
-    t.string "production_certificate"
-    t.string "certification_authority"
-    t.string "production_ips"
-    t.json "cnil_voucher_detail", default: {}
-    t.json "certification_results_detail", default: {}
+    t.boolean "validation_de_convention"
+    t.string "fournisseur_de_donnees"
+    t.string "type"
+    t.string "fournisseur_de_service"
+    t.string "description_service"
+    t.string "fondement_juridique"
+    t.boolean "scope_dgfip_RFR"
+    t.boolean "scope_dgfip_adresse_fiscale_taxation"
+    t.integer "nombre_demandes_annuelle"
+    t.integer "pic_demandes_par_heure"
+    t.integer "nombre_demandes_mensuelles_jan"
+    t.integer "nombre_demandes_mensuelles_fev"
+    t.integer "nombre_demandes_mensuelles_mar"
+    t.integer "nombre_demandes_mensuelles_avr"
+    t.integer "nombre_demandes_mensuelles_mai"
+    t.integer "nombre_demandes_mensuelles_jui"
+    t.integer "nombre_demandes_mensuelles_jul"
+    t.integer "nombre_demandes_mensuelles_aou"
+    t.integer "nombre_demandes_mensuelles_sep"
+    t.integer "nombre_demandes_mensuelles_oct"
+    t.integer "nombre_demandes_mensuelles_nov"
+    t.integer "nombre_demandes_mensuelles_dec"
+    t.string "autorite_certification_nom"
+    t.string "autorite_certification_fonction"
+    t.date "date_homologation"
+    t.date "date_fin_homologation"
+    t.string "delegue_protection_donnees"
+    t.string "certificat_pub_production"
+    t.string "autorite_certification"
+    t.string "ips_de_production"
+    t.boolean "mise_en_production"
+    t.boolean "recette_fonctionnelle"
+    t.boolean "demarche_cnil"
+    t.boolean "administration"
+    t.boolean "france_connect"
+    t.boolean "autorisation_legale"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -46,6 +75,16 @@ ActiveRecord::Schema.define(version: 20180201145943) do
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "dgfip_id"
+  end
+
+  create_table "resource_providers", force: :cascade do |t|
+    t.string "short_name"
+    t.string "long_name"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "resource_provider_type"
   end
 
   create_table "roles", id: :serial, force: :cascade do |t|
@@ -56,6 +95,17 @@ ActiveRecord::Schema.define(version: 20180201145943) do
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
+  end
+
+  create_table "scopes", force: :cascade do |t|
+    t.string "name"
+    t.string "human_name"
+    t.text "description"
+    t.integer "resource_provider_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.json "services", default: [], array: true
+    t.string "node_example"
   end
 
   create_table "users", force: :cascade do |t|

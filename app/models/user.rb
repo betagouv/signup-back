@@ -29,8 +29,20 @@ class User < ApplicationRecord
     provider == 'france_connect'
   end
 
+  def service_provider?
+    provider == 'service_provider'
+  end
+
   def dgfip?
-    provider == 'resource_provider'
+    provider == 'dgfip'
+  end
+
+  def api_particulier?
+    provider == 'api_particulier'
+  end
+
+  def api_entreprise?
+    provider == 'api_entreprise'
   end
 
   def sent_messages

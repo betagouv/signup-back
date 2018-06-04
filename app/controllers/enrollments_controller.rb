@@ -30,7 +30,7 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.save
       current_user.add_role(:applicant, @enrollment)
-      render json: @enrollment, status: :created, location: @enrollment
+      render json: @enrollment, status: :created, location: enrollment_url(@enrollment)
     else
       render json: @enrollment.errors, status: :unprocessable_entity
     end
@@ -47,7 +47,6 @@ class EnrollmentsController < ApplicationController
     end
   end
 
-
   # PATCH /enrollment/1/trigge
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
@@ -62,15 +61,19 @@ class EnrollmentsController < ApplicationController
 
   # DELETE /enrollments/1
   def destroy
+    authorize @enrollment, :delete?
     @enrollment.destroy
   end
 
   def serialize(enrollment)
+    Rails.application.eager_load!
+    policy_class = Object.const_get("#{enrollment.class.to_s}Policy")
     enrollment.as_json(
-      include: [{ documents: { methods: :type } }, { messages: { include: :sender } }]
+      include: [{ documents: { methods: :type } }, { messages: { include: :sender } }],
+      methods: [:applicant]
     ).merge('acl' => Hash[
-      EnrollmentPolicy.acl_methods.map do |method|
-        [method.to_s.delete('?'), EnrollmentPolicy.new(current_user, enrollment).send(method)]
+      policy_class.acl_methods.map do |method|
+        [method.to_s.delete('?'), policy_class.new(current_user, enrollment).send(method)]
       end
     ])
   end
@@ -81,30 +84,35 @@ class EnrollmentsController < ApplicationController
     @enrollment = enrollments_scope.find(params[:id])
   end
 
+  def enrollment_class
+    type = params.fetch(:enrollment, {})[:fournisseur_de_donnees]
+    type = %w[dgfip api-particulier api-entreprise].include?(type) ? type : nil
+
+    class_name = type ? "Enrollment::#{type.underscore.classify}" : 'Enrollment'
+    Rails.application.eager_load!
+    Object.const_get(class_name)
+  end
+
   def enrollments_scope
-    EnrollmentPolicy::Scope.new(current_user, Enrollment).resolve
+    EnrollmentPolicy::Scope.new(current_user, enrollment_class).resolve
   end
 
   def enrollment_params
-    params.fetch(:enrollment, {}).permit(
-      :agreement,
-      :production_certificate,
-      :certification_authority,
-      :production_ips,
-      service_provider: {},
-      scopes: {},
-      legal_basis: {},
-      cnil_voucher_detail: {},
-      certification_results_detail: {},
-      service_description: {},
-      documents_attributes: %i[type attachment],
-      applicant: {},
-    )
+    params
+      .fetch(:enrollment, {})
+      .permit(*policy(@enrollment || enrollment_class.new).permitted_attributes)
+      .tap do |whitelisted_params|
+        enrollment = params.fetch(:enrollment, {})
+        scopes = enrollment[:scopes]
+        destinataires = enrollment.fetch(:donnees, {})[:destinataires]
+        whitelisted_params[:scopes] = scopes.permit! if scopes.present?
+        whitelisted_params.fetch(:donnees, {})[:destinataires] = destinataires.permit! if destinataires.present?
+    end
   end
 
   def event_param
     event = params[:event]
-    raise EventNotPermitted unless Enrollment.state_machine.events.map(&:name).include?(event)
+    raise EventNotPermitted unless enrollment_class.state_machine.events.map(&:name).include?(event.to_sym)
     event
   end
 

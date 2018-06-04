@@ -24,5 +24,9 @@
 
 .byebug_history
 *.swp
+*.swo
+*.orig
 
 /coverage
+
+rspec_results.html

@@ -1,9 +1,3 @@
-# README
+# Signup.api.gouv.fr Back
 
-## required
-- brew install imagemagick
-- apt-get install libmagickwand-dev
-
-
-
-`bundle install`
+Installation instructions can be found [here](https://github.com/betagouv/signup.api.gouv.fr-docker).

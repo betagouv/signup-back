@@ -3,7 +3,8 @@
 class Document < ApplicationRecord
   mount_uploader :attachment, DocumentUploader
 
-  belongs_to :enrollment
+  belongs_to :enrollment, optional: true
+  belongs_to :dgfip, optional: true, class_name: 'Enrollment::Dgfip'
 
   validates_presence_of :type, :attachment
 
