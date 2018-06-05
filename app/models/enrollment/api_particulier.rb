@@ -71,7 +71,8 @@ class Enrollment::ApiParticulier < Enrollment
       'demarche' => demarche,
       'donnees' => donnees&.merge('destinataires' => donnees&.fetch('destinataires', {})),
       'state' => state,
-      'documents' => documents.as_json(methods: :type)
+      'documents' => documents.as_json(methods: :type),
+      'messages' => messages.as_json(include: :sender)
     }
   end
 

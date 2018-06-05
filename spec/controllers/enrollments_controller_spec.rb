@@ -284,7 +284,10 @@ RSpec.describe EnrollmentsController, type: :controller do
                 "destinataire_dgfip_avis_imposition": "Destinaire Test"
                 }},
               "fournisseur_de_donnees": "api-particulier",
-              "validation_de_convention": true
+              "validation_de_convention": true,
+              "state": "pending",
+              "documents": [],
+              "messages": []
             }
             EOF
           )
@@ -299,8 +302,6 @@ RSpec.describe EnrollmentsController, type: :controller do
           enrollment_attributes.delete('updated_at')
           enrollment_attributes.delete('id')
           enrollment_attributes.delete('applicant')
-          enrollment_attributes.delete('documents')
-          schema_attributes['state'] = 'pending'
 
           expect(enrollment_attributes).to eq(schema_attributes)
         end
