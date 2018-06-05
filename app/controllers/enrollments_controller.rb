@@ -47,11 +47,11 @@ class EnrollmentsController < ApplicationController
     end
   end
 
-  # PATCH /enrollment/1/trigge
+  # PATCH /enrollment/1/trigger
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
 
-    if @enrollment.update(enrollment_params) && @enrollment.send(event_param.to_sym)
+    if @enrollment.update(enrollment_trigger_params) && @enrollment.send(event_param.to_sym)
       current_user.add_role(event_param.as_event_personified.to_sym, @enrollment)
       render json: serialize(@enrollment)
     else
@@ -108,6 +108,12 @@ class EnrollmentsController < ApplicationController
         whitelisted_params[:scopes] = scopes.permit! if scopes.present?
         whitelisted_params.fetch(:donnees, {})[:destinataires] = destinataires.permit! if destinataires.present?
     end
+  end
+
+  def enrollment_trigger_params
+    params
+      .fetch(:enrollment, {})
+      .permit(EnrollmentPolicy::PARAMS_BY_EVENT[event_param])
   end
 
   def event_param

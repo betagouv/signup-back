@@ -8,6 +8,7 @@ class Enrollment < ApplicationRecord
   validate :abstract_class_validation
 
   has_many :messages
+  accepts_nested_attributes_for :messages
   has_many :documents
   accepts_nested_attributes_for :documents
 
