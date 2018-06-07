@@ -2,7 +2,7 @@ module CoreAdditions
   module String
     extend ActiveSupport::Concern
 
-    def as_event_personified
+    def as_personified_event
       tokens = split('_')
       verb = tokens.first[-1] == 'e' ? "#{tokens.first}r" : "#{tokens.first}er"
       return verb if tokens.size == 1

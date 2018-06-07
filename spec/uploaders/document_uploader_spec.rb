@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe DocumentUploader do
   include CarrierWave::Test::Matchers
 
-  let(:document) { FactoryGirl.create(:document) }
+  let(:document) { create(:document) }
   let(:uploader) { DocumentUploader.new(document, :attachment) }
 
   before do

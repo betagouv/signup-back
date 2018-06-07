@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe DocumentsController do
-  let(:enrollment) { FactoryGirl.create(:enrollment) }
-  let(:document) { FactoryGirl.create(:document, enrollment: enrollment) }
+  let(:enrollment) { create(:enrollment) }
+  let(:document) { create(:document, enrollment: enrollment) }
 
   describe "#show" do
     it "return a 401 with a bad user" do
@@ -15,7 +15,7 @@ RSpec.describe DocumentsController do
 
     describe "I have an user" do
       let(:uid) { 1 }
-      let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'service_provider', email: 'test@test.test') }
+      let(:user) { create(:user, uid: uid, provider: 'service_provider', email: 'test@test.test') }
       before do
         user
         @request.headers['Authorization'] = 'Bearer test'

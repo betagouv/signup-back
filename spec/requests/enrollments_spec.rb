@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Enrollments', type: :request do
   let(:uid) { 1 }
-  let(:user) { FactoryGirl.create(:user, uid: uid) }
+  let(:user) { create(:user, uid: uid) }
   let(:bearer) { 'Bearer test' }
   before do
     user

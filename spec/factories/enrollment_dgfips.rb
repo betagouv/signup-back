@@ -35,6 +35,23 @@ FactoryGirl.define do
       certificat_pub_production "test"
       autorite_certification "test"
       state 'sent'
+
+      factory :refused_enrollment_dgfip do
+        state 'refused'
+      end
+
+      factory :validated_enrollment_dgfip do
+        state 'validated'
+
+        factory :technical_inputs_enrollment_dgfip do
+          state 'technical_inputs'
+          ips_de_production 'test'
+
+          factory :deployed_enrollment_dgfip do
+            state 'deployed'
+          end
+        end
+      end
     end
   end
 end

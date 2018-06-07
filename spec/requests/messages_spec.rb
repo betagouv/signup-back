@@ -4,9 +4,9 @@ require 'rails_helper'
 
 RSpec.describe 'Messages', type: :request do
   let(:uid) { 1 }
-  let(:user) { FactoryGirl.create(:user, uid: uid, provider: 'resource_provider') }
+  let(:user) { create(:user, uid: uid, provider: 'resource_provider') }
   let(:bearer) { 'Bearer test' }
-  let(:enrollment) { FactoryGirl.create(:enrollment) }
+  let(:enrollment) { create(:enrollment) }
   before do
     user
     stub_request(:get, 'http://test.host/api/v1/me')

@@ -4,11 +4,11 @@ require 'rails_helper'
 
 RSpec.describe MessagePolicy do
   subject { described_class }
-  let(:user) { FactoryGirl.create(:user, email: 'user') }
-  let(:dgfip_user) { FactoryGirl.create(:user, provider: 'dgfip', email: 'dgfip') }
-  let(:france_connect_user) { FactoryGirl.create(:user, provider: 'france_connect', email: 'france_connect') }
-  let(:enrollment) { FactoryGirl.create(:enrollment) }
-  let(:message) { FactoryGirl.create(:message, enrollment: enrollment) }
+  let(:user) { create(:user, email: 'user') }
+  let(:dgfip_user) { create(:user, provider: 'dgfip', email: 'dgfip') }
+  let(:france_connect_user) { create(:user, provider: 'france_connect', email: 'france_connect') }
+  let(:enrollment) { create(:enrollment) }
+  let(:message) { create(:message, enrollment: enrollment) }
 
   permissions :create? do
     it 'deny access with no user' do

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Scope, type: :model do
-  let(:resource_provider) { FactoryGirl.create(:resource_provider) }
-  let(:scope) { FactoryGirl.build(:scope) }
+  let(:resource_provider) { create(:resource_provider) }
+  let(:scope) { build(:scope) }
 
   it 'validates service schema' do
     scope.services = ['boom']
