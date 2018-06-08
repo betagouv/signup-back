@@ -23,6 +23,13 @@ class Enrollment < ApplicationRecord
 
       user = transition.args.first&.fetch(:user)
       user&.add_role(event.as_personified_event.to_sym, enrollment)
+
+      begin
+        job_class = "Enrollment::#{event.classify}Job".constantize
+        job_class.perform_now(enrollment, user)
+      rescue NameError => error
+        Rails.logger.debug("No job (#{error.message}) found for #{enrollment.inspect}")
+      end
     end
 
     state :pending
@@ -54,6 +61,10 @@ class Enrollment < ApplicationRecord
 
     event :deploy_application do
       transition from: :technical_inputs, to: :deployed
+    end
+
+    event :loop_without_job do
+      transition any => same
     end
   end
 

@@ -41,6 +41,15 @@ RSpec.describe Enrollment::Dgfip, type: :model do
 
         expect(enrollment.state).to eq('sent')
       end
+
+      it 'performs associated job' do
+        expect_any_instance_of(Enrollment::SendApplicationJob).to receive(:perform_now)
+        enrollment.send_application!(user: create(:user))
+      end
+
+      it "don't perform job if not existing" do
+        enrollment.loop_without_job!
+      end
     end
 
     describe 'Enrollment is in sent state' do
