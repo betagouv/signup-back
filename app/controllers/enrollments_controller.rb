@@ -88,8 +88,7 @@ class EnrollmentsController < ApplicationController
     type = %w[dgfip api-particulier api-entreprise].include?(type) ? type : nil
 
     class_name = type ? "Enrollment::#{type.underscore.classify}" : 'Enrollment'
-    Rails.application.eager_load!
-    Object.const_get(class_name)
+    class_name.constantize
   end
 
   def enrollments_scope
