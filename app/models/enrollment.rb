@@ -18,6 +18,13 @@ class Enrollment < ApplicationRecord
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
 
   state_machine :state, initial: :pending do
+    before_transition any => any do |enrollment, transition|
+      event = transition.event.to_s
+
+      user = transition.args.first&.fetch(:user)
+      user&.add_role(event.as_personified_event.to_sym, enrollment)
+    end
+
     state :pending
     state :sent
     state :validated
