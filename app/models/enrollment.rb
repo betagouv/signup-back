@@ -68,6 +68,15 @@ class Enrollment < ApplicationRecord
     end
   end
 
+  def other_party(user)
+    if user.has_role?(:applicant, self)
+      provider = self.class.name.underscore.split('/').last
+      return User.where(provider: provider)
+    end
+
+    User.with_role(:applicant, self)
+  end
+
   def can_send_technical_inputs?
     return false if self.class.abstract?
     super

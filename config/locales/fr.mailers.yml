@@ -1,0 +1,23 @@
+fr:
+  enrollment_mailer:
+    layout:
+      header: Header
+      footer: Footer
+    send_application:
+      subject: Envoi de la demande
+      content: Content
+    validate_application:
+      subject: Validation de demande
+      content: Content
+    refuse_application:
+      subject: Refus de la demande
+      content: Content
+    review_application:
+      subject: Review de la demande
+      content: Content
+    send_technical_inputs:
+      subject: Envoi des entrants techniques
+      content: Content
+    deploy_application:
+      subject: Déploiement de l'application
+      content: Content
