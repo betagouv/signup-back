@@ -97,4 +97,6 @@ Rails.application.configure do
   #   provider: 'resource_provider',
   #   uid: 'dgfip'
   # )
+
+  config.action_mailer.delivery_method = :mailjet
 end
