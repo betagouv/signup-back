@@ -41,3 +41,6 @@ module DgfipContractualization
     config.public_file_server.enabled = false
   end
 end
+
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
