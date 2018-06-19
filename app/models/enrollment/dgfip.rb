@@ -63,6 +63,7 @@ class Enrollment::Dgfip < Enrollment
       },
       'applicant' => applicant,
       'documents' => documents.as_json(methods: :type),
+      'messages' => messages.as_json(include: :sender),
       'state' => state,
       'fournisseur_de_donnees' => fournisseur_de_donnees,
       'fournisseur_de_service' => fournisseur_de_service,
