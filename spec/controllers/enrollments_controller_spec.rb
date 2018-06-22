@@ -260,7 +260,7 @@ RSpec.describe EnrollmentsController, type: :controller do
       end
 
       let(:new_dgfip_attributes) do
-        { nombre_demandes_annuelle: 36 }
+        { scopes: { dgfip_avis_imposition: true } }
       end
 
       let(:documents_attributes) do
@@ -318,7 +318,7 @@ RSpec.describe EnrollmentsController, type: :controller do
             put :update, params: { id: enrollment_dgfip.to_param, enrollment: new_dgfip_attributes }
 
             enrollment_dgfip.reload
-            expect(enrollment_dgfip.nombre_demandes_annuelle).to eq(36)
+            expect(enrollment_dgfip.scopes['dgfip_avis_imposition']).to eq("true")
           end
 
           it 'updates the requested enrollment' do

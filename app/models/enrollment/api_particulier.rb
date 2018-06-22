@@ -1,9 +1,6 @@
 class Enrollment::ApiParticulier < Enrollment
   resourcify
 
-  validate :fournisseur_de_donnees_validation
-  validate :agreements_validation
-
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
     state :pending
@@ -74,16 +71,5 @@ class Enrollment::ApiParticulier < Enrollment
 
   def short_workflow?
     true
-  end
-
-  private
-
-  def agreements_validation
-    errors[:validation_de_convention] << "Vous devez valider la convention avant de continuer" unless validation_de_convention?
-  end
-
-  def fournisseur_de_donnees_validation
-    errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche&.fetch('intitule', nil).present?
-    errors[:fournisseur_de_donnees] << "Vous devez renseigner le fournisseur de données avant de continuer" unless fournisseur_de_donnees.present?
   end
 end

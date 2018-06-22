@@ -1,11 +1,11 @@
 # frozen_string_literal: true
-require 'zip'
-
 class Enrollment < ApplicationRecord
   DOCUMENT_TYPES = %w[
   ].freeze
 
   validate :abstract_class_validation
+  validate :fournisseur_de_donnees_validation
+  validate :agreements_validation
 
   has_many :messages
   accepts_nested_attributes_for :messages
@@ -79,6 +79,15 @@ class Enrollment < ApplicationRecord
   end
 
   protected
+
+  def fournisseur_de_donnees_validation
+    errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche&.fetch('intitule', nil).present?
+    errors[:fournisseur_de_donnees] << "Vous devez renseigner le fournisseur de données avant de continuer" unless fournisseur_de_donnees.present?
+  end
+
+  def agreements_validation
+    errors[:validation_de_convention] << "Vous devez valider la convention avant de continuer" unless validation_de_convention?
+  end
 
   def abstract_class_validation
     errors[:base] << "Vous devez fournir un type d'enrôlement" if self.class.abstract?
