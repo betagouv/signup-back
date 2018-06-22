@@ -4,7 +4,10 @@ class EnrollmentPolicy < ApplicationPolicy
   PARAMS_BY_EVENT = {
       'review_application' => {
           messages_attributes: [:content]
-      }
+      },
+      'send_technical_inputs' => [
+        :ips_de_production
+      ]
   }
 
   def create?

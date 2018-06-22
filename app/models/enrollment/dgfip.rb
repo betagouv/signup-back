@@ -70,6 +70,7 @@ class Enrollment::Dgfip < Enrollment
       'contacts' => contacts,
       'siren' => siren,
       'demarche' => demarche,
+      'ips_de_production' => ips_de_production,
       'donnees' => donnees&.merge('destinataires' => donnees&.fetch('destinataires', {})),
       'state' => state,
       'documents' => documents.as_json(methods: :type),
