@@ -334,6 +334,12 @@ RSpec.describe EnrollmentsController, type: :controller do
             expect(response).to have_http_status(:ok)
             expect(response.content_type).to eq('application/json')
           end
+
+          it 'uploads documents' do
+            expect do
+              put :update, params: { id: enrollment.to_param, enrollment: { documents_attributes: documents_attributes } }
+            end.to change(Document, :count).by(1)
+          end
         end
       end
     end

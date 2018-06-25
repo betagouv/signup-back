@@ -6,8 +6,6 @@ class Enrollment::Dgfip < Enrollment
 
   resourcify
   has_many :messages
-  has_many :documents
-  accepts_nested_attributes_for :documents
 
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do

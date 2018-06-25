@@ -3,8 +3,7 @@
 class Document < ApplicationRecord
   mount_uploader :attachment, DocumentUploader
 
-  belongs_to :enrollment, optional: true
-  belongs_to :dgfip, optional: true, class_name: 'Enrollment::Dgfip'
+  belongs_to :attachable, polymorphic: true
 
   validates_presence_of :type, :attachment
 
@@ -12,14 +11,15 @@ class Document < ApplicationRecord
   after_save :touch_enrollment
 
   default_scope -> { where(archive: false) }
+
   private
 
   def touch_enrollment
-    enrollment.touch
+    attachable.touch
   end
 
   def overwrite
-    enrollment
+    attachable
       .documents
       .where(type: type)
       .update_all(archive: true)

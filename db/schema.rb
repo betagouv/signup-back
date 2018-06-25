@@ -19,10 +19,10 @@ ActiveRecord::Schema.define(version: 20180628152732) do
     t.string "attachment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "enrollment_id"
     t.string "type"
     t.boolean "archive", default: false
-    t.integer "dgfip_id"
+    t.string "attachable_type"
+    t.integer "attachable_id"
   end
 
   create_table "enrollments", force: :cascade do |t|

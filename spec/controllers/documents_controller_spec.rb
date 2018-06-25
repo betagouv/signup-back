@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe DocumentsController do
   let(:enrollment) { create(:enrollment) }
-  let(:document) { create(:document, enrollment: enrollment) }
+  let(:document) { create(:document, attachable: enrollment) }
 
   describe "#show" do
     it "return a 401 with a bad user" do
@@ -46,13 +46,6 @@ RSpec.describe DocumentsController do
           get_path document.attachment.url
 
           expect(response).to have_http_status(:success)
-        end
-
-        it "should reject malicious" do
-          get_path "/uploads/%2Fusr/%2Fusr/%2Fusr/#{document.id}/#{Rails.root.join('app/controllers/enrollments_controller.rb').to_s.gsub('/', '%2F')}"
-
-          expect(response).to have_http_status(:forbidden)
-
         end
       end
     end

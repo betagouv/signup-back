@@ -15,11 +15,8 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
-    (record.pending? && user.has_role?(:applicant, record)) || upload?
-  end
-
-  def upload?
-    record.can_send_technical_inputs? && user.has_role?(:applicant, record)
+    (record.pending? && user.has_role?(:applicant, record)) ||
+      send_technical_inputs?
   end
 
   def send_application?
@@ -72,12 +69,12 @@ class EnrollmentPolicy < ApplicationPolicy
         donnees: [
           :conservation,
           :destinataires
+        ],
+        documents_attributes: [
+          :attachment,
+          :type
         ]
       ])
-    end
-
-    if upload?
-      res.push(documents_attributes: [:attachment, :type])
     end
 
     res

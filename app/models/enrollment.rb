@@ -9,7 +9,7 @@ class Enrollment < ApplicationRecord
 
   has_many :messages
   accepts_nested_attributes_for :messages
-  has_many :documents
+  has_many :documents, as: :attachable
   accepts_nested_attributes_for :documents
 
   # Be aware with the duplication of attribute with type

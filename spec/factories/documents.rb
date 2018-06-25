@@ -3,6 +3,6 @@
 FactoryGirl.define do
   factory :document, class: Document::LegalBasis do
     attachment { Rack::Test::UploadedFile.new(Rails.root.join('spec/resources/test.pdf'), 'application/pdf') }
-    enrollment
+    attachable { create(:enrollment) }
   end
 end
