@@ -1,0 +1,9 @@
+fr:
+  enrollment_mailer:
+    layout:
+      header: Bonjour,
+      footer: L'équipe signup.api.gouv.fr
+    send_application:
+      subject: Nouvelle demande sur signup.api.gouv.fr
+      content: |
+        Vous avez une nouvelle demande sur signup.api.gouv.fr

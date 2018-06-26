@@ -11,6 +11,7 @@ describe CoreAdditions do
           application_reviewer
           technical_inputs_sender
           application_deployer
+          without_job_looper
         ]
       )].each do |event, personified|
         it "should personify event #{event}" do

@@ -19,7 +19,39 @@ RSpec.describe Enrollment::Dgfip, type: :model do
     end.to change { enrollment.messages.count }
   end
 
-   describe 'Workflow' do
+  describe 'enrollment has an applicant' do
+    let(:applicant) { create(:user) }
+    before do
+      applicant.add_role(:applicant, enrollment)
+    end
+
+    describe '#other_party' do
+      describe 'There is an api_particulier_user in database' do
+        let(:api_particulier_user) { create(:user, provider: 'api_particulier') }
+        before do
+          api_particulier_user
+        end
+
+        it 'includes api_particulier_user for applicant' do
+          expect(enrollment.other_party(applicant)).to include(api_particulier_user)
+        end
+
+        it 'includes applicant for api_particulier_user' do
+          expect(enrollment.other_party(api_particulier_user)).to include(applicant)
+        end
+
+        it 'does not includes api_particulier_user for api_particulier_user' do
+          expect(enrollment.other_party(api_particulier_user)).not_to include(api_particulier_user)
+        end
+
+        it 'does not includes applicant for applicant' do
+          expect(enrollment.other_party(applicant)).not_to include(applicant)
+        end
+      end
+    end
+  end
+
+  describe 'Workflow' do
     let(:new_enrollment) { Enrollment::ApiParticulier.new }
     let(:enrollment) { create(:enrollment_api_particulier) }
 
@@ -40,6 +72,15 @@ RSpec.describe Enrollment::Dgfip, type: :model do
         enrollment.send_application
 
         expect(enrollment.state).to eq('sent')
+      end
+
+      it 'performs associated job' do
+        expect_any_instance_of(Enrollment::SendApplicationJob).to receive(:perform_now)
+        enrollment.send_application!(user: create(:user))
+      end
+
+      it "don't perform job if not existing" do
+        enrollment.loop_without_job!
       end
     end
 

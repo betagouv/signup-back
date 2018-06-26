@@ -18,6 +18,20 @@ class Enrollment < ApplicationRecord
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
 
   state_machine :state, initial: :pending do
+    before_transition any => any do |enrollment, transition|
+      event = transition.event.to_s
+
+      user = transition.args.first&.fetch(:user)
+      user&.add_role(event.as_personified_event.to_sym, enrollment)
+
+      begin
+        job_class = "Enrollment::#{event.classify}Job".constantize
+        job_class.perform_now(enrollment, user)
+      rescue NameError => error
+        Rails.logger.debug("No job (#{error.message}) found for #{enrollment.inspect}")
+      end
+    end
+
     state :pending
     state :sent
     state :validated
@@ -48,6 +62,19 @@ class Enrollment < ApplicationRecord
     event :deploy_application do
       transition from: :technical_inputs, to: :deployed
     end
+
+    event :loop_without_job do
+      transition any => same
+    end
+  end
+
+  def other_party(user)
+    if user.has_role?(:applicant, self)
+      provider = self.class.name.underscore.split('/').last
+      return User.where(provider: provider)
+    end
+
+    User.with_role(:applicant, self)
   end
 
   def can_send_technical_inputs?

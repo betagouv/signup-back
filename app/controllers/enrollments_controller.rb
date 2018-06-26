@@ -51,8 +51,7 @@ class EnrollmentsController < ApplicationController
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
 
-    if @enrollment.update(enrollment_trigger_params) && @enrollment.send(event_param.to_sym)
-      current_user.add_role(event_param.as_personified_event.to_sym, @enrollment)
+    if @enrollment.update(enrollment_trigger_params) && @enrollment.send(event_param.to_sym, user: current_user)
       render json: serialize(@enrollment)
     else
       render status: :unprocessable_entity, json: @enrollment.errors
@@ -89,8 +88,7 @@ class EnrollmentsController < ApplicationController
     type = %w[dgfip api-particulier api-entreprise].include?(type) ? type : nil
 
     class_name = type ? "Enrollment::#{type.underscore.classify}" : 'Enrollment'
-    Rails.application.eager_load!
-    Object.const_get(class_name)
+    class_name.constantize
   end
 
   def enrollments_scope
