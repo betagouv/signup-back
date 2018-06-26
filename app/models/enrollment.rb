@@ -3,6 +3,21 @@ class Enrollment < ApplicationRecord
   DOCUMENT_TYPES = %w[
   ].freeze
 
+  STATE_HUMAN_NAMES = {
+      'pending' => 'En attente de soumission',
+      'sent' => 'En attente de validation',
+      'validated' => 'Demande validée',
+      'refused' => 'Demande refusée',
+      'technical_inputs' => 'En attente de déploiement',
+      'deployed' => 'Déployé'
+  }.freeze
+
+  FOURNISSEUR_DE_DONNEES_HUMAN_NAMES = {
+      'api-particulier' => 'API Particulier',
+      'api-entreprise' => 'API Entreprise',
+      'dgfip' => 'API Impôts particulier'
+  }.freeze
+
   validate :abstract_class_validation
   validate :fournisseur_de_donnees_validation
   validate :agreements_validation
@@ -103,6 +118,13 @@ class Enrollment < ApplicationRecord
 
   def self.abstract?
     name == 'Enrollment'
+  end
+
+  def as_json(*params)
+    {
+      'human_state' => STATE_HUMAN_NAMES[state],
+      'human_fournisseur_de_donnees' => FOURNISSEUR_DE_DONNEES_HUMAN_NAMES[fournisseur_de_donnees]
+    }
   end
 
   protected

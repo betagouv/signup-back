@@ -53,7 +53,7 @@ class Enrollment::ApiParticulier < Enrollment
   end
 
   def as_json(*params)
-    {
+    super(*params).merge({
       'id' => id,
       'applicant' => applicant.as_json,
       'fournisseur_de_donnees' => fournisseur_de_donnees,
@@ -66,7 +66,7 @@ class Enrollment::ApiParticulier < Enrollment
       'state' => state,
       'documents' => documents.as_json(methods: :type),
       'messages' => messages.as_json(include: :sender)
-    }
+    })
   end
 
   def short_workflow?

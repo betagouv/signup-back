@@ -48,7 +48,7 @@ class Enrollment::ApiEntreprise < Enrollment
   end
 
   def as_json(*params)
-    {
+    super(*params).merge({
       'id' => id,
       'applicant' => applicant,
       'fournisseur_de_donnees' => fournisseur_de_donnees,
@@ -61,7 +61,7 @@ class Enrollment::ApiEntreprise < Enrollment
       'state' => state,
       'documents' => documents.as_json(methods: :type),
       'messages' => messages.as_json(include: :sender)
-    }
+    })
   end
 
   private
