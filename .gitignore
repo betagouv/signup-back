@@ -30,3 +30,5 @@
 /coverage
 
 rspec_results.html
+
+.idea
