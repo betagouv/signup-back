@@ -9,18 +9,23 @@ class Enrollment::Dgfip < Enrollment
   has_many :documents
   accepts_nested_attributes_for :documents
 
-  validate :initial_validation
-  validate :convention_validated?
-
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
     state :pending
     state :sent do
-      validate :sent_validation
+      validate :fields_validation
 
-      def sent_validation
-        errors[:validation_de_convention] << "Vous devez valider la convention avant de continuer" unless validation_de_convention.present?
-        errors[:fondement_juridique] << "Vous devez renseigner le fondement juridique avant de continuer" unless fondement_juridique.present?
+      def fields_validation
+        %w[dpo technique responsable_traitement]. each do |contact_type|
+          contact = contacts&.find { |e| e['id'] == contact_type }
+          errors[:contacts] << "Vous devez renseigner le #{contact&.fetch('heading', nil)} avant de continuer" unless contact&.fetch('nom', false)&.present? && contact&.fetch('email', false)&.present?
+        end
+
+        errors[:siren] << "Vous devez renseigner le SIREN de votre organisation avant de continuer" unless siren.present?
+        errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche && demarche['description'].present?
+        errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless demarche && demarche['fondement_juridique'].present?
+        errors[:donnees] << "Vous devez renseigner la conservation des données avant de continuer" unless donnees && donnees['conservation'].present?
+        errors[:donnees] << "Vous devez renseigner les destinataires des données avant de continuer" unless donnees && donnees['destinataires'].present?
       end
     end
     state :validated
@@ -58,59 +63,18 @@ class Enrollment::Dgfip < Enrollment
   def as_json(*params)
     {
       'id' => id,
-      'demarche' => {
-        'intitule' => fournisseur_de_service
-      },
-      'applicant' => applicant,
-      'documents' => documents.as_json(methods: :type),
-      'messages' => messages.as_json(include: :sender),
-      'state' => state,
+      'applicant' => applicant.as_json,
       'fournisseur_de_donnees' => fournisseur_de_donnees,
-      'fournisseur_de_service' => fournisseur_de_service,
-      'description_service' => description_service,
-      'fondement_juridique' => fondement_juridique,
-      'scope_dgfip_RFR' => scope_dgfip_RFR,
-      'scope_dgfip_adresse_fiscale_taxation' => scope_dgfip_adresse_fiscale_taxation,
-      'nombre_demandes_annuelle' => nombre_demandes_annuelle,
-      'pic_demandes_par_heure' => pic_demandes_par_heure,
-      'nombre_demandes_mensuelles_jan' => nombre_demandes_mensuelles_jan,
-      'nombre_demandes_mensuelles_fev' => nombre_demandes_mensuelles_fev,
-      'nombre_demandes_mensuelles_mar' => nombre_demandes_mensuelles_mar,
-      'nombre_demandes_mensuelles_avr' => nombre_demandes_mensuelles_avr,
-      'nombre_demandes_mensuelles_mai' => nombre_demandes_mensuelles_mai,
-      'nombre_demandes_mensuelles_jui' => nombre_demandes_mensuelles_jui,
-      'nombre_demandes_mensuelles_jul' => nombre_demandes_mensuelles_jul,
-      'nombre_demandes_mensuelles_aou' => nombre_demandes_mensuelles_aou,
-      'nombre_demandes_mensuelles_sep' => nombre_demandes_mensuelles_sep,
-      'nombre_demandes_mensuelles_oct' => nombre_demandes_mensuelles_oct,
-      'nombre_demandes_mensuelles_nov' => nombre_demandes_mensuelles_nov,
-      'nombre_demandes_mensuelles_dec' => nombre_demandes_mensuelles_dec,
-      'autorite_certification_nom' => autorite_certification_nom,
-      'autorite_certification_fonction' => autorite_certification_fonction,
-      'france_connect' => france_connect,
-      'administration' => administration,
-      'autorisation_legale' => autorisation_legale,
-      'demarche_cnil' => demarche_cnil,
-      'date_homologation' => date_homologation,
-      'date_fin_homologation' => date_fin_homologation,
-      'delegue_protection_donnees' => delegue_protection_donnees,
-      'certificat_pub_production' => certificat_pub_production,
-      'autorite_certification' => autorite_certification,
+      'validation_de_convention' => validation_de_convention,
+      'scopes' => scopes,
+      'contacts' => contacts,
+      'siren' => siren,
+      'demarche' => demarche,
       'ips_de_production' => ips_de_production,
-      'mise_en_production' => mise_en_production,
-      'recette_fonctionnelle' => recette_fonctionnelle,
-      'validation_de_convention' => validation_de_convention
+      'donnees' => donnees&.merge('destinataires' => donnees&.fetch('destinataires', {})),
+      'state' => state,
+      'documents' => documents.as_json(methods: :type),
+      'messages' => messages.as_json(include: :sender)
     }
-  end
-
-  private
-
-  def initial_validation
-    errors[:fournisseur_de_service] << "Vous devez renseigner le fournisseur de service avant de continuer" unless fournisseur_de_service.present?
-    errors[:description_service] << "Vous devez renseigner la description du service avant de continuer" unless description_service.present?
-  end
-
-  def convention_validated?
-    errors[:validation_de_convention] << "Vous devez valider la convention avant de continuer" unless validation_de_convention?
   end
 end
