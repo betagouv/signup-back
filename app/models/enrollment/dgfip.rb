@@ -29,7 +29,11 @@ class Enrollment::Dgfip < Enrollment
     state :validated
     state :refused
     state :technical_inputs do
-      validates_presence_of :ips_de_production
+      validate :fields
+
+      def fields
+        errors[:ips_de_production] << "Vous devez renseigner les IP(s) de production avant de continuer" unless ips_de_production.present?
+      end
     end
     state :deployed
 
