@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 20180628152732) do
     t.boolean "scope_dgfip_RFR"
     t.boolean "scope_dgfip_adresse_fiscale_taxation"
     t.integer "nombre_demandes_annuelle"
-    t.integer "pic_demandes_par_heure"
+    t.integer "pic_demandes_par_seconde"
     t.integer "nombre_demandes_mensuelles_jan"
     t.integer "nombre_demandes_mensuelles_fev"
     t.integer "nombre_demandes_mensuelles_mar"
