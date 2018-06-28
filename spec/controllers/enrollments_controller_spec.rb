@@ -228,8 +228,10 @@ RSpec.describe EnrollmentsController, type: :controller do
                 "destinataire_dgfip_avis_imposition": "Destinaire Test"
                 }},
               "fournisseur_de_donnees": "api-particulier",
+              "human_fournisseur_de_donnees": "#{I18n.t('enrollment.fournisseurs_de_donnees.api-particulier')}",
               "validation_de_convention": true,
               "state": "pending",
+              "human_state": "#{I18n.t('enrollment.states.pending')}",
               "documents": [],
               "messages": []
             }
@@ -379,6 +381,7 @@ RSpec.describe EnrollmentsController, type: :controller do
               res.delete('updated_at')
               res.delete('created_at')
               res.delete('state')
+              res.delete('human_state')
               res.delete('messages')
               res.delete('documents')
               res.delete('acl')
@@ -388,6 +391,7 @@ RSpec.describe EnrollmentsController, type: :controller do
               exp.delete('updated_at')
               exp.delete('created_at')
               exp.delete('state')
+              exp.delete('human_state')
               exp.delete('messages')
               exp.delete('documents')
               exp.delete('acl')
