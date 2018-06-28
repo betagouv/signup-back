@@ -107,6 +107,8 @@ class Enrollment < ApplicationRecord
 
   def as_json(*params)
     {
+      'updated_at' => updated_at,
+      'created_at' => created_at
     }
   end
 
