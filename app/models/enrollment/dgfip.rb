@@ -61,7 +61,7 @@ class Enrollment::Dgfip < Enrollment
   end
 
   def as_json(*params)
-    {
+    super(*params).merge({
       'id' => id,
       'applicant' => applicant.as_json,
       'fournisseur_de_donnees' => fournisseur_de_donnees,
@@ -75,6 +75,6 @@ class Enrollment::Dgfip < Enrollment
       'state' => state,
       'documents' => documents.as_json(methods: :type),
       'messages' => messages.as_json(include: :sender)
-    }
+    })
   end
 end

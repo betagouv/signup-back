@@ -105,6 +105,13 @@ class Enrollment < ApplicationRecord
     name == 'Enrollment'
   end
 
+  def as_json(*params)
+    {
+      'human_state' => I18n.t("enrollment.states.#{state}"),
+      'human_fournisseur_de_donnees' => I18n.t("enrollment.fournisseurs_de_donnees.#{fournisseur_de_donnees}")
+    }
+  end
+
   protected
 
   def fournisseur_de_donnees_validation
