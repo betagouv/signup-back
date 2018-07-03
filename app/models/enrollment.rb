@@ -107,8 +107,8 @@ class Enrollment < ApplicationRecord
 
   def as_json(*params)
     {
-      'human_state' => I18n.t("enrollment.states.#{state}"),
-      'human_fournisseur_de_donnees' => I18n.t("enrollment.fournisseurs_de_donnees.#{fournisseur_de_donnees}")
+      'updated_at' => updated_at,
+      'created_at' => created_at
     }
   end
 

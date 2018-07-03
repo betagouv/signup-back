@@ -10,14 +10,3 @@ fr:
       housing_tax: Données de taxe d'habitation principale
       total_gross_income: Revenu Brut Global / Déficit Brut Global
       world_income: Montant des revenus mondiaux
-    states:
-      pending: En attente de soumission
-      sent: En attente de validation
-      validated: Demande validée
-      refused: Demande refusée
-      technical_inputs: En attente de déploiement
-      deployed: Déployé
-    fournisseurs_de_donnees:
-      api-particulier: API Particulier
-      api-entreprise: API Entreprise
-      dgfip: API Impôts particulier
