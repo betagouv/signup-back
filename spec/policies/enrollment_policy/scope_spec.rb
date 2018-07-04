@@ -2,15 +2,14 @@ require 'rails_helper'
 
 describe EnrollmentPolicy::Scope do
   describe '#resolve' do
-    describe 'with Enrollment::ApiParticulier ActiveRecord::Relation' do
+    describe 'with Enrollment ActiveRecord::Relation' do
       let(:relation) { Enrollment.all }
 
-      describe 'there are api_particulier, api_entreprise and dgfip enrollments in database' do
+      describe 'there are api_particulier and dgfip enrollments in database' do
         let(:api_particulier_enrollments) { create_list(:enrollment_api_particulier, 3) }
         let(:dgfip_enrollments) { create_list(:enrollment_dgfip, 4) }
-        let(:api_entreprise_enrollments) { create_list(:enrollment_api_entreprise, 5) }
         before do
-          api_particulier_enrollments && api_entreprise_enrollments && dgfip_enrollments
+          api_particulier_enrollments && dgfip_enrollments
         end
 
         describe 'with a basic user' do
@@ -40,15 +39,6 @@ describe EnrollmentPolicy::Scope do
           end
         end
 
-        describe 'with a api_entreprise user' do
-          let(:user) { create(:user, provider: 'api_entreprise') }
-          subject { described_class.new(user, relation) }
-
-          it 'returns api_entreprise enrollments' do
-            expect(subject.resolve).to match_array(api_entreprise_enrollments)
-          end
-        end
-
         describe 'with a user applicant of the api_particulier enrollments' do
           let(:user) { create(:user) }
           let(:enrollment) { api_particulier_enrollments.first }
@@ -67,12 +57,11 @@ describe EnrollmentPolicy::Scope do
     describe 'with Enrollment::ApiParticulier ActiveRecord::Relation' do
       let(:relation) { Enrollment::ApiParticulier.all }
 
-      describe 'there are api_particulier, api_entreprise and dgfip enrollments in database' do
+      describe 'there are api_particulier and dgfip enrollments in database' do
         let(:api_particulier_enrollments) { create_list(:enrollment_api_particulier, 3) }
         let(:dgfip_enrollments) { create_list(:enrollment_dgfip, 4) }
-        let(:api_entreprise_enrollments) { create_list(:enrollment_api_entreprise, 5) }
         before do
-          api_particulier_enrollments && api_entreprise_enrollments && dgfip_enrollments
+          api_particulier_enrollments && dgfip_enrollments
         end
 
         describe 'with a basic user' do
@@ -108,59 +97,14 @@ describe EnrollmentPolicy::Scope do
       end
     end
 
-    describe 'with Enrollment::ApiEntreprise ActiveRecord::Relation' do
-      let(:relation) { Enrollment::ApiEntreprise.all }
-
-      describe 'there are api_particulier, api_entreprise and dgfip enrollments in database' do
-        let(:api_particulier_enrollments) { create_list(:enrollment_api_particulier, 3) }
-        let(:dgfip_enrollments) { create_list(:enrollment_dgfip, 4) }
-        let(:api_entreprise_enrollments) { create_list(:enrollment_api_entreprise, 5) }
-        before do
-          api_particulier_enrollments && api_entreprise_enrollments && dgfip_enrollments
-        end
-
-        describe 'with a basic user' do
-          let(:user) { create(:user) }
-          subject { described_class.new(user, relation) }
-
-          it 'returns an empty relation' do
-            expect(subject.resolve).to match_array([])
-          end
-        end
-
-        describe 'with a api_entreprise user' do
-          let(:user) { create(:user, provider: 'api_entreprise') }
-          subject { described_class.new(user, relation) }
-
-          it 'returns api_entreprise enrollments' do
-            expect(subject.resolve).to match_array(api_entreprise_enrollments)
-          end
-        end
-
-        describe 'with a user applicant of the api_entreprise enrollments' do
-          let(:user) { create(:user) }
-          let(:enrollment) { api_entreprise_enrollments.first }
-          subject { described_class.new(user, relation) }
-          before do
-            user.add_role(:applicant, enrollment)
-          end
-
-          it 'returns the enrollment' do
-            expect(subject.resolve).to match_array([enrollment])
-          end
-        end
-      end
-    end
-
     describe 'with Enrollment::Dgfip ActiveRecord::Relation' do
       let(:relation) { Enrollment::Dgfip.all }
 
-      describe 'there are api_particulier, api_entreprise and dgfip enrollments in database' do
+      describe 'there are api_particulier, and dgfip enrollments in database' do
         let(:api_particulier_enrollments) { create_list(:enrollment_api_particulier, 3) }
         let(:dgfip_enrollments) { create_list(:enrollment_dgfip, 4) }
-        let(:api_entreprise_enrollments) { create_list(:enrollment_api_entreprise, 5) }
         before do
-          api_particulier_enrollments && api_entreprise_enrollments && dgfip_enrollments
+          api_particulier_enrollments && dgfip_enrollments
         end
 
         describe 'with a basic user' do

@@ -60,10 +60,9 @@ RSpec.describe EnrollmentsController, type: :controller do
   end
 
   describe 'GET #index' do
-    describe "I have dgfip api_particulier and api_entreprise enrollments" do
+    describe "I have dgfip api_particulier enrollments" do
       let(:dgfip_enrollments) { create_list(:enrollment_dgfip, 3) }
       let(:api_particulier_enrollments) { create_list(:enrollment, 4, fournisseur_de_donnees: 'api-particulier') }
-      let(:api_entreprise_enrollments) { create_list(:enrollment, 5, fournisseur_de_donnees: 'api-entreprise') }
 
       describe "I have a dgfip user" do
         let(:user) { create(:user, provider: 'dgfip') }
@@ -71,7 +70,6 @@ RSpec.describe EnrollmentsController, type: :controller do
         it 'returns the dgfip enrollments' do
           dgfip_enrollments
           api_particulier_enrollments
-          api_entreprise_enrollments
           get :index
 
           json = JSON.parse(response.body)
@@ -85,25 +83,10 @@ RSpec.describe EnrollmentsController, type: :controller do
         it 'returns api_particulier enrollments' do
           dgfip_enrollments
           api_particulier_enrollments
-          api_entreprise_enrollments
           get :index
 
           json = JSON.parse(response.body)
           expect(json.count).to eq(4)
-        end
-      end
-
-      describe "I have a api_entreprise user" do
-        let(:user) { create(:user, provider: 'api_entreprise') }
-
-        it 'returns the api_entreprise enrollments' do
-          dgfip_enrollments
-          api_particulier_enrollments
-          api_entreprise_enrollments
-          get :index
-
-          json = JSON.parse(response.body)
-          expect(json.count).to eq(5)
         end
       end
     end

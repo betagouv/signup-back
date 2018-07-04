@@ -14,7 +14,6 @@ class Enrollment < ApplicationRecord
 
   # Be aware with the duplication of attribute with type
   scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
-  scope :api_entreprise, -> { where(fournisseur_de_donnees: 'api-entreprise') }
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
 
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
@@ -71,6 +70,10 @@ class Enrollment < ApplicationRecord
     event :deploy_application do
       transition from: :technical_inputs, to: :deployed
     end
+
+    event :loop_without_job do
+      transition any => same
+    end
   end
 
   def other_party(user)
@@ -84,6 +87,10 @@ class Enrollment < ApplicationRecord
 
   def applicant
     User.with_role(:applicant, self).first
+  end
+
+  def resource_provider
+    self.class.name.demodulize.underscore
   end
 
   def short_workflow?

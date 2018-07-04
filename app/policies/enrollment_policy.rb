@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class EnrollmentPolicy < ApplicationPolicy
   PARAMS_BY_EVENT = {
       'review_application' => {
@@ -40,33 +38,27 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def send_application?
-    false
-  end
-
-  def validate_application?
-    false
-  end
-
-  def refuse_application?
-    false
-  end
-
-  def deploy_application?
-    false
-  end
-
-  def review_application?
-    false
+    record.can_send_application? && user.has_role?(:applicant, record)
   end
 
   def send_technical_inputs?
-    record.can_send_technical_inputs? &&
-      !record.short_workflow? &&
-      user.has_role?(:applicant, record)
+    record.can_send_technical_inputs? && user.has_role?(:applicant, record)
+  end
+
+  %i[validate_application? review_application? refuse_application? deploy_application?].each do |ability|
+    define_method(ability) do
+      record.send("can_#{ability}") &&
+        user.provided_by?(record.resource_provider)
+    end
   end
 
   def show_technical_inputs?
-    false
+    return false if record.short_workflow?
+    (
+      (
+        record.can_send_technical_inputs? || record.technical_inputs? || record.deployed?
+      ) && user.has_role?(:applicant, record)
+    ) || user.provided_by?(record.resource_provider)
   end
 
   def delete?
@@ -102,8 +94,8 @@ class EnrollmentPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      %w[dgfip api_particulier api_entreprise].each do |provider|
-        return scope.send(provider.to_sym) if user.send("#{provider}?".to_sym)
+      %w[dgfip api_particulier].each do |resource_provider|
+        return scope.send(resource_provider.to_sym) if user.send("#{resource_provider}?".to_sym)
       end
 
       begin

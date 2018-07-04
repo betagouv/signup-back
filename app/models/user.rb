@@ -25,6 +25,10 @@ class User < ApplicationRecord
     ).first_or_create
   end
 
+  def provided_by?(provider)
+    send("#{provider}?")
+  end
+
   def france_connect?
     provider == 'france_connect'
   end
@@ -39,10 +43,6 @@ class User < ApplicationRecord
 
   def api_particulier?
     provider == 'api_particulier'
-  end
-
-  def api_entreprise?
-    provider == 'api_entreprise'
   end
 
   def sent_messages
