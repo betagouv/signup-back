@@ -40,6 +40,7 @@ class EnrollmentsController < ApplicationController
   def update
     @enrollment.attributes = enrollment_params
     authorize @enrollment, :update?
+
     if @enrollment.save
       render json: serialize(@enrollment)
     else
