@@ -17,7 +17,23 @@ class Enrollment < ApplicationRecord
   scope :api_entreprise, -> { where(fournisseur_de_donnees: 'api-entreprise') }
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
 
+  # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
+    state :pending
+    state :sent do
+      validate :sent_validation
+    end
+    state :validated
+    state :refused
+    state :technical_inputs do
+      validate :fields
+
+      def fields
+        errors[:ips_de_production] << "Vous devez renseigner les IP(s) de production avant de continuer" unless ips_de_production.present?
+      end
+    end
+    state :deployed
+
     before_transition any => any do |enrollment, transition|
       event = transition.event.to_s
 
@@ -31,13 +47,6 @@ class Enrollment < ApplicationRecord
         Rails.logger.debug("No job (#{error.message}) found for #{enrollment.inspect}")
       end
     end
-
-    state :pending
-    state :sent
-    state :validated
-    state :refused
-    state :technical_inputs
-    state :deployed
 
     event :send_application do
       transition from: :pending, to: :sent
@@ -62,10 +71,6 @@ class Enrollment < ApplicationRecord
     event :deploy_application do
       transition from: :technical_inputs, to: :deployed
     end
-
-    event :loop_without_job do
-      transition any => same
-    end
   end
 
   def other_party(user)
@@ -75,11 +80,6 @@ class Enrollment < ApplicationRecord
     end
 
     User.with_role(:applicant, self)
-  end
-
-  def can_send_technical_inputs?
-    return false if self.class.abstract?
-    super
   end
 
   def applicant
@@ -105,10 +105,22 @@ class Enrollment < ApplicationRecord
     name == 'Enrollment'
   end
 
-  def as_json(*params)
+  def as_json(*_params)
     {
       'updated_at' => updated_at,
-      'created_at' => created_at
+      'created_at' => created_at,
+      'id' => id,
+      'applicant' => applicant.as_json,
+      'fournisseur_de_donnees' => fournisseur_de_donnees,
+      'validation_de_convention' => validation_de_convention,
+      'scopes' => scopes,
+      'contacts' => contacts,
+      'siren' => siren,
+      'demarche' => demarche,
+      'donnees' => donnees&.merge('destinataires' => donnees&.fetch('destinataires', {})),
+      'state' => state,
+      'documents' => documents.as_json(methods: :type),
+      'messages' => messages.as_json(include: :sender)
     }
   end
 
