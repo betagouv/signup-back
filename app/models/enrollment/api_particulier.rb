@@ -5,20 +5,7 @@ class Enrollment::ApiParticulier < Enrollment
   state_machine :state, initial: :pending do
     state :pending
     state :sent do
-      validate :fields_validation
-
-      def fields_validation
-        %w[dpo technique responsable_traitement]. each do |contact_type|
-          contact = contacts&.find { |e| e['id'] == contact_type }
-          errors[:contacts] << "Vous devez renseigner le #{contact&.fetch('heading', nil)} avant de continuer" unless contact&.fetch('nom', false)&.present? && contact&.fetch('email', false)&.present?
-        end
-
-        errors[:siren] << "Vous devez renseigner le SIREN de votre organisation avant de continuer" unless siren.present?
-        errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche && demarche['description'].present?
-        errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless (demarche && demarche['fondement_juridique'].present?) || documents.where(type: 'Document::LegalBasis').present?
-        errors[:donnees] << "Vous devez renseigner la conservation des données avant de continuer" unless donnees && donnees['conservation'].present?
-        errors[:donnees] << "Vous devez renseigner les destinataires des données avant de continuer" unless donnees && donnees['destinataires'].present?
-      end
+      validate :sent_validation
     end
     state :validated
     state :refused
