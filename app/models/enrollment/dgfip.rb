@@ -1,8 +1,6 @@
 class Enrollment::Dgfip < Enrollment
   resourcify
 
-  has_many :messages
-
   def as_json(*params)
     super(*params).merge({
       'autorite_certification' => autorite_certification,
