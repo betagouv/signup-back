@@ -3,7 +3,7 @@
 class Document < ApplicationRecord
   mount_uploader :attachment, DocumentUploader
 
-  belongs_to :attachable, polymorphic: true
+  belongs_to :attachable, polymorphic: true, optional: true
 
   validates_presence_of :type, :attachment
 

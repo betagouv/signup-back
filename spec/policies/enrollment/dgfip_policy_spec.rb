@@ -8,7 +8,6 @@ describe Enrollment::DgfipPolicy do
     %i[enrollment_dgfip sent_enrollment_dgfip validated_enrollment_dgfip refused_enrollment_dgfip technical_inputs_enrollment_dgfip deployed_enrollment_dgfip],
     user: false,
     user_dgfip: false,
-    user_api_entreprise: false,
     user_api_particulier: false
   )
   permissions :send_application? do
@@ -31,7 +30,6 @@ describe Enrollment::DgfipPolicy do
     %i[enrollment_dgfip validated_enrollment_dgfip refused_enrollment_dgfip technical_inputs_enrollment_dgfip deployed_enrollment_dgfip],
       user: false,
       user_dgfip: false,
-      user_api_entreprise: false,
       user_api_particulier: false
     )
     permissions_by_records_and_users(
@@ -39,7 +37,6 @@ describe Enrollment::DgfipPolicy do
       %i[sent_enrollment_dgfip],
       user: false,
       user_dgfip: true,
-      user_api_entreprise: false,
       user_api_particulier: false
     )
     permissions action do
@@ -62,7 +59,6 @@ describe Enrollment::DgfipPolicy do
     %i[enrollment_dgfip sent_enrollment_dgfip validated_enrollment_dgfip refused_enrollment_dgfip technical_inputs_enrollment_dgfip deployed_enrollment_dgfip],
     user: false,
     user_dgfip: true,
-    user_api_entreprise: false,
     user_api_particulier: false
   )
   permissions :show_technical_inputs? do
@@ -84,7 +80,6 @@ describe Enrollment::DgfipPolicy do
     %i[enrollment_dgfip sent_enrollment_dgfip validated_enrollment_dgfip refused_enrollment_dgfip technical_inputs_enrollment_dgfip deployed_enrollment_dgfip],
     user: false,
     user_dgfip: false,
-    user_api_entreprise: false,
     user_api_particulier: false
   )
   permissions :send_technical_inputs? do
@@ -106,7 +101,6 @@ describe Enrollment::DgfipPolicy do
     %i[enrollment_dgfip sent_enrollment_dgfip validated_enrollment_dgfip refused_enrollment_dgfip deployed_enrollment_dgfip],
     user: false,
     user_dgfip: false,
-    user_api_entreprise: false,
     user_api_particulier: false
   )
   permissions_by_records_and_users(
@@ -114,7 +108,6 @@ describe Enrollment::DgfipPolicy do
     %i[technical_inputs_enrollment_dgfip],
     user: false,
     user_dgfip: true,
-    user_api_entreprise: false,
     user_api_particulier: false
   )
   permissions :deploy_application? do

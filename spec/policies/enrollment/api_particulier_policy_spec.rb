@@ -8,7 +8,6 @@ describe Enrollment::ApiParticulierPolicy do
     %i[enrollment_api_particulier sent_enrollment_api_particulier validated_enrollment_api_particulier refused_enrollment_api_particulier technical_inputs_enrollment_api_particulier deployed_enrollment_api_particulier],
     user: false,
     user_api_particulier: false,
-    user_api_entreprise: false,
     user_dgfip: false
   )
   permissions :send_application? do
@@ -31,7 +30,6 @@ describe Enrollment::ApiParticulierPolicy do
     %i[enrollment_api_particulier validated_enrollment_api_particulier refused_enrollment_api_particulier technical_inputs_enrollment_api_particulier deployed_enrollment_api_particulier],
       user: false,
       user_api_particulier: false,
-      user_api_entreprise: false,
       user_dgfip: false
     )
     permissions_by_records_and_users(
@@ -39,7 +37,6 @@ describe Enrollment::ApiParticulierPolicy do
       %i[sent_enrollment_api_particulier],
       user: false,
       user_api_particulier: true,
-      user_api_entreprise: false,
       user_dgfip: false
     )
     permissions action do
@@ -61,8 +58,7 @@ describe Enrollment::ApiParticulierPolicy do
     :show_technical_inputs?,
     %i[enrollment_api_particulier sent_enrollment_api_particulier validated_enrollment_api_particulier refused_enrollment_api_particulier technical_inputs_enrollment_api_particulier deployed_enrollment_api_particulier],
     user: false,
-    user_api_particulier: true,
-    user_api_entreprise: false,
+    user_api_particulier: false,
     user_dgfip: false
   )
   permissions :show_technical_inputs? do
@@ -74,7 +70,7 @@ describe Enrollment::ApiParticulierPolicy do
       end
 
       it 'allow access' do
-        expect(subject).to permit(user, enrollment)
+        expect(subject).not_to permit(user, enrollment)
       end
     end
   end
@@ -84,7 +80,6 @@ describe Enrollment::ApiParticulierPolicy do
     %i[enrollment_api_particulier sent_enrollment_api_particulier validated_enrollment_api_particulier refused_enrollment_api_particulier technical_inputs_enrollment_api_particulier deployed_enrollment_api_particulier],
     user: false,
     user_api_particulier: false,
-    user_api_entreprise: false,
     user_dgfip: false
   )
   permissions :send_technical_inputs? do
@@ -106,7 +101,6 @@ describe Enrollment::ApiParticulierPolicy do
     %i[enrollment_api_particulier sent_enrollment_api_particulier validated_enrollment_api_particulier refused_enrollment_api_particulier deployed_enrollment_api_particulier],
     user: false,
     user_api_particulier: false,
-    user_api_entreprise: false,
     user_dgfip: false
   )
   permissions_by_records_and_users(
@@ -114,7 +108,6 @@ describe Enrollment::ApiParticulierPolicy do
     %i[technical_inputs_enrollment_api_particulier],
     user: false,
     user_api_particulier: true,
-    user_api_entreprise: false,
     user_dgfip: false
   )
   permissions :deploy_application? do

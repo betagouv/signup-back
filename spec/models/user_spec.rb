@@ -6,7 +6,7 @@ RSpec.describe User, type: :model do
   describe 'with an user' do
     let(:user) { create(:user) }
 
-    %w[service_provider france_connect dgfip api_particulier api_entreprise].each do |provider|
+    %w[service_provider france_connect dgfip api_particulier].each do |provider|
       describe "with a #{provider} provider" do
         subject { create(:user, provider: provider) }
 
@@ -14,7 +14,7 @@ RSpec.describe User, type: :model do
           expect(subject.send("#{provider}?")).to be_truthy
         end
 
-        other_providers = %w[service_provider france_connect dgfip api_particulier api_entreprise]
+        other_providers = %w[service_provider france_connect dgfip api_particulier]
         other_providers.delete(provider)
         other_providers.each do |other_provider|
           it "is not a #{other_provider}" do
