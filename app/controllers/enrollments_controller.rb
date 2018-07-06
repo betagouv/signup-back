@@ -28,12 +28,17 @@ class EnrollmentsController < ApplicationController
 
     authorize @enrollment, :create?
 
-    if @enrollment.save
-      current_user.add_role(:applicant, @enrollment)
-      render json: @enrollment, status: :created, location: enrollment_url(@enrollment)
-    else
-      render json: @enrollment.errors, status: :unprocessable_entity
+    if !@enrollment.save
+      render json: @enrollment.errors, status: :unprocessable_entity and return
     end
+
+    current_user.add_role(:applicant, @enrollment)
+
+    if params[:send]
+      @enrollment.send("send_application", user: current_user)
+    end
+
+    render json: @enrollment, status: :created, location: enrollment_url(@enrollment)
   end
 
   # PATCH/PUT /enrollments/1
@@ -41,11 +46,15 @@ class EnrollmentsController < ApplicationController
     @enrollment.attributes = enrollment_params
     authorize @enrollment, :update?
 
-    if @enrollment.save
-      render json: serialize(@enrollment)
-    else
-      render json: @enrollment.errors, status: :unprocessable_entity
+    if !@enrollment.save
+      render json: @enrollment.errors, status: :unprocessable_entity and return
     end
+
+    if params[:send]
+      @enrollment.send("send_application", user: current_user)
+    end
+
+    render json: serialize(@enrollment)
   end
 
   # PATCH /enrollment/1/trigger
