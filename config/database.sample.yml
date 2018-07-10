@@ -32,7 +32,7 @@ test:
 
 production:
   <<: *default
-  database: <%= ENV.fetch('PG_DB', nil) %>
+  database: <%= ENV.fetch('PG_DATABASE', nil) %>
   host: localhost
   user: <%= ENV.fetch('PG_USER', nil) %>
   password: <%= ENV.fetch('PG_PASSWORD', nil) %>
