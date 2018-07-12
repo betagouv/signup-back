@@ -8,17 +8,8 @@ default: &default
   adapter: postgresql
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
-
-docker:
-  <<: *default
-  database: dgfip_back
-  host: postgres
-  user: postgres
-  password: postgres
-
-development:
-  <<: *default
-  database: dgfip_back-development
+  database: <%= ENV.fetch('PG_DATABASE') %>
+  host: localhost
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -27,9 +18,12 @@ test:
   <<: *default
   database: dgfip_back-test
 
+development:
+  <<: *default
+  user: <%= ENV.fetch('PG_USER') %>
+  password: <%= ENV.fetch('PG_PASSWORD') %>
+
 production:
   <<: *default
-  database: <%= ENV.fetch('PG_DATABASE', nil) %>
-  host: localhost
-  user: <%= ENV.fetch('PG_USER', nil) %>
-  password: <%= ENV.fetch('PG_PASSWORD', nil) %>
+  user: <%= ENV.fetch('PG_USER') %>
+  password: <%= ENV.fetch('PG_PASSWORD') %>

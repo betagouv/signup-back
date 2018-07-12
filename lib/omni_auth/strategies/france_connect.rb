@@ -22,7 +22,7 @@ module OmniAuth
       end
 
       def callback_url
-        "https://#{ENV['SERVER_NAME']}/users/auth/france_connect/callback"
+        "#{ENV['BACK_HOST']}/users/auth/france_connect/callback"
       end
     end
   end

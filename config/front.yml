@@ -1,8 +1,6 @@
 test:
   callback_url: http://test.host
 development:
-  callback_url: http://localhost:4200
-docker:
-  callback_url: http://localhost:3000/dgfip.html
+  callback_url: <%= ENV.fetch('FRONT_HOST') %>/dgfip.html
 production:
-  callback_url: https://signup.api.gouv.fr/dgfip.html
+  callback_url: <%= ENV.fetch('FRONT_HOST') %>/dgfip.html
