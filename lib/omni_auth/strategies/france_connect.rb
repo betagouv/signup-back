@@ -7,7 +7,7 @@ module OmniAuth
     class FranceConnect < OmniAuth::Strategies::OAuth2
       # change the class name and the :name option to match your application name
       option :name, :france_connect
-      option :client_options, YAML.load_file(Rails.root.join('config/omniauth.yml'))[Rails.env]['france_connect']['client_options']
+      option :client_options, YAML.load(ERB.new(File.read(Rails.root.join('config/omniauth.yml'))).result)[Rails.env]['france_connect']['client_options']
 
       option :scope, 'service-providers user'
 
@@ -21,12 +21,8 @@ module OmniAuth
         @raw_info ||= access_token.get('/oauth/v1/userinfo').parsed
       end
 
-      # https://github.com/intridea/omniauth-oauth2/issues/81
       def callback_url
-        if Rails.env.production?
-          return 'https://courtier.particulier.api.gouv.fr/users/auth/france_connect/callback'
-        end
-        full_host + script_name + callback_path
+        "https://#{ENV['SERVER_NAME']}/users/auth/france_connect/callback"
       end
     end
   end
