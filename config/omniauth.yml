@@ -16,59 +16,28 @@ test:
     client_id: 12345
     client_secret: 12345
 
-development:
+default: &default
   resource_provider:
     client_options:
-      site: http://localhost:3001
-      authorize_url: /oauth/authorize
-      me_url: /api/v1/me
-    client_id: 12345
-    client_secret: 12345
-  france_connect:
-    client_options:
-      site: 'https://partenaires.dev.dev-franceconnect.fr'
-      authorize_url: '/oauth/v1/authorize'
-      token_url: '/oauth/v1/token'
-      ssl:
-        verify: false
-    client_id: 12345
-    client_secret: 12345
-
-docker:
-  resource_provider:
-    client_options:
-      site: http://courtier-oauth:3000
-      authorize_url: /oauth/authorize
-      me_url: /api/v1/me
-    client_id: 82546188522214c3577d35c283ce8842786649b35a026a9d44908037a597f29b
-    client_secret: 1ff180ba922fbbbb4cf6fe0d3e82efadaa48a14de454a2137e2d656aac5e97c4
-  france_connect:
-    client_options:
-      site: 'https://partenaires.dev.dev-franceconnect.fr'
-      authorize_url: '/oauth/v1/authorize'
-      token_url: '/oauth/v1/token'
-      ssl:
-        verify: false
-    client_id: <%= ENV['FRANCE_CONNECT_CLIENT_ID'] %>
-    client_secret: <%= ENV['FRANCE_CONNECT_CLIENT_SECRET'] %>
-
-
-production:
-  resource_provider:
-    client_options:
-      site: https://oauth.particulier.api.gouv.fr
+      site: <%= ENV['OAUTH_HOST'] %>
       authorize_url: /oauth/authorize
       me_url: /api/v1/me
       ssl:
-        verify: false
+        verify: false # TODO verify it in production env
     client_id: <%= ENV['RESOURCE_PROVIDER_CLIENT_ID'] %>
     client_secret: <%= ENV['RESOURCE_PROVIDER_CLIENT_SECRET'] %>
   france_connect:
     client_options:
-      site: 'https://partenaires.dev.dev-franceconnect.fr'
+      site: <%= ENV['FRANCE_CONNECT_HOST'] %>
       authorize_url: '/oauth/v1/authorize'
       token_url: '/oauth/v1/token'
       ssl:
-        verify: false
+        verify: false # TODO verify it in production env
     client_id: <%= ENV['FRANCE_CONNECT_CLIENT_ID'] %>
     client_secret: <%= ENV['FRANCE_CONNECT_CLIENT_SECRET'] %>
+
+development:
+  <<: *default
+
+production:
+  <<: *default
