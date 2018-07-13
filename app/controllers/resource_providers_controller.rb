@@ -1,0 +1,20 @@
+class ResourceProvidersController < ApplicationController
+  before_action :set_resource_provider, only: [:show]
+
+  # GET /resource_providers
+  def index
+    @resource_providers = ResourceProvider.all
+    render json: Hash[@resource_providers.group_by(&:resource_provider_type).map { |type, resource_providers| [type, resource_providers.map { |e| e.as_json(include: :scopes) }] }]
+  end
+
+  # GET /resource_providers/1
+  def show
+    render json: @resource_provider.as_json(include: :scopes)
+  end
+
+  private
+
+  def set_resource_provider
+    @resource_provider = ResourceProvider.find(params[:id])
+  end
+end
