@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180628152732) do
+ActiveRecord::Schema.define(version: 20180713093636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,15 +80,6 @@ ActiveRecord::Schema.define(version: 20180628152732) do
     t.integer "dgfip_id"
   end
 
-  create_table "resource_providers", force: :cascade do |t|
-    t.string "short_name"
-    t.string "long_name"
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "resource_provider_type"
-  end
-
   create_table "roles", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -97,17 +88,6 @@ ActiveRecord::Schema.define(version: 20180628152732) do
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
-  end
-
-  create_table "scopes", force: :cascade do |t|
-    t.string "name"
-    t.string "human_name"
-    t.text "description"
-    t.integer "resource_provider_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.json "services", default: [], array: true
-    t.string "node_example"
   end
 
   create_table "users", force: :cascade do |t|

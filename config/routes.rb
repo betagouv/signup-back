@@ -2,7 +2,6 @@
 
 Rails.application.routes.draw do
   scope :api do
-    resources :resource_providers, only: %i[index show]
     resources :enrollments do
       resources :messages
       member do
