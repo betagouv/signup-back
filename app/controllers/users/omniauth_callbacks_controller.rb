@@ -2,7 +2,7 @@
 
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-    FRONT_CONFIG = YAML.load_file(Rails.root.join('config/front.yml'))[Rails.env]
+    FRONT_CONFIG = YAML.load(ERB.new(File.read(Rails.root.join('config/front.yml'))).result)[Rails.env]
 
     def oauth2_callback
       token = request.env['omniauth.auth']['credentials'].token
