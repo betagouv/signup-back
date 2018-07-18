@@ -1,0 +1,4 @@
+user_service_provider:
+  email: service_provider@domain.user
+  uid: 4
+  provider: service_provider

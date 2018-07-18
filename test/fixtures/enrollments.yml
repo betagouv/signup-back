@@ -1,0 +1,20 @@
+<% 1.upto(1000) do |i| %>
+enrollment_<%= i %>:
+  scopes: '{"cnaf_quotient_familial":"1"}'
+  contacts: '{"{\"id\":\"dpo\",\"heading\":\"Délégué à la protection des données\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}","{\"id\":\"responsable_traitement\",\"heading\":\"Responsable de traitement\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}","{\"id\":\"technique\",\"heading\":\"Responsable technique\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}"}'
+  siren: 839517323
+  demarche:
+    intitule: "Enrollement <%= i %>"
+    fondement_juridique: "cadre juridique"
+    description: "Description"
+  donnees:
+    conservation: "2"
+    destinataires:
+      cnaf_quotient_familial: "destinataires"
+  state: <%= ["sent", "pending", "validated", "refused"].sample %>
+  validation_de_convention: true
+  fournisseur_de_donnees: api-particulier
+  type: Enrollment::ApiParticulier
+  updated_at: <%= i.hours.ago.to_s(:db) %>
+  created_at: <%= i.hours.ago.to_s(:db) %>
+<% end %>
