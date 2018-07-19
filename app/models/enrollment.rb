@@ -64,11 +64,11 @@ class Enrollment < ApplicationRecord
     end
 
     event :send_technical_inputs do
-      transition from: :validated, to: :technical_inputs
+      transition from: :validated, to: :technical_inputs, unless: :short_workflow?
     end
 
     event :deploy_application do
-      transition from: :technical_inputs, to: :deployed
+      transition from: :technical_inputs, to: :deployed, unless: :short_workflow?
     end
 
     event :loop_without_job do
