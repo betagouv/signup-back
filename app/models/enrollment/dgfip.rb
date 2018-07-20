@@ -5,8 +5,8 @@ class Enrollment::Dgfip < Enrollment
     super(*params).merge({
       'autorite_certification' => autorite_certification,
       'ips_de_production' => ips_de_production,
-      'autorite_certification_nom' => autorite_certification_nom,
-      'autorite_certification_fonction' => autorite_certification_fonction,
+      'autorite_homologation_nom' => autorite_homologation_nom,
+      'autorite_homologation_fonction' => autorite_homologation_fonction,
       'date_homologation' => date_homologation,
       'date_fin_homologation' => date_fin_homologation,
       'nombre_demandes_annuelle' => nombre_demandes_annuelle,

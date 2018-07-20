@@ -6,8 +6,8 @@ class EnrollmentPolicy < ApplicationPolicy
       'send_technical_inputs' => [
         :autorite_certification,
         :ips_de_production,
-        :autorite_certification_nom,
-        :autorite_certification_fonction,
+        :autorite_homologation_nom,
+        :autorite_homologation_fonction,
         :date_homologation,
         :date_fin_homologation,
         :nombre_demandes_annuelle,

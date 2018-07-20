@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180713093636) do
+ActiveRecord::Schema.define(version: 20180720170026) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,8 +54,8 @@ ActiveRecord::Schema.define(version: 20180713093636) do
     t.integer "nombre_demandes_mensuelles_oct"
     t.integer "nombre_demandes_mensuelles_nov"
     t.integer "nombre_demandes_mensuelles_dec"
-    t.string "autorite_certification_nom"
-    t.string "autorite_certification_fonction"
+    t.string "autorite_homologation_nom"
+    t.string "autorite_homologation_fonction"
     t.date "date_homologation"
     t.date "date_fin_homologation"
     t.string "delegue_protection_donnees"
