@@ -8,7 +8,7 @@ test:
     client_secret: 12345
   france_connect:
     client_options:
-      site: 'https://partenaires.dev.dev-franceconnect.fr'
+      site: <%= ENV['FRANCE_CONNECT_HOST'] %>
       authorize_url: '/oauth/v1/authorize'
       token_url: '/oauth/v1/token'
       ssl:

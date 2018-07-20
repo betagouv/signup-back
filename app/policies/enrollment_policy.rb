@@ -71,6 +71,7 @@ class EnrollmentPolicy < ApplicationPolicy
       res.concat([
         :validation_de_convention,
         :fournisseur_de_donnees,
+        :fournisseur_de_service,
         :siren,
         contacts: [:id, :heading, :nom, :email],
         demarche: [
