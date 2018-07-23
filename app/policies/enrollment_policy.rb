@@ -77,7 +77,8 @@ class EnrollmentPolicy < ApplicationPolicy
         demarche: [
           :intitule,
           :fondement_juridique,
-          :description
+          :description,
+          :url_fondement_juridique
         ],
         donnees: [
           :conservation,
