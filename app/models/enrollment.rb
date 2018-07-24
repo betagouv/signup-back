@@ -7,6 +7,8 @@ class Enrollment < ApplicationRecord
   validate :fournisseur_de_donnees_validation
   validate :agreements_validation
 
+  before_save :clean_and_format_scopes
+
   has_many :messages
   accepts_nested_attributes_for :messages
   has_many :documents, as: :attachable
@@ -133,6 +135,18 @@ class Enrollment < ApplicationRecord
   end
 
   protected
+
+  def clean_and_format_scopes
+    # we need to convert boolean values as it is send as string because of the data-form serialisation
+    self.scopes = scopes.transform_values { |e| e.to_s == "true" }
+
+    # remove the destinataires associated with disabled scopes
+    scopes.each do |key, value|
+      unless value
+        donnees['destinataires'].delete(key.to_s)
+      end
+    end
+  end
 
   def fournisseur_de_donnees_validation
     errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche&.fetch('intitule', nil).present?
