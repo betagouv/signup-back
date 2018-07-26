@@ -43,7 +43,7 @@ class EnrollmentPolicy < ApplicationPolicy
         :fournisseur_de_donnees,
         :fournisseur_de_service,
         :siren,
-        contacts: [:id, :heading, :nom, :email],
+        contacts: [:id, :heading, :nom, :email, :telephone_portable],
         demarche: [
           :intitule,
           :fondement_juridique,
