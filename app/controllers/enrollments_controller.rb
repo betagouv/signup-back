@@ -52,7 +52,11 @@ class EnrollmentsController < ApplicationController
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
 
-    if @enrollment.update(enrollment_trigger_params) && @enrollment.send(event_param.to_sym, user: current_user)
+    if message_params
+      @enrollment.update(message_params)
+    end
+
+    if @enrollment.send(event_param.to_sym, user: current_user)
       render json: serialize(@enrollment)
     else
       render status: :unprocessable_entity, json: @enrollment.errors
@@ -109,10 +113,8 @@ class EnrollmentsController < ApplicationController
     end
   end
 
-  def enrollment_trigger_params
-    params
-      .fetch(:enrollment, {})
-      .permit(EnrollmentPolicy::PARAMS_BY_EVENT[event_param])
+  def message_params
+    params.fetch(:enrollment, {}).permit(messages_attributes: [:content])
   end
 
   def event_param
