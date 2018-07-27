@@ -1,6 +1,6 @@
 test:
   callback_url: http://test.host
 development:
-  callback_url: <%= ENV.fetch('FRONT_HOST') %>/dgfip.html
+  callback_url: <%= ENV.fetch('FRONT_HOST') %>/oauth-callback.html
 production:
-  callback_url: <%= ENV.fetch('FRONT_HOST') %>/dgfip.html
+  callback_url: <%= ENV.fetch('FRONT_HOST') %>/oauth-callback.html
