@@ -1,6 +1,6 @@
 test:
   callback_url: http://test.host
 development:
-  callback_url: <%= ENV.fetch('FRONT_HOST') %>/oauth-callback.html
+  callback_url: <%= ENV.fetch('OAUTH_REDIRECT_URI') %>
 production:
-  callback_url: <%= ENV.fetch('FRONT_HOST') %>/oauth-callback.html
+  callback_url: <%= ENV.fetch('OAUTH_REDIRECT_URI') %>
