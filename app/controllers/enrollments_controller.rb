@@ -52,8 +52,11 @@ class EnrollmentsController < ApplicationController
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
 
-    if message_params
-      @enrollment.update(message_params)
+    if message_params.has_key?(:messages_attributes)
+      params =  {
+        messages_attributes: message_params[:messages_attributes].map! {|h| h.merge(category: event_param.to_s)}
+      }
+      @enrollment.update(params)
     end
 
     if @enrollment.send(event_param.to_sym, user: current_user)
