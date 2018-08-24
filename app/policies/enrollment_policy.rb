@@ -4,11 +4,11 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
-    (record.pending? || (record.validated? && record.can_send_technical_inputs?)) && user.has_role?(:applicant, record)
+    (record.pending? || (record.validated? && record.can_send_technical_inputs?)) && (user.has_role?(:applicant, record) || user.provided_by?(record.resource_provider))
   end
 
   def send_application?
-    record.can_send_application? && user.has_role?(:applicant, record)
+    record.can_send_application? && (user.has_role?(:applicant, record) || user.provided_by?(record.resource_provider))
   end
 
   def send_technical_inputs?
