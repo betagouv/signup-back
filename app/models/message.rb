@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Message < ApplicationRecord
+  enum category: { refuse_application: 0, review_application: 1 }
   belongs_to :enrollment, optional: true
   belongs_to :dgfip, optional: true, class_name: 'Enrollment::Dgfip'
 
