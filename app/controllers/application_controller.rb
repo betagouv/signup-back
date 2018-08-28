@@ -57,7 +57,7 @@ class ApplicationController < ActionController::Base
 
   def authorization_header
     res = request.headers['Authorization'] || session_bearer
-    raise AccessDenied, 'You must privide an authorization header' unless res
+    raise AccessDenied, 'You must provide an authorization header' unless res
     res
   end
 
