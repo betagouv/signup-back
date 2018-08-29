@@ -125,7 +125,7 @@ class Enrollment < ApplicationRecord
       'validation_de_convention' => validation_de_convention,
       'scopes' => scopes,
       'contacts' => contacts,
-      'siren' => siren,
+      'siret' => siret,
       'demarche' => demarche,
       'donnees' => donnees&.merge('destinataires' => donnees&.fetch('destinataires', {})),
       'state' => state,
@@ -163,7 +163,7 @@ class Enrollment < ApplicationRecord
       errors[:contacts] << "Vous devez renseigner le #{contact&.fetch('heading', nil)} avant de continuer" unless contact&.fetch('nom', false)&.present? && contact&.fetch('email', false)&.present?
     end
 
-    errors[:siren] << "Vous devez renseigner le SIREN de votre organisation avant de continuer" unless siren.present?
+    errors[:siret] << "Vous devez renseigner le SIRET de votre organisation avant de continuer" unless siret.present?
     errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche && demarche['description'].present?
     errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless demarche && demarche['fondement_juridique'].present?
     errors[:demarche] << "Vous devez renseigner le document associé au fondement juridique" unless (demarche && demarche['url_fondement_juridique'].present?) || documents.where(type: 'Document::LegalBasis').present?

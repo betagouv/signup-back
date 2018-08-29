@@ -42,7 +42,7 @@ class EnrollmentPolicy < ApplicationPolicy
         :validation_de_convention,
         :fournisseur_de_donnees,
         :fournisseur_de_service,
-        :siren,
+        :siret,
         contacts: [:id, :heading, :nom, :email, :telephone_portable],
         demarche: [
           :intitule,

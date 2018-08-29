@@ -7,7 +7,7 @@ FactoryGirl.define do
     validation_de_convention true
 
     factory :sent_enrollment_api_particulier do
-      siren '12345'
+      siret '12345'
       state 'sent'
       donnees "conservation" => 12, "destinataires" => { "dgfip_avis_imposition" => "Destinaires des données"}
       scopes dgfip_avis_imposition: true
