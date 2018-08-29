@@ -40,13 +40,7 @@ class Enrollment < ApplicationRecord
       user = transition.args.first&.fetch(:user)
       user&.add_role(event.as_personified_event.to_sym, enrollment)
 
-      begin
-        job_class = "Enrollment::SendMailJob".constantize
-        job_class.perform_now(enrollment, user, event)
-      rescue NameError => error
-        Rails.logger.debug("No job (#{error.message}) found for #{enrollment.inspect}")
-      end
-
+      Enrollment::SendMailJob.perform_now(enrollment, user, event)
     end
 
     event :send_application do
