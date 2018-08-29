@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180816122600) do
+ActiveRecord::Schema.define(version: 20180829133613) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20180816122600) do
   create_table "enrollments", force: :cascade do |t|
     t.json "scopes", default: {}
     t.json "contacts", array: true
-    t.string "siren"
+    t.string "siret"
     t.json "demarche"
     t.json "donnees", default: {"destinaires"=>{}}
     t.string "state"

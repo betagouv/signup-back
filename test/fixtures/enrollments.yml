@@ -2,7 +2,7 @@
 enrollment_<%= i %>:
   scopes: '{"cnaf_quotient_familial":"1"}'
   contacts: '{"{\"id\":\"dpo\",\"heading\":\"Délégué à la protection des données\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}","{\"id\":\"responsable_traitement\",\"heading\":\"Responsable de traitement\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}","{\"id\":\"technique\",\"heading\":\"Responsable technique\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}"}'
-  siren: 839517323
+  siret: 839517323
   demarche:
     intitule: "Enrollement <%= i %>"
     fondement_juridique: "cadre juridique"
