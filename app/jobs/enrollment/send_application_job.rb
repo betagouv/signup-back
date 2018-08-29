@@ -1,9 +1,7 @@
-class Enrollment::SendApplicationJob < ApplicationJob
+class Enrollment::SendMailJob < ApplicationJob
   queue_as :default
 
-  def perform(enrollment, user)
-    return unless user.has_role?(:applicant, enrollment)
-
-    EnrollmentMailer.with(user: user, enrollment: enrollment).send_application.deliver_now
+  def perform(enrollment, user, event)
+    EnrollmentMailer.with(user: user, enrollment: enrollment).send(event).deliver_now
   end
 end
