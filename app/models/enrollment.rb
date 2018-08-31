@@ -18,6 +18,9 @@ class Enrollment < ApplicationRecord
   scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
 
+  scope :pending, -> {where.not(state: %w(validated refused))}
+  scope :archived, -> {where(state: %w(validated refused))}
+
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
     state :pending
@@ -26,14 +29,14 @@ class Enrollment < ApplicationRecord
     end
     state :validated
     state :refused
-    state :technical_inputs do
+    state :technical_inputs_pending
+    state :technical_inputs_sent do
       validate :fields
 
       def fields
         errors[:ips_de_production] << "Vous devez renseigner les IP(s) de production avant de continuer" unless ips_de_production.present?
       end
     end
-    state :deployed
 
     after_transition any => any do |enrollment, transition|
       event = transition.event.to_s
@@ -47,10 +50,6 @@ class Enrollment < ApplicationRecord
       transition from: :pending, to: :sent
     end
 
-    event :validate_application do
-      transition from: :sent, to: :validated
-    end
-
     event :refuse_application do
       transition from: :sent, to: :refused
     end
@@ -59,12 +58,17 @@ class Enrollment < ApplicationRecord
       transition from: :sent, to: :pending
     end
 
-    event :send_technical_inputs do
-      transition from: :validated, to: :technical_inputs, unless: :short_workflow?
+    event :validate_application do
+      transition from: :sent, to: :technical_inputs_pending, unless: :short_workflow?
+      transition from: :sent, to: :validated
     end
 
-    event :deploy_application do
-      transition from: :technical_inputs, to: :deployed, unless: :short_workflow?
+    event :send_technical_inputs do
+      transition from: :technical_inputs_pending, to: :technical_inputs_sent, unless: :short_workflow?
+    end
+
+    event :validate_technical_inputs do
+      transition from: :technical_inputs_sent, to: :validated, unless: :short_workflow?
     end
 
     event :loop_without_job do

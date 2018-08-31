@@ -6,7 +6,11 @@ class EnrollmentsController < ApplicationController
 
   # GET /enrollments
   def index
-    @enrollments = enrollments_scope
+    if archived_params
+      @enrollments = enrollments_scope.archived
+    else
+      @enrollments = enrollments_scope.pending
+    end
 
     render json: @enrollments.map { |e| serialize(e) }
   end
@@ -114,6 +118,10 @@ class EnrollmentsController < ApplicationController
         whitelisted_params[:scopes] = scopes.permit! if scopes.present?
         whitelisted_params.fetch(:donnees, {})[:destinataires] = destinataires.permit! if destinataires.present?
     end
+  end
+
+  def archived_params
+    params.fetch(:archived, false)
   end
 
   def message_params
