@@ -51,7 +51,7 @@ class Enrollment < ApplicationRecord
     end
 
     event :refuse_application do
-      transition from: :sent, to: :refused
+      transition :sent => :refused, :pending => :refused
     end
 
     event :review_application do
