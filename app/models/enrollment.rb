@@ -18,6 +18,9 @@ class Enrollment < ApplicationRecord
   scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
 
+  scope :pending, -> {where.not(state: %w(validated refused))}
+  scope :archived, -> {where(state: %w(validated refused))}
+
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
     state :pending
