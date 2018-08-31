@@ -4,7 +4,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
-    (record.pending? || (record.validated? && record.can_send_technical_inputs?)) && (user.has_role?(:applicant, record) || user.provided_by?(record.resource_provider))
+    (record.pending? || record.technical_inputs_pending?) && (user.has_role?(:applicant, record) || user.provided_by?(record.resource_provider))
   end
 
   def send_application?
@@ -15,7 +15,7 @@ class EnrollmentPolicy < ApplicationPolicy
     record.can_send_technical_inputs? && user.has_role?(:applicant, record)
   end
 
-  %i[validate_application? review_application? refuse_application? deploy_application?].each do |ability|
+  %i[validate_application? review_application? refuse_application? validate_technical_inputs?].each do |ability|
     define_method(ability) do
       record.send("can_#{ability}") &&
         user.provided_by?(record.resource_provider)
@@ -23,12 +23,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def show_technical_inputs?
-    return false if record.short_workflow?
-    (
-      (record.can_send_technical_inputs? || record.technical_inputs? || record.deployed?) && user.has_role?(:applicant, record)
-    ) || (
-      (record.validated? || record.technical_inputs? || record.deployed?) && user.provided_by?(record.resource_provider)
-    )
+    !record.short_workflow? && (record.technical_inputs_pending? || record.technical_inputs_sent? || record.validated?)
   end
 
   def delete?
