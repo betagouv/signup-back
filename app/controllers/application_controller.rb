@@ -43,8 +43,8 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def authenticate!
-    @current_user ||= oauth_user
+  def authenticate_user!
+    @current_user ||= request.env['warden'].user || oauth_user
     raise ResourceProvider::AccessDenied, 'User not found' unless current_user
   end
 

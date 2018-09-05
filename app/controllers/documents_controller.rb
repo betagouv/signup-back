@@ -2,7 +2,7 @@
 
 class DocumentsController < ApplicationController
   class BadDocument < StandardError; end
-  before_action :authenticate!
+  acts_as_token_authentication_handler_for User
 
   def show
     @document = Document.find(params[:id])

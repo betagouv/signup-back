@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class EnrollmentsController < ApplicationController
-  before_action :authenticate!
+  acts_as_token_authentication_handler_for User
   before_action :set_enrollment, only: %i[show convention update trigger destroy]
 
   # GET /enrollments
