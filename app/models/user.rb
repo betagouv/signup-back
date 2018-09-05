@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  acts_as_token_authenticatable
   devise :omniauthable, omniauth_providers: %i[resource_provider france_connect]
 
   rolify
