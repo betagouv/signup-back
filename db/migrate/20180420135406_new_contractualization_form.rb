@@ -5,7 +5,7 @@ class NewContractualizationForm < ActiveRecord::Migration[5.1]
     create_table :enrollments do |t|
       t.json :scopes
       t.column :contacts, 'json[]'
-      t.string :siret
+      t.string :siren
       t.json :demarche
       t.json :donnees
       t.string :state
