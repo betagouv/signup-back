@@ -5,16 +5,18 @@ class EnrollmentMailer < ActionMailer::Base
       :send_application => 'Nouvelle demande sur signup.api.gouv.fr',
       :validate_application => 'Votre demande a été validée',
       :review_application => 'Votre demande requiert des modifications',
-      :refuse_application => 'Votre demande a été refusée'
+      :refuse_application => 'Votre demande a été refusée',
+      :update_contacts => 'Contacts modifiés sur signup.api.gouv.fr'
   }
 
-  %i[send_application validate_application review_application refuse_application].each do |action|
+  %i[send_application validate_application review_application refuse_application update_contacts].each do |action|
     define_method(action) do
       recipients = enrollment.other_party(user).map(&:email)
 
       return unless recipients.present?
 
       @email = user.email
+      @id = enrollment.id
       @url = "#{ENV.fetch('FRONT_HOST')}/#{enrollment.fournisseur_de_donnees}/#{enrollment.id}"
       mail(to: recipients, subject: subject[action.to_sym])
     end

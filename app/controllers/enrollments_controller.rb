@@ -62,6 +62,7 @@ class EnrollmentsController < ApplicationController
     else
       render json: @enrollment.errors, status: :unprocessable_entity
     end
+    Enrollment::SendMailJob.perform_now(@enrollment, current_user, :update_contacts)
   end
 
   # PATCH /enrollment/1/trigger
