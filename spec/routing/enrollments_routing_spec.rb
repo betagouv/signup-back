@@ -28,6 +28,10 @@ RSpec.describe EnrollmentsController, type: :routing do
       expect(patch: '/api/enrollments/1').to route_to('enrollments#update', id: '1')
     end
 
+    it 'routes to #update_contacts via PATCH' do
+      expect(patch: '/api/enrollments/1/update_contacts').to route_to('enrollments#update_contacts', id: '1')
+    end
+
     it 'routes to #trigger via PATCH' do
       expect(patch: '/api/enrollments/1/trigger').to route_to('enrollments#trigger', id: '1')
     end

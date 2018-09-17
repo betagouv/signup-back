@@ -7,6 +7,10 @@ class EnrollmentPolicy < ApplicationPolicy
     (record.pending? || record.technical_inputs_pending?) && (user.has_role?(:applicant, record) || user.provided_by?(record.resource_provider))
   end
 
+  def update_contacts?
+    (record.validated?) && (user.has_role?(:applicant, record))
+  end
+
   def send_application?
     record.can_send_application? && (user.has_role?(:applicant, record) || user.provided_by?(record.resource_provider))
   end
@@ -53,6 +57,12 @@ class EnrollmentPolicy < ApplicationPolicy
           :attachment,
           :type
         ]
+      ])
+    end
+
+    if update_contacts?
+      res.concat([
+        contacts: [:id, :heading, :nom, :email, :telephone_portable],   
       ])
     end
 

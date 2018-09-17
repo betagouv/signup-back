@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       member do
         get :convention
         patch :trigger
+        patch :update_contacts
       end
     end
 
