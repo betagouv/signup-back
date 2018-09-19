@@ -1,6 +1,6 @@
 class EnrollmentPolicy < ApplicationPolicy
   def create?
-    user.service_provider?
+    record.pending? && user.service_provider?
   end
 
   def update?
