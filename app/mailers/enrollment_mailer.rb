@@ -16,7 +16,6 @@ class EnrollmentMailer < ActionMailer::Base
       return unless recipients.present?
 
       @email = user.email
-      @id = enrollment.id
       @url = "#{ENV.fetch('FRONT_HOST')}/#{enrollment.fournisseur_de_donnees}/#{enrollment.id}"
       mail(to: recipients, subject: subject[action.to_sym])
     end

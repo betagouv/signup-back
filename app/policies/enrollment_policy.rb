@@ -8,7 +8,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update_contacts?
-    (record.validated?) && (user.has_role?(:applicant, record))
+    record.validated? && user.has_role?(:applicant, record)
   end
 
   def send_application?

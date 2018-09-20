@@ -68,6 +68,7 @@ class EnrollmentsController < ApplicationController
   # PATCH /enrollment/1/trigger
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
+    
     if message_params.has_key?(:messages_attributes)
       params =  {
         messages_attributes: message_params[:messages_attributes].map! {|h| h.merge(category: event_param.to_s)}
