@@ -2,7 +2,7 @@
 
 class EnrollmentsController < ApplicationController
   acts_as_token_authentication_handler_for User
-  before_action :set_enrollment, only: %i[show convention update trigger destroy]
+  before_action :set_enrollment, only: %i[show convention update update_contacts trigger destroy]
 
   # GET /enrollments
   def index
@@ -52,10 +52,23 @@ class EnrollmentsController < ApplicationController
     end
   end
 
+  # PATCH /enrollments/1/update_contacts
+  def update_contacts
+    @enrollment.attributes = enrollment_params
+    authorize @enrollment, :update_contacts?
+
+    if @enrollment.save
+      render json: serialize(@enrollment)
+    else
+      render json: @enrollment.errors, status: :unprocessable_entity
+    end
+    Enrollment::SendMailJob.perform_now(@enrollment, current_user, :update_contacts)
+  end
+
   # PATCH /enrollment/1/trigger
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
-
+    
     if message_params.has_key?(:messages_attributes)
       params =  {
         messages_attributes: message_params[:messages_attributes].map! {|h| h.merge(category: event_param.to_s)}
