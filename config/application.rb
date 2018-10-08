@@ -31,13 +31,6 @@ module DgfipContractualization
 
     config.i18n.default_locale = :fr
 
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        origins '*'
-        resource '*', headers: :any, methods: %i[get post put delete patch options], credentials: false
-      end
-    end
-
     config.public_file_server.enabled = false
   end
 end
