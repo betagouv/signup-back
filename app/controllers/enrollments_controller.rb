@@ -2,7 +2,7 @@
 
 class EnrollmentsController < ApplicationController
   acts_as_token_authentication_handler_for User
-  before_action :set_enrollment, only: %i[show convention update update_contacts trigger destroy]
+  before_action :set_enrollment, only: %i[show update update_contacts trigger destroy]
 
   # GET /enrollments
   def index
@@ -18,12 +18,6 @@ class EnrollmentsController < ApplicationController
   # GET /enrollments/1
   def show
     render json: serialize(@enrollment)
-  end
-
-  # GET /enrollments/1/convention
-  def convention
-    authorize @enrollment, :convention?
-    @filename = 'convention.pdf'
   end
 
   # POST /enrollments
