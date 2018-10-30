@@ -29,14 +29,6 @@ class Enrollment < ApplicationRecord
     end
     state :validated
     state :refused
-    state :technical_inputs_pending
-    state :technical_inputs_sent do
-      validate :fields
-
-      def fields
-        errors[:ips_de_production] << "Vous devez renseigner les IP(s) de production avant de continuer" unless ips_de_production.present?
-      end
-    end
 
     after_transition any => any do |enrollment, transition|
       event = transition.event.to_s
@@ -59,16 +51,7 @@ class Enrollment < ApplicationRecord
     end
 
     event :validate_application do
-      transition from: :sent, to: :technical_inputs_pending, unless: :short_workflow?
       transition from: :sent, to: :validated
-    end
-
-    event :send_technical_inputs do
-      transition from: :technical_inputs_pending, to: :technical_inputs_sent, unless: :short_workflow?
-    end
-
-    event :validate_technical_inputs do
-      transition from: :technical_inputs_sent, to: :validated, unless: :short_workflow?
     end
 
     event :loop_without_job do
@@ -91,10 +74,6 @@ class Enrollment < ApplicationRecord
 
   def resource_provider
     self.class.name.demodulize.underscore
-  end
-
-  def short_workflow?
-    false
   end
 
   def self.with_role(type, user)

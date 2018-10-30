@@ -26,4 +26,11 @@ class Enrollment::Dgfip < Enrollment
       'recette_fonctionnelle' => recette_fonctionnelle
     })
   end
+
+  protected
+
+  def sent_validation
+    super
+    errors[:ips_de_production] << "Vous devez renseigner les IP(s) de production avant de continuer" unless ips_de_production.present?
+  end
 end
