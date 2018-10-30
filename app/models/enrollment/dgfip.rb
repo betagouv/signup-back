@@ -32,5 +32,6 @@ class Enrollment::Dgfip < Enrollment
   def sent_validation
     super
     errors[:ips_de_production] << "Vous devez renseigner les IP(s) de production avant de continuer" unless ips_de_production.present?
+    errors[:recette_fonctionnelle] << "Vous devez attester avoir réaliser une recette fonctionnelle avant de continuer" unless recette_fonctionnelle?
   end
 end
