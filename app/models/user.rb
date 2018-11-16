@@ -46,6 +46,10 @@ class User < ApplicationRecord
     provider == 'api_particulier'
   end
 
+  def franceconnect?
+    provider == 'franceconnect'
+  end
+
   def sent_messages
     Message.with_role(:sender, self)
   end

@@ -16,6 +16,7 @@ class Enrollment < ApplicationRecord
   # Be aware with the duplication of attribute with type
   scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
+  scope :franceconnect, -> { where(fournisseur_de_donnees: 'franceconnect') }
 
   scope :pending, -> {where.not(state: %w(validated refused))}
   scope :archived, -> {where(state: %w(validated refused))}
@@ -144,7 +145,5 @@ class Enrollment < ApplicationRecord
     errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche && demarche['description'].present?
     errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless demarche && demarche['fondement_juridique'].present?
     errors[:demarche] << "Vous devez renseigner le document associé au fondement juridique" unless (demarche && demarche['url_fondement_juridique'].present?) || documents.where(type: 'Document::LegalBasis').present?
-    errors[:donnees] << "Vous devez renseigner la conservation des données avant de continuer" unless donnees && donnees['conservation'].present?
-    errors[:donnees] << "Vous devez renseigner les destinataires des données avant de continuer" unless donnees && donnees['destinataires'].present?
   end
 end
