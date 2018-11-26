@@ -53,6 +53,57 @@ class Enrollment < ApplicationRecord
       transition from: :sent, to: :validated
     end
 
+    before_transition :sent => :validated do |enrollment, transition|
+      if enrollment.fournisseur_de_donnees == 'api-particulier'
+        url = URI("#{ENV.fetch('API_PARTICULIER_HOST') {'https://particulier-development.api.gouv.fr'}}/admin/api/token")
+
+        http = Net::HTTP.new(url.host, url.port)
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+        request = Net::HTTP::Post.new(url)
+        request["content-type"] = 'application/json'
+        request["x-api-key"] = ENV.fetch('API_PARTICULIER_API_KEY')
+
+        email = User.with_role(:applicant, enrollment).map(&:email).first
+
+        name = enrollment.demarche['intitule']
+
+        request.body = "{\"name\": \"#{name}\",\"email\": \"#{email}\",\"signup_id\": \"#{enrollment.id}\"}"
+
+        response = http.request(request)
+
+        if response.code != '200'
+          raise "Error when registering token in api-particulier. Error message was: #{response.read_body} (#{response.code})"
+        end
+
+        token_id = JSON.parse(response.read_body)["_id"]
+        enrollment.update({token_id: token_id})
+
+        database_url = "#{ENV.fetch('API_SCOPES_DOMAIN_NAME') {'scopes-development.api.gouv.fr'}}:#{ENV.fetch('API_SCOPES_DATABASE_PORT') {'27017'}}"
+        database = ENV.fetch('API_SCOPES_DATABASE_NAME') {'scopes'}
+        user = ENV.fetch('API_SCOPES_READWRITE_USER') {'signup'}
+        password = ENV.fetch('API_SCOPES_READWRITE_PASSWORD') {'signup'}
+        client = Mongo::Client.new([database_url], database: database, user: user, password: password)
+
+        collection = client[:scopes]
+
+
+        doc = {
+            scopes: enrollment[:scopes].reject {|k, v| !v}.keys,
+            client_id: token_id,
+            provider: 'api-particulier',
+            signup_id: enrollment.id
+        }
+
+        result = collection.insert_one(doc)
+        if result.n != 1
+          raise "Error when registering token in api-scope."
+        end
+        client.close
+      end
+    end
+
     event :loop_without_job do
       transition any => same
     end
@@ -106,7 +157,8 @@ class Enrollment < ApplicationRecord
       'donnees' => donnees&.merge('destinataires' => donnees&.fetch('destinataires', {})),
       'state' => state,
       'documents' => documents.as_json(methods: :type),
-      'messages' => messages.as_json(include: :sender)
+      'messages' => messages.as_json(include: :sender),
+      'token_id' => token_id
     }
   end
 
