@@ -3,8 +3,7 @@ class Enrollment < ApplicationRecord
   DOCUMENT_TYPES = %w[
   ].freeze
 
-  validate :abstract_class_validation
-  validate :fournisseur_de_donnees_validation
+  validate :update_validation
 
   before_save :clean_and_format_scopes
 
@@ -125,13 +124,11 @@ class Enrollment < ApplicationRecord
     end
   end
 
-  def fournisseur_de_donnees_validation
+  def update_validation
+    errors[:base] << "Vous devez fournir un type d'enrôlement" if self.class.abstract?
     errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche&.fetch('intitule', nil).present?
     errors[:fournisseur_de_donnees] << "Vous devez renseigner le fournisseur de données avant de continuer" unless fournisseur_de_donnees.present?
-  end
-
-  def abstract_class_validation
-    errors[:base] << "Vous devez fournir un type d'enrôlement" if self.class.abstract?
+    errors[:siret] << "Vous devez renseigner le SIRET de votre organisation avant de continuer" unless siret.present?
   end
 
   def sent_validation
@@ -141,7 +138,6 @@ class Enrollment < ApplicationRecord
     end
 
     errors[:validation_de_convention] << "Vous devez valider les modalités d'utilisation avant de continuer" unless validation_de_convention?
-    errors[:siret] << "Vous devez renseigner le SIRET de votre organisation avant de continuer" unless siret.present?
     errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche && demarche['description'].present?
     errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless demarche && demarche['fondement_juridique'].present?
     errors[:demarche] << "Vous devez renseigner le document associé au fondement juridique" unless (demarche && demarche['url_fondement_juridique'].present?) || documents.where(type: 'Document::LegalBasis').present?
