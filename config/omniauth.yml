@@ -24,8 +24,8 @@ default: &default
       me_url: /api/v1/me
       ssl:
         verify: false # TODO verify it in production env
-    client_id: <%= ENV['RESOURCE_PROVIDER_CLIENT_ID'] %>
-    client_secret: <%= ENV['RESOURCE_PROVIDER_CLIENT_SECRET'] %>
+    client_id: <%= ENV['SIGNUP_OAUTH_CLIENT_ID'] %>
+    client_secret: <%= ENV['SIGNUP_OAUTH_CLIENT_SECRET'] %>
   france_connect:
     client_options:
       site: <%= ENV['FRANCE_CONNECT_HOST'] %>
