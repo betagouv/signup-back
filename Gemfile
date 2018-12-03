@@ -27,6 +27,7 @@ gem 'rolify'
 gem 'rubyzip'
 gem 'simple_token_authentication', '~> 1.15'
 gem 'state_machines-activerecord'
+gem 'mongo', '2.5.1'
 
 group :development, :test do
   gem 'database_cleaner'
