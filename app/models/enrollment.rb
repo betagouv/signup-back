@@ -6,6 +6,7 @@ class Enrollment < ApplicationRecord
   validate :update_validation
 
   before_save :clean_and_format_scopes
+  before_save :set_company_info
 
   has_many :messages
   accepts_nested_attributes_for :messages
@@ -65,9 +66,9 @@ class Enrollment < ApplicationRecord
         request["content-type"] = 'application/json'
         request["x-api-key"] = ENV.fetch('API_PARTICULIER_API_KEY')
 
-        email = User.with_role(:applicant, enrollment).map(&:email).first
+        email = enrollment.contacts.select { |contact| contact['id'] == 'technique' }.first['email']
 
-        name = enrollment.demarche['intitule']
+        name = "#{enrollment.nom_raison_sociale} - #{enrollment.id}"
 
         request.body = "{\"name\": \"#{name}\",\"email\": \"#{email}\",\"signup_id\": \"#{enrollment.id}\"}"
 
@@ -176,6 +177,25 @@ class Enrollment < ApplicationRecord
     end
   end
 
+  def set_company_info
+    url = URI("https://sirene.entreprise.api.gouv.fr/v1/siret/#{siret}")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    request = Net::HTTP::Get.new(url)
+
+    response = http.request(request)
+
+    if response.code == '200'
+      nom_raison_sociale = JSON.parse(response.read_body)["etablissement"]["nom_raison_sociale"]
+      self.nom_raison_sociale = nom_raison_sociale
+    else
+      self.nom_raison_sociale = nil
+    end
+  end
+
   def update_validation
     errors[:base] << "Vous devez fournir un type d'enrôlement" if self.class.abstract?
     errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche&.fetch('intitule', nil).present?
@@ -189,6 +209,7 @@ class Enrollment < ApplicationRecord
       errors[:contacts] << "Vous devez renseigner le #{contact&.fetch('heading', nil)} avant de continuer" unless contact&.fetch('nom', false)&.present? && contact&.fetch('email', false)&.present?
     end
 
+    errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
     errors[:validation_de_convention] << "Vous devez valider les modalités d'utilisation avant de continuer" unless validation_de_convention?
     errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche && demarche['description'].present?
     errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless demarche && demarche['fondement_juridique'].present?
