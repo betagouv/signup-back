@@ -17,6 +17,7 @@ class Enrollment < ApplicationRecord
   scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
   scope :franceconnect, -> { where(fournisseur_de_donnees: 'franceconnect') }
+  scope :api_droits_cnam, -> { where(fournisseur_de_donnees: 'api-droits-cnam') }
 
   scope :pending, -> {where.not(state: %w(validated refused))}
   scope :archived, -> {where(state: %w(validated refused))}
