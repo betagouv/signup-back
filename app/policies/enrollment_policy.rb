@@ -63,7 +63,7 @@ class EnrollmentPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      %w[dgfip api_particulier franceconnect].each do |resource_provider|
+      %w[dgfip api_particulier franceconnect api_droits_cnam].each do |resource_provider|
         return scope.send(resource_provider.to_sym) if user.send("#{resource_provider}?".to_sym)
       end
 

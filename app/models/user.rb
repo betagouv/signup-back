@@ -50,6 +50,10 @@ class User < ApplicationRecord
     provider == 'franceconnect'
   end
 
+  def api_droits_cnam?
+    provider == 'api_droits_cnam'
+  end
+
   def sent_messages
     Message.with_role(:sender, self)
   end
