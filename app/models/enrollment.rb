@@ -179,7 +179,8 @@ class Enrollment < ApplicationRecord
   end
 
   def set_company_info
-    url = URI("https://sirene.entreprise.api.gouv.fr/v1/siret/#{siret}")
+    escapedSpacelessSiret = CGI.escape(siret.delete(" \t\r\n"))
+    url = URI("https://sirene.entreprise.api.gouv.fr/v1/siret/#{escapedSpacelessSiret}")
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
