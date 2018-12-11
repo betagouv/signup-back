@@ -4,7 +4,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
-    record.pending? && (user.has_role?(:applicant, record) || user.provided_by?(record.resource_provider))
+    record.pending? && user.has_role?(:applicant, record)
   end
 
   def update_contacts?
@@ -12,7 +12,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def send_application?
-    record.can_send_application? && (user.has_role?(:applicant, record) || user.provided_by?(record.resource_provider))
+    record.can_send_application? && user.has_role?(:applicant, record)
   end
 
   %i[validate_application? review_application? refuse_application?].each do |ability|
@@ -64,7 +64,7 @@ class EnrollmentPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       %w[dgfip api_particulier franceconnect api_droits_cnam].each do |resource_provider|
-        return scope.send(resource_provider.to_sym) if user.send("#{resource_provider}?".to_sym)
+        return scope.no_draft.send(resource_provider.to_sym) if user.send("#{resource_provider}?".to_sym)
       end
 
       begin

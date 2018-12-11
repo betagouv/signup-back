@@ -19,6 +19,7 @@ class Enrollment < ApplicationRecord
   scope :franceconnect, -> { where(fournisseur_de_donnees: 'franceconnect') }
   scope :api_droits_cnam, -> { where(fournisseur_de_donnees: 'api-droits-cnam') }
 
+  scope :no_draft, -> {where.not(state: %w(pending))}
   scope :pending, -> {where.not(state: %w(validated refused))}
   scope :archived, -> {where(state: %w(validated refused))}
 
