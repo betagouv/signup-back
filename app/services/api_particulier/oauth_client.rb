@@ -2,11 +2,10 @@
 
 class ApiParticulier::OauthClient
   attr_reader :me_url
-  OMNIAUTH_CONFIG = YAML.load(ERB.new(File.read(Rails.root.join('config/omniauth.yml'))).result)[Rails.env]['resource_provider']
 
   def initialize
-    base_url = OMNIAUTH_CONFIG['client_options']['site']
-    @me_url = OMNIAUTH_CONFIG['client_options']['me_url']
+    base_url = ENV['OAUTH_HOST']
+    @me_url = '/oauth/userinfo'
 
     @conn = Faraday.new(base_url, ssl: { verify: false }) do |conn|
       conn.response :json, content_type: /\bjson$/
@@ -21,10 +20,10 @@ class ApiParticulier::OauthClient
         req.headers['Authorization'] = "Bearer #{token}"
       end
 
-      raise ApiParticulier::AccessDenied, res.body unless res.success?
-      User.from_service_provider_omniauth(res.body)
+      raise ApplicationController::AccessDenied, res.body unless res.success?
+      User.from_service_provider_omniauth({info: res.body})
     end
   rescue StandardError => e
-    raise ApiParticulier::AccessDenied, e.message
+    raise ApplicationController::AccessDenied, e.message
   end
 end
