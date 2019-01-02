@@ -15,20 +15,6 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  rescue_from ApiParticulier::AccessDenied do |e|
-    render status: :unauthorized, json: {
-      message: "Vous n'êtes pas autorisé à accéder à cette API",
-      detail: e.message
-    }
-  end
-
-  rescue_from 'FranceConnect::AccessDenied' do |e|
-    render status: :unauthorized, json: {
-      message: "Vous n'êtes pas autorisé à accéder à cette API",
-      detail: e.message
-    }
-  end
-
   rescue_from Pundit::NotAuthorizedError do |_|
     render status: :forbidden, json: {
       message: ["Vous n'êtes pas autorisé à modifier cette ressource"]
@@ -45,7 +31,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user!
     @current_user ||= request.env['warden'].user || oauth_user
-    raise ResourceProvider::AccessDenied, 'User not found' unless current_user
+    raise ApplicationController::AccessDenied, 'User not found' unless current_user
   end
 
   def oauth_user

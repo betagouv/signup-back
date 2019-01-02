@@ -5,13 +5,20 @@ require 'omniauth-oauth2'
 module OmniAuth
   module Strategies
     class FranceConnect < OmniAuth::Strategies::OAuth2
-      # change the class name and the :name option to match your application name
       option :name, :france_connect
-      option :client_options, YAML.load(ERB.new(File.read(Rails.root.join('config/omniauth.yml'))).result)[Rails.env]['france_connect']['client_options']
+
+      option :client_options, {
+        site: ENV['FRANCE_CONNECT_HOST'],
+        authorize_url: '/oauth/v1/authorize',
+        token_url: '/oauth/v1/token',
+        ssl: {
+          verify: false # TODO verify it in production env
+        }
+      }
 
       option :scope, 'service-providers user'
 
-      uid { raw_info['id'] }
+      uid {raw_info['id']}
 
       info do
         raw_info['user']

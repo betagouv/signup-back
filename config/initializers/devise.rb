@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require Rails.root.join('lib/omni_auth/strategies/france_connect')
-require Rails.root.join('lib/omni_auth/strategies/dgfip')
 require Rails.root.join('lib/omni_auth/strategies/resource_provider')
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
@@ -256,19 +255,15 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
 
-  OMNIAUTH_CONFIG = YAML.load(ERB.new(File.read(Rails.root.join('config/omniauth.yml'))).result)[Rails.env]
-  resource_provider_config = OMNIAUTH_CONFIG['resource_provider']
   config.omniauth(
     :resource_provider,
-    resource_provider_config['client_id'],
-    resource_provider_config['client_secret'],
-    provider_ignores_state: true
+    ENV['SIGNUP_OAUTH_CLIENT_ID'],
+    ENV['SIGNUP_OAUTH_CLIENT_SECRET']
   )
-  france_connect_config = OMNIAUTH_CONFIG['france_connect']
   config.omniauth(
     :france_connect,
-    france_connect_config['client_id'],
-    france_connect_config['client_secret']
+    ENV['FRANCE_CONNECT_CLIENT_ID'],
+    ENV['FRANCE_CONNECT_CLIENT_SECRET']
   )
 
   # ==> Warden configuration

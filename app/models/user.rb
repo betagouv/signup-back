@@ -7,13 +7,16 @@ class User < ApplicationRecord
   rolify
 
   def self.from_service_provider_omniauth(data)
+    # note that api-auth sub might conflict with franceconnect uid
+    # we should use the provider field to mitigate that
+    # it is used as the role field for now
     user = where(
-      provider: data['account_type'],
-      uid: data['uid']
+      uid: data[:info]['sub']
     ).first_or_create
     user.update(
-      oauth_roles: data['roles'],
-      email: data['email'] || ''
+      oauth_roles: data[:info]['roles'],
+      email: data[:info]['email'],
+      provider: data[:info]['legacy_account_type']
     )
     user
   end

@@ -7,28 +7,28 @@ module OmniAuth
     class ResourceProvider < OmniAuth::Strategies::OAuth2
       option :name, :resource_provider
 
-      option :client_options, YAML.load(ERB.new(File.read(Rails.root.join('config/omniauth.yml'))).result)[Rails.env]['resource_provider']['client_options']
-      option :scope, 'enrollments user'
+      option :client_options, {
+        site: ENV['OAUTH_HOST'],
+        authorize_url: '/oauth/authorize',
+        auth_scheme: :basic_auth,
+        ssl: {
+          verify: false # TODO verify it in production env
+        }
+      }
+      option :scope, 'openid email roles'
 
-      uid { raw_info['id'] }
+      uid {raw_info['sub']}
 
       info do
-        {
-          email: raw_info['email'],
-          roles: raw_info['roles']
-        }
+        raw_info
       end
 
       def raw_info
-        @raw_info ||= access_token.get('/api/v1/me.json').parsed
+        @raw_info ||= access_token.get('/oauth/userinfo').parsed
       end
 
-      # https://github.com/intridea/omniauth-oauth2/issues/81
       def callback_url
-        if Rails.env.production?
-          return 'https://impots.particulier.api.gouv.fr/users/auth/resource_provider/callback'
-        end
-        full_host + script_name + callback_path
+        "#{ENV['BACK_HOST']}/users/auth/resource_provider/callback"
       end
     end
   end
