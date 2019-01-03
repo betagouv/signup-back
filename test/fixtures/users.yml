@@ -1,4 +1,4 @@
 user_service_provider:
   email: service_provider@domain.user
-  uid: 4
+  uid: 1
   provider: service_provider
