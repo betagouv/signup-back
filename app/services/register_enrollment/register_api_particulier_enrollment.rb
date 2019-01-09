@@ -10,7 +10,7 @@ class RegisterApiParticulierEnrollment < RegisterEnrollmentService
     @enrollment.update({token_id: token_id})
 
     scopes = @enrollment[:scopes].reject {|k, v| !v}.keys
-    register_enrollment_in_api_scopes(@enrollment.id, token_id, 'api-particulier', scopes)
+    register_enrollment_in_api_scopes(@enrollment.id.to_s, token_id, 'api-particulier', scopes)
   end
 
   private

@@ -9,7 +9,7 @@ class RegisterFranceconnectEnrollment < RegisterEnrollmentService
     create_enrollment_in_token_manager(@enrollment.id, name, email)
 
     scopes = @enrollment[:scopes].reject {|k, v| !v}.keys
-    register_enrollment_in_api_scopes(@enrollment.id, nil, 'franceconnect', scopes)
+    register_enrollment_in_api_scopes(@enrollment.id.to_s, nil, 'franceconnect', scopes)
   end
 
   private
