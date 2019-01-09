@@ -58,52 +58,11 @@ class Enrollment < ApplicationRecord
 
     before_transition :sent => :validated do |enrollment, transition|
       if enrollment.fournisseur_de_donnees == 'api-particulier'
-        url = URI("#{ENV.fetch('API_PARTICULIER_HOST') {'https://particulier-development.api.gouv.fr'}}/admin/api/token")
+        RegisterApiParticulierEnrollment.call(enrollment)
+      end
 
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-        request = Net::HTTP::Post.new(url)
-        request["content-type"] = 'application/json'
-        request["x-api-key"] = ENV.fetch('API_PARTICULIER_API_KEY')
-
-        email = enrollment.contacts.select { |contact| contact['id'] == 'technique' }.first['email']
-
-        name = "#{enrollment.nom_raison_sociale} - #{enrollment.id}"
-
-        request.body = "{\"name\": \"#{name}\",\"email\": \"#{email}\",\"signup_id\": \"#{enrollment.id}\"}"
-
-        response = http.request(request)
-
-        if response.code != '200'
-          raise "Error when registering token in api-particulier. Error message was: #{response.read_body} (#{response.code})"
-        end
-
-        token_id = JSON.parse(response.read_body)["_id"]
-        enrollment.update({token_id: token_id})
-
-        database_url = "#{ENV.fetch('API_SCOPES_DOMAIN_NAME') {'scopes-development.api.gouv.fr'}}:#{ENV.fetch('API_SCOPES_DATABASE_PORT') {'27017'}}"
-        database = ENV.fetch('API_SCOPES_DATABASE_NAME') {'scopes'}
-        user = ENV.fetch('API_SCOPES_READWRITE_USER') {'signup'}
-        password = ENV.fetch('API_SCOPES_READWRITE_PASSWORD') {'signup'}
-        client = Mongo::Client.new([database_url], database: database, user: user, password: password)
-
-        collection = client[:scopes]
-
-
-        doc = {
-            scopes: enrollment[:scopes].reject {|k, v| !v}.keys,
-            client_id: token_id,
-            provider: 'api-particulier',
-            signup_id: enrollment.id
-        }
-
-        result = collection.insert_one(doc)
-        if result.n != 1
-          raise "Error when registering token in api-scope."
-        end
-        client.close
+      if ENV.fetch('ENABLE_REGISTER_FRANCECONNECT_ENROLLMENT') == 'True' && enrollment.fournisseur_de_donnees == 'franceconnect'
+        RegisterFranceconnectEnrollment.call(enrollment)
       end
     end
 

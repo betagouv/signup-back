@@ -262,8 +262,8 @@ Devise.setup do |config|
   )
   config.omniauth(
     :france_connect,
-    ENV['FRANCE_CONNECT_CLIENT_ID'],
-    ENV['FRANCE_CONNECT_CLIENT_SECRET']
+    ENV['FRANCECONNECT_PARTENAIRES_CLIENT_ID'],
+    ENV['FRANCECONNECT_PARTENAIRES_CLIENT_SECRET']
   )
 
   # ==> Warden configuration

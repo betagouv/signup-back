@@ -8,7 +8,7 @@ module OmniAuth
       option :name, :france_connect
 
       option :client_options, {
-        site: ENV['FRANCE_CONNECT_HOST'],
+        site: ENV['FRANCECONNECT_PARTENAIRES_HOST'],
         authorize_url: '/oauth/v1/authorize',
         token_url: '/oauth/v1/token',
         ssl: {
