@@ -136,6 +136,9 @@ class Enrollment < ApplicationRecord
         donnees['destinataires'].delete(key.to_s)
       end
     end
+
+    # in a similar way, format dgfip_data_years
+    self.donnees['dgfip_data_years'] = donnees['dgfip_data_years'].transform_values { |e| e.to_s == "true" }
   end
 
   def set_company_info
