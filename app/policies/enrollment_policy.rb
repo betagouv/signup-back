@@ -43,7 +43,11 @@ class EnrollmentPolicy < ApplicationPolicy
         ],
         donnees: [
           :conservation,
-          :destinataires
+          :destinataires,
+          dgfip_data_years: [
+            :n_moins_1,
+            :n_moins_2
+          ],
         ],
         documents_attributes: [
           :attachment,
