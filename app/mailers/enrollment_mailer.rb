@@ -1,5 +1,5 @@
 class EnrollmentMailer < ActionMailer::Base
-  default from: %("API Particulier" <contact@particulier.api.gouv.fr>), charset: 'UTF-8'
+  default charset: 'UTF-8'
 
   subject = {
       :send_application => 'Nouvelle demande sur signup.api.gouv.fr',
@@ -15,9 +15,18 @@ class EnrollmentMailer < ActionMailer::Base
 
       return unless recipients.present?
 
+      sender = case enrollment.fournisseur_de_donnees
+        when "franceconnect" then "support.partenaires@franceconnect.gouv.fr"
+        when "dgfip" then "contact@api.gouv.fr"
+        when "api-particulier" then "contact@particulier.api.gouv.fr"
+        when "api_droits_cnam" then "contact@api.gouv.fr"
+        else
+          "contact@api.gouv.fr"
+        end
+
       @email = user.email
       @url = "#{ENV.fetch('FRONT_HOST')}/#{enrollment.fournisseur_de_donnees}/#{enrollment.id}"
-      mail(to: recipients, subject: subject[action.to_sym])
+      mail(to: recipients, subject: subject[action.to_sym], from: sender)
     end
   end
 
