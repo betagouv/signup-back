@@ -110,7 +110,7 @@ class Enrollment < ApplicationRecord
       'id' => id,
       'applicant' => applicant.as_json,
       'fournisseur_de_donnees' => fournisseur_de_donnees,
-      'fournisseur_de_service' => fournisseur_de_service,
+      'linked_franceconnect_enrollment_id' => linked_franceconnect_enrollment_id,
       'validation_de_convention' => validation_de_convention,
       'scopes' => scopes,
       'contacts' => contacts,

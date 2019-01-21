@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181206081635) do
+ActiveRecord::Schema.define(version: 20190121165425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,7 +35,6 @@ ActiveRecord::Schema.define(version: 20181206081635) do
     t.boolean "validation_de_convention"
     t.string "fournisseur_de_donnees"
     t.string "type"
-    t.string "fournisseur_de_service"
     t.string "description_service"
     t.string "fondement_juridique"
     t.boolean "scope_dgfip_RFR"
@@ -73,6 +72,7 @@ ActiveRecord::Schema.define(version: 20181206081635) do
     t.string "url_fondement_juridique"
     t.string "token_id"
     t.string "nom_raison_sociale"
+    t.integer "linked_franceconnect_enrollment_id"
   end
 
   create_table "messages", force: :cascade do |t|
