@@ -30,7 +30,7 @@ class RegisterFranceconnectEnrollment < RegisterEnrollmentService
     response = http.request(request)
 
     if response.code != '200'
-      raise "Error when registering token in api-particulier. Error message was: #{response.read_body} (#{response.code})"
+      raise "Error when registering the FS on FranceConnect. Error message was: #{response.read_body} (#{response.code})"
     end
 
     # The id returned here is the signup id. It is not a generated id from "espace partenaires".
