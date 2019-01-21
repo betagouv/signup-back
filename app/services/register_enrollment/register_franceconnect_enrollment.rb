@@ -23,7 +23,7 @@ class RegisterFranceconnectEnrollment < RegisterEnrollmentService
     request = Net::HTTP::Post.new(url)
     request["content-type"] = 'application/json'
     request["cache-control"] = 'no-cache'
-    request["authorization"] = "Basic #{ENV.fetch('FRANCECONNECT_PARTICULIER_API_KEY') {''}}"
+    request["authorization"] = "Bearer #{ENV.fetch('FRANCECONNECT_PARTICULIER_API_KEY') {''}}"
 
     request.body = "{\"name\": \"#{name}\",\"authorized_emails\": [\"#{email}\"],\"signup_id\": \"#{id}\"}"
 
