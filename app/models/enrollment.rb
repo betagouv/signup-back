@@ -40,6 +40,9 @@ class Enrollment < ApplicationRecord
       user&.add_role(event.as_personified_event.to_sym, enrollment)
 
       Enrollment::SendMailJob.perform_now(enrollment, user, event)
+      if event == 'send_application'
+        Enrollment::SendMailJob.perform_now(enrollment, user, 'send_application_feedback')
+      end
     end
 
     event :send_application do

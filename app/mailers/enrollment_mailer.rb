@@ -6,13 +6,17 @@ class EnrollmentMailer < ActionMailer::Base
       :validate_application => 'Votre demande a été validée',
       :review_application => 'Votre demande requiert des modifications',
       :refuse_application => 'Votre demande a été refusée',
-      :update_contacts => 'Contacts modifiés sur signup.api.gouv.fr'
+      :update_contacts => 'Contacts modifiés sur signup.api.gouv.fr',
+      :send_application_feedback => "Nous avons bien reçu votre demande d'accès"
   }
 
-  %i[send_application validate_application review_application refuse_application update_contacts].each do |action|
+  %i[send_application validate_application review_application refuse_application update_contacts send_application_feedback].each do |action|
     define_method(action) do
       recipients = enrollment.other_party(user).map(&:email)
 
+      if action.to_sym == :send_application_feedback
+        recipients = user.email
+      end
       return unless recipients.present?
 
       sender = case enrollment.fournisseur_de_donnees
@@ -22,6 +26,15 @@ class EnrollmentMailer < ActionMailer::Base
         when "api_droits_cnam" then "contact@api.gouv.fr"
         else
           "contact@api.gouv.fr"
+        end
+
+      @provider = case enrollment.fournisseur_de_donnees
+        when "franceconnect" then "FranceConnect"
+        when "dgfip" then "API « impôt particulier »"
+        when "api-particulier" then "API Particulier"
+        when "api_droits_cnam" then "API CNAM"
+        else
+          "API"
         end
 
       @email = user.email
