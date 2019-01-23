@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require Rails.root.join('lib/omni_auth/strategies/france_connect')
 require Rails.root.join('lib/omni_auth/strategies/resource_provider')
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
@@ -259,11 +258,6 @@ Devise.setup do |config|
     :resource_provider,
     ENV['SIGNUP_OAUTH_CLIENT_ID'],
     ENV['SIGNUP_OAUTH_CLIENT_SECRET']
-  )
-  config.omniauth(
-    :france_connect,
-    ENV['FRANCECONNECT_PARTENAIRES_CLIENT_ID'],
-    ENV['FRANCECONNECT_PARTENAIRES_CLIENT_SECRET']
   )
 
   # ==> Warden configuration

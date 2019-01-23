@@ -87,20 +87,4 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-
-  # OmniAuth.config.test_mode = true
-  # OmniAuth.config.mock_auth[:france_connect] = OmniAuth::AuthHash.new(
-  #   credentials: { token: 'france_connect' },
-  #   info: {
-  #     uid: 'france_connect',
-  #     email: 'fc@france_connect.user'
-  #   },
-  #   provider: 'france_connect'
-  # )
-  # OmniAuth.config.mock_auth[:resource_provider] = OmniAuth::AuthHash.new(
-  #   credentials: { token: 'dgfip' },
-  #   info: { email: 'dgfip@dgfip.user', roles: ['domain', 'security'] },
-  #   provider: 'resource_provider',
-  #   uid: 'dgfip'
-  # )
 end
