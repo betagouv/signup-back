@@ -32,7 +32,7 @@ class EnrollmentPolicy < ApplicationPolicy
       res.concat([
         :validation_de_convention,
         :fournisseur_de_donnees,
-        :fournisseur_de_service,
+        :linked_franceconnect_enrollment_id,
         :siret,
         contacts: [:id, :heading, :nom, :email, :telephone_portable],
         demarche: [

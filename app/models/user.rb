@@ -2,14 +2,11 @@
 
 class User < ApplicationRecord
   acts_as_token_authenticatable
-  devise :omniauthable, omniauth_providers: %i[resource_provider france_connect]
+  devise :omniauthable, omniauth_providers: [:resource_provider]
 
   rolify
 
   def self.from_service_provider_omniauth(data)
-    # note that api-auth sub might conflict with franceconnect uid
-    # we should use the provider field to mitigate that
-    # it is used as the role field for now
     user = where(
       uid: data[:info]['sub']
     ).first_or_create
@@ -21,20 +18,8 @@ class User < ApplicationRecord
     user
   end
 
-  def self.from_france_connect_omniauth(data)
-    where(
-      provider: data['provider'],
-      uid: data.info['uid'],
-      email: data.info['email']
-    ).first_or_create
-  end
-
   def provided_by?(provider)
     send("#{provider}?")
-  end
-
-  def france_connect?
-    provider == 'france_connect'
   end
 
   def service_provider?

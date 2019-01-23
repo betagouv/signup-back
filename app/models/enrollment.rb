@@ -22,6 +22,8 @@ class Enrollment < ApplicationRecord
   scope :no_draft, -> {where.not(state: %w(pending))}
   scope :pending, -> {where.not(state: %w(validated refused))}
   scope :archived, -> {where(state: %w(validated refused))}
+  scope :state, -> (state) {where(state: state)}
+  scope :fournisseur_de_donnees, -> (fournisseur_de_donnees) {where(fournisseur_de_donnees: fournisseur_de_donnees)}
 
   # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
@@ -63,6 +65,10 @@ class Enrollment < ApplicationRecord
 
       if ENV.fetch('ENABLE_REGISTER_FRANCECONNECT_ENROLLMENT') == 'True' && enrollment.fournisseur_de_donnees == 'franceconnect'
         RegisterFranceconnectEnrollment.call(enrollment)
+      end
+
+      if enrollment.fournisseur_de_donnees == 'dgfip'
+        RegisterDgfipEnrollment.call(enrollment)
       end
     end
 
@@ -110,7 +116,7 @@ class Enrollment < ApplicationRecord
       'id' => id,
       'applicant' => applicant.as_json,
       'fournisseur_de_donnees' => fournisseur_de_donnees,
-      'fournisseur_de_service' => fournisseur_de_service,
+      'linked_franceconnect_enrollment_id' => linked_franceconnect_enrollment_id,
       'validation_de_convention' => validation_de_convention,
       'scopes' => scopes,
       'contacts' => contacts,

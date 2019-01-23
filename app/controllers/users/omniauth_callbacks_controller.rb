@@ -9,12 +9,6 @@ module Users
       redirect_to "#{ENV.fetch('OAUTH_REDIRECT_URI')}?token=#{token}"
     end
 
-    def france_connect
-      token = request.env['omniauth.auth']['credentials'].token
-      @current_user = User.from_france_connect_omniauth(request.env['omniauth.auth'])
-      redirect_to "#{ENV.fetch('OAUTH_REDIRECT_URI')}?token-fc=#{token}"
-    end
-
     def passthru
       render status: :bad_request, json: {
         message: 'authentification provider not supported'

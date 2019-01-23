@@ -40,15 +40,10 @@ Rails.application.configure do
   config.active_support.deprecation = :stderr
 
   OmniAuth.config.test_mode = true
-  OmniAuth.config.mock_auth[:france_connect] = OmniAuth::AuthHash.new(
-    provider: 'france_connect',
-    info: { email: 'user@user.user' },
-    uid: '123545'
-  )
-  OmniAuth.config.mock_auth[:dgfip] = OmniAuth::AuthHash.new(
-    credentials: { token: 'test' },
-    info: { email: 'user@user.user' },
-    provider: 'dgfip',
-    uid: '123545'
+  OmniAuth.config.mock_auth[:resource_provider] = OmniAuth::AuthHash.new(
+    credentials: { token: 'dgfip' },
+    info: { email: 'dgfip@dgfip.user', roles: ['domain', 'security'] },
+    provider: 'resource_provider',
+    uid: 'dgfip'
   )
 end
