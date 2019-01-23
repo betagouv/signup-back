@@ -206,10 +206,6 @@ GEM
     ruby_dep (1.5.0)
     rubyzip (1.2.1)
     safe_yaml (1.0.4)
-    simple_token_authentication (1.15.1)
-      actionmailer (>= 3.2.6, < 6)
-      actionpack (>= 3.2.6, < 6)
-      devise (>= 3.2, < 6)
     simplecov (0.16.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -279,7 +275,6 @@ DEPENDENCIES
   rolify
   rspec-rails
   rubyzip
-  simple_token_authentication (~> 1.15)
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
