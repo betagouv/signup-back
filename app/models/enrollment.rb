@@ -40,9 +40,13 @@ class Enrollment < ApplicationRecord
       user&.add_role(event.as_personified_event.to_sym, enrollment)
 
       Enrollment::SendMailJob.perform_now(enrollment, user, event)
-      if event == 'send_application'
-        Enrollment::SendMailJob.perform_now(enrollment, user, 'sent_application_notification')
-      end
+    end
+
+    after_transition :pending => :sent do |enrollment, transition|
+      event = transition.event.to_s
+      user = transition.args.first&.fetch(:user)
+      user&.add_role(event.as_personified_event.to_sym, enrollment)
+      Enrollment::SendMailJob.perform_now(enrollment, user, 'sent_application_notification')
     end
 
     event :send_application do
