@@ -10,6 +10,25 @@ class EnrollmentMailer < ActionMailer::Base
       :sent_application_notification => "Nous avons bien reçu votre demande d'accès"
   }
 
+  mailParams = {
+    "franceconnect" => { 
+      "sender" => "support.partenaires@franceconnect.gouv.fr", 
+      "provider" => "FranceConnect"
+    },
+    "dgfip" => { 
+      "sender" => "contact@api.gouv.fr", 
+      "provider" => "API « impôt particulier »"
+    },
+    "api-particulier" => { 
+      "sender" => "contact@particulier.api.gouv.fr", 
+      "provider" => "API Particulier"
+    },
+    "api_droits_cnam" => { 
+      "sender" => "contact@api.gouv.fr", 
+      "provider" => "API CNAM"
+    }
+  }
+
   %i[send_application validate_application review_application refuse_application update_contacts sent_application_notification].each do |action|
     define_method(action) do
       recipients = enrollment.other_party(user).map(&:email)
@@ -19,23 +38,9 @@ class EnrollmentMailer < ActionMailer::Base
       end
       return unless recipients.present?
 
-      sender = case enrollment.fournisseur_de_donnees
-        when "franceconnect" then "support.partenaires@franceconnect.gouv.fr"
-        when "dgfip" then "contact@api.gouv.fr"
-        when "api-particulier" then "contact@particulier.api.gouv.fr"
-        when "api_droits_cnam" then "contact@api.gouv.fr"
-        else
-          "contact@api.gouv.fr"
-        end
+      sender = mailParams[enrollment.fournisseur_de_donnees]["sender"]
 
-      @provider = case enrollment.fournisseur_de_donnees
-        when "franceconnect" then "FranceConnect"
-        when "dgfip" then "API « impôt particulier »"
-        when "api-particulier" then "API Particulier"
-        when "api_droits_cnam" then "API CNAM"
-        else
-          "API"
-        end
+      @provider = mailParams[enrollment.fournisseur_de_donnees]["provider"]
 
       @email = user.email
       @url = "#{ENV.fetch('FRONT_HOST')}/#{enrollment.fournisseur_de_donnees}/#{enrollment.id}"
