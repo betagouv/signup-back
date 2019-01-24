@@ -138,7 +138,9 @@ class Enrollment < ApplicationRecord
     end
 
     # in a similar way, format dgfip_data_years
-    self.donnees['dgfip_data_years'] = donnees['dgfip_data_years'].transform_values { |e| e.to_s == "true" }
+    if donnees.key?('dgfip_data_years')
+      self.donnees['dgfip_data_years'] = donnees['dgfip_data_years'].transform_values { |e| e.to_s == "true" }
+    end
   end
 
   def set_company_info
