@@ -41,7 +41,7 @@ class Enrollment < ApplicationRecord
 
       Enrollment::SendMailJob.perform_now(enrollment, user, event)
       if event == 'send_application'
-        Enrollment::SendMailJob.perform_now(enrollment, user, 'send_application_feedback')
+        Enrollment::SendMailJob.perform_now(enrollment, user, 'sent_application_notification')
       end
     end
 

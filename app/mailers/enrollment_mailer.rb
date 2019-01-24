@@ -7,14 +7,14 @@ class EnrollmentMailer < ActionMailer::Base
       :review_application => 'Votre demande requiert des modifications',
       :refuse_application => 'Votre demande a été refusée',
       :update_contacts => 'Contacts modifiés sur signup.api.gouv.fr',
-      :send_application_feedback => "Nous avons bien reçu votre demande d'accès"
+      :sent_application_notification => "Nous avons bien reçu votre demande d'accès"
   }
 
-  %i[send_application validate_application review_application refuse_application update_contacts send_application_feedback].each do |action|
+  %i[send_application validate_application review_application refuse_application update_contacts sent_application_notification].each do |action|
     define_method(action) do
       recipients = enrollment.other_party(user).map(&:email)
 
-      if action.to_sym == :send_application_feedback
+      if action.to_sym == :sent_application_notification
         recipients = user.email
       end
       return unless recipients.present?
