@@ -63,7 +63,7 @@ class Enrollment < ApplicationRecord
         RegisterApiParticulierEnrollment.call(enrollment)
       end
 
-      if ENV.fetch('ENABLE_REGISTER_FRANCECONNECT_ENROLLMENT') == 'True' && enrollment.fournisseur_de_donnees == 'franceconnect'
+      if enrollment.fournisseur_de_donnees == 'franceconnect'
         RegisterFranceconnectEnrollment.call(enrollment)
       end
 
