@@ -42,6 +42,7 @@ class EnrollmentMailer < ActionMailer::Base
 
       @provider = mailParams[enrollment.fournisseur_de_donnees]["provider"]
 
+      @last_message = Message.where(enrollment_id: enrollment.id).order(:created_at).last.content
       @email = user.email
       @url = "#{ENV.fetch('FRONT_HOST')}/#{enrollment.fournisseur_de_donnees}/#{enrollment.id}"
       mail(to: recipients, subject: subject[action.to_sym], from: sender)
