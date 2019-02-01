@@ -42,6 +42,13 @@ class Enrollment < ApplicationRecord
       Enrollment::SendMailJob.perform_now(enrollment, user, event)
     end
 
+    after_transition :pending => :sent do |enrollment, transition|
+      event = transition.event.to_s
+      user = transition.args.first&.fetch(:user)
+      user&.add_role(event.as_personified_event.to_sym, enrollment)
+      Enrollment::SendMailJob.perform_now(enrollment, user, 'notify_application_sent')
+    end
+
     event :send_application do
       transition from: :pending, to: :sent
     end

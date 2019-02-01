@@ -6,23 +6,41 @@ class EnrollmentMailer < ActionMailer::Base
       :validate_application => 'Votre demande a été validée',
       :review_application => 'Votre demande requiert des modifications',
       :refuse_application => 'Votre demande a été refusée',
-      :update_contacts => 'Contacts modifiés sur signup.api.gouv.fr'
+      :update_contacts => 'Contacts modifiés sur signup.api.gouv.fr',
+      :notify_application_sent => "Nous avons bien reçu votre demande d'accès"
   }
 
-  %i[send_application validate_application review_application refuse_application update_contacts].each do |action|
+  mailParams = {
+    "franceconnect" => { 
+      "sender" => "support.partenaires@franceconnect.gouv.fr", 
+      "provider" => "FranceConnect"
+    },
+    "dgfip" => { 
+      "sender" => "contact@api.gouv.fr", 
+      "provider" => "API « impôt particulier »"
+    },
+    "api-particulier" => { 
+      "sender" => "contact@particulier.api.gouv.fr", 
+      "provider" => "API Particulier"
+    },
+    "api_droits_cnam" => { 
+      "sender" => "contact@api.gouv.fr", 
+      "provider" => "API CNAM"
+    }
+  }
+
+  %i[send_application validate_application review_application refuse_application update_contacts notify_application_sent].each do |action|
     define_method(action) do
       recipients = enrollment.other_party(user).map(&:email)
 
+      if action.to_sym == :notify_application_sent
+        recipients = user.email
+      end
       return unless recipients.present?
 
-      sender = case enrollment.fournisseur_de_donnees
-        when "franceconnect" then "support.partenaires@franceconnect.gouv.fr"
-        when "dgfip" then "contact@api.gouv.fr"
-        when "api-particulier" then "contact@particulier.api.gouv.fr"
-        when "api_droits_cnam" then "contact@api.gouv.fr"
-        else
-          "contact@api.gouv.fr"
-        end
+      sender = mailParams[enrollment.fournisseur_de_donnees]["sender"]
+
+      @provider = mailParams[enrollment.fournisseur_de_donnees]["provider"]
 
       @email = user.email
       @url = "#{ENV.fetch('FRONT_HOST')}/#{enrollment.fournisseur_de_donnees}/#{enrollment.id}"
