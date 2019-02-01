@@ -34,7 +34,7 @@ class EnrollmentPolicy < ApplicationPolicy
         :fournisseur_de_donnees,
         :linked_franceconnect_enrollment_id,
         :siret,
-        contacts: [:id, :heading, :nom, :email, :telephone_portable],
+        contacts: [:id, :heading, :nom, :email, :phone_number],
         demarche: [
           :intitule,
           :fondement_juridique,
@@ -58,7 +58,7 @@ class EnrollmentPolicy < ApplicationPolicy
 
     if update_contacts?
       res.concat([
-        contacts: [:id, :heading, :nom, :email, :telephone_portable],   
+        contacts: [:id, :heading, :nom, :email, :phone_number],
       ])
     end
 
