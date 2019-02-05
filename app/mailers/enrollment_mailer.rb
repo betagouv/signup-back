@@ -41,11 +41,14 @@ class EnrollmentMailer < ActionMailer::Base
       sender = mailParams[enrollment.fournisseur_de_donnees]["sender"]
 
       @provider = mailParams[enrollment.fournisseur_de_donnees]["provider"]
-
-      # This infers that the last message corresponds to the action that triggered the email.
-      # If the wrong message is recieved, this might be the cause.
-      @last_message = Message.where(enrollment_id: enrollment.id).order(:created_at).last.content
       
+      if [:review_application, :refuse_application].include? action.to_sym
+        messages_for_enrollment = Message.where(enrollment_id: enrollment.id)
+        # This infers that the last message corresponds to the action that triggered the email.
+        # If the wrong message is recieved, this might be the cause
+        @last_message = messages_for_enrollment.order(:created_at).last.content
+      end 
+
       @email = user.email
       @url = "#{ENV.fetch('FRONT_HOST')}/#{enrollment.fournisseur_de_donnees}/#{enrollment.id}"
       mail(to: recipients, subject: subject[action.to_sym], from: sender)
