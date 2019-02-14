@@ -46,6 +46,7 @@ class Enrollment < ApplicationRecord
       event = transition.event.to_s
       user = transition.args.first&.fetch(:user)
       user&.add_role(event.as_personified_event.to_sym, enrollment)
+
       Enrollment::SendMailJob.perform_now(enrollment, user, 'notify_application_sent')
     end
 
@@ -194,5 +195,6 @@ class Enrollment < ApplicationRecord
     errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche && demarche['description'].present?
     errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless demarche && demarche['fondement_juridique'].present?
     errors[:demarche] << "Vous devez renseigner le document associé au fondement juridique" unless (demarche && demarche['url_fondement_juridique'].present?) || documents.where(type: 'Document::LegalBasis').present?
+    errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer. Merci de cliquer sur le lien d'activation que vous avez reçu par mail." unless applicant.email_verified
   end
 end
