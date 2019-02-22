@@ -13,6 +13,7 @@ class User < ApplicationRecord
     user.update(
       oauth_roles: data[:info]['roles'],
       email: data[:info]['email'],
+      email_verified: data[:info]['email_verified'],
       provider: data[:info]['legacy_account_type']
     )
     user
