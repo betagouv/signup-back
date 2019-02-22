@@ -14,15 +14,20 @@ class ApiParticulier::OauthClient
   end
 
   def me(token)
-    Rails.cache.fetch(token, expires_in: 10.minutes) do
-      res = @conn.get do |req|
-        req.url me_url
-        req.headers['Authorization'] = "Bearer #{token}"
-      end
-
-      raise ApplicationController::AccessDenied, res.body unless res.success?
-      User.from_service_provider_omniauth({info: res.body})
+    # We fetch the user from api-auth at each call.
+    # This is useful when a user submit a new enrollment while is email is not validated:
+    # 1. the user submits the enrollment
+    # 2. he gets the error "you must validate your email before submitting"
+    # 3. he clicks on the validation link
+    # 4. since his profile is reloaded at each call here, he can now submit his enrollment
+    #   without logging in and out again
+    res = @conn.get do |req|
+      req.url me_url
+      req.headers['Authorization'] = "Bearer #{token}"
     end
+
+    raise ApplicationController::AccessDenied, res.body unless res.success?
+    User.from_service_provider_omniauth({info: res.body})
   rescue StandardError => e
     raise ApplicationController::AccessDenied, e.message
   end
