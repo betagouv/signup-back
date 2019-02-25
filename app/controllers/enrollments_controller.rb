@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class EnrollmentsController < ApplicationController
-  before_action :authenticate!
+  before_action :authenticate!, except: [:public]
   before_action :set_enrollment, only: %i[show update update_contacts trigger destroy]
 
   # GET /enrollments
@@ -30,6 +30,19 @@ class EnrollmentsController < ApplicationController
   # GET /enrollments/1
   def show
     render json: serialize(@enrollment)
+  end
+
+  # GET /enrollments/public
+  def public
+    enrollments = Enrollment
+      .where("state = ?", 'validated')
+      .order(updated_at: :desc)
+
+    if params.fetch(:fournisseur_de_donnees, false)
+      enrollments = enrollments.where("fournisseur_de_donnees = ?", params.fetch(:fournisseur_de_donnees, ''))
+    end
+
+    render json: enrollments, each_serializer: Enrollment::PublicEnrollmentListSerializer
   end
 
   # POST /enrollments
