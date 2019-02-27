@@ -11,12 +11,11 @@ class MessagePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      %w[dgfip api_particulier franceconnect api_droits_cnam].each do |resource_provider|
-        return scope.where(enrollment_id: Enrollment.send(resource_provider.to_sym).pluck(:id)) if user.send("#{resource_provider}?".to_sym)
+      %w[dgfip api_particulier franceconnect api_droits_cnam].each do |target_api|
+        return scope.where(enrollment_id: Enrollment.send(target_api.to_sym).pluck(:id)) if user.is_admin?(target_api)
       end
 
-      return scope.where(enrollment_id: Enrollment.with_role(:applicant, user).pluck(:id)) if user.service_provider?
-      scope.none
+      scope.where(enrollment_id: Enrollment.with_role(:applicant, user).pluck(:id))
     end
   end
 end

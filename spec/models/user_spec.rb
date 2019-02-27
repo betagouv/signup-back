@@ -34,7 +34,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    describe '#self.from_service_provider_omniauth' do
+    describe '#self.reconcile' do
       subject { described_class }
 
       describe 'There is a service_provider user in database' do
@@ -66,19 +66,19 @@ RSpec.describe User, type: :model do
         end
 
         it 'returns the user given valid data' do
-          current_user = subject.from_service_provider_omniauth(in_database_data)
+          current_user = subject.reconcile(in_database_data)
 
           expect(current_user).to eq(user)
         end
 
         it 'creates an user if not exists' do
           expect do
-            subject.from_service_provider_omniauth(not_in_database_data)
+            subject.reconcile(not_in_database_data)
           end.to change(User, :count).by(1)
         end
 
         it 'the created user match given data' do
-          current_user = subject.from_service_provider_omniauth(not_in_database_data)
+          current_user = subject.reconcile(not_in_database_data)
 
           expect(current_user.email).to eq(not_in_database_data['email'])
           expect(current_user.uid).to eq(not_in_database_data['uid'])

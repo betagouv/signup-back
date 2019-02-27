@@ -5,50 +5,23 @@ class User < ApplicationRecord
 
   rolify
 
-  def self.from_service_provider_omniauth(data)
+  def self.reconcile(user_info_from_api_gouv)
     user = where(
-      uid: data[:info]['sub']
+      uid: user_info_from_api_gouv[:info]['sub']
     ).first_or_create
     user.update(
-      oauth_roles: data[:info]['roles'],
-      email: data[:info]['email'],
-      email_verified: data[:info]['email_verified'],
-      provider: data[:info]['legacy_account_type']
+      email: user_info_from_api_gouv[:info]['email'],
+      email_verified: user_info_from_api_gouv[:info]['email_verified'],
+      role: user_info_from_api_gouv[:info]['legacy_account_type']
     )
     user
   end
 
-  def provided_by?(provider)
-    send("#{provider}?")
-  end
-
-  def service_provider?
-    provider == 'service_provider'
-  end
-
-  def dgfip?
-    provider == 'dgfip'
-  end
-
-  def api_particulier?
-    provider == 'api_particulier'
-  end
-
-  def franceconnect?
-    provider == 'franceconnect'
-  end
-
-  def api_droits_cnam?
-    provider == 'api_droits_cnam'
+  def is_admin?(target_api)
+    role == target_api
   end
 
   def sent_messages
     Message.with_role(:sender, self)
   end
-
-  # def send_message(enrollment, params)
-  #   message = enrollment.messages.create(params)
-  #   add_role(:sender, message)
-  #   message
-  # end
 end

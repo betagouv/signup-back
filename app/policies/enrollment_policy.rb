@@ -1,6 +1,6 @@
 class EnrollmentPolicy < ApplicationPolicy
   def create?
-    record.pending? && user.service_provider?
+    record.pending?
   end
 
   def update?
@@ -18,7 +18,7 @@ class EnrollmentPolicy < ApplicationPolicy
   %i[validate_application? review_application? refuse_application?].each do |ability|
     define_method(ability) do
       record.send("can_#{ability}") &&
-        user.provided_by?(record.resource_provider)
+        user.is_admin?(record.target_api)
     end
   end
 
@@ -67,8 +67,8 @@ class EnrollmentPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      %w[dgfip api_particulier franceconnect api_droits_cnam].each do |resource_provider|
-        return scope.no_draft.send(resource_provider.to_sym) if user.send("#{resource_provider}?".to_sym)
+      %w[dgfip api_particulier franceconnect api_droits_cnam].each do |target_api|
+        return scope.no_draft.send(target_api.to_sym) if user.is_admin?(target_api)
       end
 
       begin
