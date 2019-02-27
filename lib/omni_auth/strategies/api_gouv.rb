@@ -4,8 +4,8 @@ require 'omniauth-oauth2'
 
 module OmniAuth
   module Strategies
-    class ResourceProvider < OmniAuth::Strategies::OAuth2
-      option :name, :resource_provider
+    class ApiGouv < OmniAuth::Strategies::OAuth2
+      option :name, :api_gouv
 
       option :client_options, {
         site: ENV['OAUTH_HOST'],
@@ -28,7 +28,7 @@ module OmniAuth
       end
 
       def callback_url
-        "#{ENV['BACK_HOST']}/users/auth/resource_provider/callback"
+        "#{ENV['BACK_HOST']}/users/auth/api_gouv/callback"
       end
     end
   end

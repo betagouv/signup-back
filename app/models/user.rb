@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  devise :omniauthable, omniauth_providers: [:resource_provider]
+  devise :omniauthable, omniauth_providers: [:api_gouv]
 
   rolify
 
