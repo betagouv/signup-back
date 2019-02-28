@@ -44,10 +44,11 @@ class EnrollmentPolicy < ApplicationPolicy
         donnees: [
           :conservation,
           :destinataires,
+          :rgpd_general_agreement,
           dgfip_data_years: [
             :n_moins_1,
             :n_moins_2
-          ],
+          ]
         ],
         documents_attributes: [
           :attachment,
