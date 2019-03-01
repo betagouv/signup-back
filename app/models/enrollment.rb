@@ -87,8 +87,8 @@ class Enrollment < ApplicationRecord
 
   def other_party(user)
     if user.has_role?(:applicant, self)
-      provider = self.class.name.underscore.split('/').last
-      return User.where(provider: provider)
+      role = self.class.name.underscore.split('/').last
+      return User.where(role: role)
     end
 
     User.with_role(:applicant, self)
@@ -98,7 +98,7 @@ class Enrollment < ApplicationRecord
     User.with_role(:applicant, self).first
   end
 
-  def resource_provider
+  def target_api
     self.class.name.demodulize.underscore
   end
 

@@ -2,10 +2,10 @@
 
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-    def resource_provider
+    def api_gouv
       token = request.env['omniauth.auth']['credentials'].token
       session[:token] = token
-      @current_user = User.from_service_provider_omniauth(request.env['omniauth.auth'])
+      @current_user = User.reconcile(request.env['omniauth.auth'])
       redirect_to "#{ENV.fetch('OAUTH_REDIRECT_URI')}?token=#{token}"
     end
 

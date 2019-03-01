@@ -13,19 +13,19 @@ class EnrollmentMailer < ActionMailer::Base
   mailParams = {
     "franceconnect" => { 
       "sender" => "support.partenaires@franceconnect.gouv.fr", 
-      "provider" => "FranceConnect"
+      "target_api" => "FranceConnect"
     },
     "dgfip" => { 
       "sender" => "contact@api.gouv.fr", 
-      "provider" => "API « impôt particulier »"
+      "target_api" => "API « impôt particulier »"
     },
     "api-particulier" => { 
       "sender" => "contact@particulier.api.gouv.fr", 
-      "provider" => "API Particulier"
+      "target_api" => "API Particulier"
     },
     "api_droits_cnam" => { 
       "sender" => "contact@api.gouv.fr", 
-      "provider" => "API CNAM"
+      "target_api" => "API CNAM"
     }
   }
 
@@ -40,7 +40,7 @@ class EnrollmentMailer < ActionMailer::Base
 
       sender = mailParams[enrollment.fournisseur_de_donnees]["sender"]
 
-      @provider = mailParams[enrollment.fournisseur_de_donnees]["provider"]
+      @target_api = mailParams[enrollment.fournisseur_de_donnees]["target_api"]
       
       if [:review_application, :refuse_application].include? action.to_sym
         messages_for_enrollment = Message.where(enrollment_id: enrollment.id)

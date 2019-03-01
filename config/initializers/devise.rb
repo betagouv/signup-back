@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require Rails.root.join('lib/omni_auth/strategies/resource_provider')
+require Rails.root.join('lib/omni_auth/strategies/api_gouv')
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
@@ -255,7 +255,7 @@ Devise.setup do |config|
   # up on your models and hooks.
 
   config.omniauth(
-    :resource_provider,
+    :api_gouv,
     ENV['SIGNUP_OAUTH_CLIENT_ID'],
     ENV['SIGNUP_OAUTH_CLIENT_SECRET']
   )

@@ -1,5 +1,5 @@
 class RegisterEnrollmentService < ApplicationService
-  def register_enrollment_in_api_scopes(signup_id, client_id, provider, scopes)
+  def register_enrollment_in_api_scopes(signup_id, client_id, target_api, scopes)
     database_url = "#{ENV.fetch('API_SCOPES_DOMAIN_NAME') {'scopes-development.api.gouv.fr'}}:#{ENV.fetch('API_SCOPES_DATABASE_PORT') {'27017'}}"
     database = ENV.fetch('API_SCOPES_DATABASE_NAME') {'scopes'}
     user = ENV.fetch('API_SCOPES_READWRITE_USER') {'signup'}
@@ -11,7 +11,7 @@ class RegisterEnrollmentService < ApplicationService
     doc = {
         scopes: scopes,
         client_id: client_id,
-        provider: provider,
+        provider: target_api,
         signup_id: signup_id
     }
 
