@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class MessagesController < ApplicationController
-  acts_as_token_authentication_handler_for User
+  before_action :authenticate!
   before_action :set_enrollment
   before_action :set_message, only: %i[show update destroy]
 

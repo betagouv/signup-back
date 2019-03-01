@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   scope :api do
     resources :enrollments do
       resources :messages
+      collection do
+        get :public
+      end
       member do
         get :convention
         patch :trigger

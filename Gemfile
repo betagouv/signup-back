@@ -25,7 +25,6 @@ gem 'rails-i18n'
 gem 'rmagick'
 gem 'rolify'
 gem 'rubyzip'
-gem 'simple_token_authentication', '~> 1.15'
 gem 'state_machines-activerecord'
 gem 'mongo', '2.5.1'
 
@@ -42,3 +41,5 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
+
+gem "active_model_serializers", "~> 0.10.9"
