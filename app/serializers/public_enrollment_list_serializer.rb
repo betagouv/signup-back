@@ -4,6 +4,6 @@ class Enrollment::PublicEnrollmentListSerializer < ActiveModel::Serializer
     object.demarche&.fetch('intitule', nil)
   end
   attribute :email_responsable_traitement do
-    object.contacts.select { |contact| contact['id'] == 'responsable_traitement' }.first['email']
+    object.contacts.select { |contact| contact['id'] == 'responsable_traitement' }.first['nom']
   end
 end
