@@ -151,9 +151,15 @@ class Enrollment < ApplicationRecord
       end
     end
 
-    # in a similar way, format dgfip_data_years
+    # in a similar way, format additional boolean content
     if donnees.key?('dgfip_data_years')
       self.donnees['dgfip_data_years'] = donnees['dgfip_data_years'].transform_values { |e| e.to_s == "true" }
+    end
+    if donnees.key?('rgpd_general_agreement')
+      self.donnees['rgpd_general_agreement'] = donnees['rgpd_general_agreement'].to_s == "true"
+    end
+    if donnees.key?('has_alternative_authentication_methods')
+      self.donnees['has_alternative_authentication_methods'] = donnees['has_alternative_authentication_methods'].to_s == "true"
     end
   end
 
