@@ -45,7 +45,8 @@ class EnrollmentMailer < ActionMailer::Base
       if [:review_application, :refuse_application].include? action.to_sym
         messages_for_enrollment = Message.where(enrollment_id: enrollment.id)
         # This infers that the last message corresponds to the action that triggered the email.
-        # If the wrong message is recieved, this might be the cause
+        # If the wrong message is received, this might be the cause
+        # TODO strongly bind the message to the action with database relation
         @last_message = messages_for_enrollment.order(:created_at).last.content
       end 
 

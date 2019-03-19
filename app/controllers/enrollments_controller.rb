@@ -87,6 +87,12 @@ class EnrollmentsController < ApplicationController
   # PATCH /enrollment/1/trigger
   def trigger
     authorize @enrollment, "#{event_param}?".to_sym
+
+    if event_param.in?(['refuse_application', 'review_application']) and not message_params.has_key?(:messages_attributes)
+      return render status: :bad_request, json: {
+        message: ['Le commentaire est obligatoire.']
+      }
+    end
     
     if message_params.has_key?(:messages_attributes)
       params =  {
