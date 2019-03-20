@@ -6,15 +6,15 @@ class RegisterFranceconnectEnrollment < RegisterEnrollmentService
   def call
     name = "#{@enrollment.nom_raison_sociale} - #{@enrollment.id}"
     email = @enrollment.contacts.select { |contact| contact['id'] == 'technique' }.first['email']
-    create_enrollment_in_token_manager(@enrollment.id, name, email)
-
     scopes = @enrollment[:scopes].reject {|k, v| !v}.keys
+    create_enrollment_in_token_manager(@enrollment.id, name, email, scopes)
+
     register_enrollment_in_api_scopes(@enrollment.id.to_s, nil, 'franceconnect', scopes)
   end
 
   private
 
-  def create_enrollment_in_token_manager(id, name, email)
+  def create_enrollment_in_token_manager(id, name, email, scopes)
     url = URI("#{ENV.fetch('FRANCECONNECT_PARTICULIER_HOST')}/api/v2/service-provider/integration/create")
 
     http = Net::HTTP.new(url.host, url.port)
@@ -25,7 +25,7 @@ class RegisterFranceconnectEnrollment < RegisterEnrollmentService
     request["cache-control"] = 'no-cache'
     request["authorization"] = "Bearer #{ENV.fetch('FRANCECONNECT_PARTICULIER_API_KEY') {''}}"
 
-    request.body = "{\"name\": \"#{name}\",\"authorized_emails\": [\"#{email}\"],\"signup_id\": \"#{id}\"}"
+    request.body = "{\"name\": \"#{name}\",\"authorized_emails\": [\"#{email}\"],\"signup_id\": \"#{id}\", \"scopes\": #{scopes.to_json}}"
 
     response = http.request(request)
 
