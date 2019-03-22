@@ -53,7 +53,14 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.save
       current_user.add_role(:applicant, @enrollment)
-      EnrollmentMailer.with(user: current_user, enrollment: @enrollment).send('create_application').deliver_later
+
+      EnrollmentMailer.with(
+        to: current_user.email,
+        target_api: @enrollment.fournisseur_de_donnees,
+        enrollment_id: @enrollment.id,
+        template: 'create_application',
+      ).notification_email.deliver_later
+
       render json: @enrollment, status: :created, location: enrollment_url(@enrollment)
     else
       render json: @enrollment.errors, status: :unprocessable_entity
@@ -78,11 +85,18 @@ class EnrollmentsController < ApplicationController
     authorize @enrollment, :update_contacts?
 
     if @enrollment.save
+      EnrollmentMailer.with(
+          to: @enrollment.admins.map(&:email),
+          target_api: @enrollment.fournisseur_de_donnees,
+          enrollment_id: @enrollment.id,
+          template: 'update_contacts',
+          applicant_email: current_user.email
+      ).notification_email.deliver_later
+
       render json: serialize(@enrollment)
     else
       render json: @enrollment.errors, status: :unprocessable_entity
     end
-    EnrollmentMailer.with(user: current_user, enrollment: @enrollment).send('update_contacts').deliver_later
   end
 
   # PATCH /enrollment/1/trigger
@@ -103,6 +117,26 @@ class EnrollmentsController < ApplicationController
     end
 
     if @enrollment.send(event_param.to_sym, user: current_user)
+      current_user&.add_role(event_param.as_personified_event.to_sym, @enrollment)
+
+      EnrollmentMailer.with(
+        to: @enrollment.applicant.email,
+        target_api: @enrollment.fournisseur_de_donnees,
+        enrollment_id: @enrollment.id,
+        template: event_param,
+        message: message_params.fetch(:messages_attributes, [{}]).first[:content]
+      ).notification_email.deliver_later
+
+      if event_param == 'send_application'
+        EnrollmentMailer.with(
+          to: @enrollment.admins.map(&:email),
+          target_api: @enrollment.fournisseur_de_donnees,
+          enrollment_id: @enrollment.id,
+          template: 'notify_application_sent',
+          applicant_email: current_user.email
+        ).notification_email.deliver_later
+      end
+
       render json: serialize(@enrollment)
     else
       render status: :unprocessable_entity, json: @enrollment.errors

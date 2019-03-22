@@ -1,73 +1,47 @@
 class EnrollmentMailer < ActionMailer::Base
   default charset: 'UTF-8'
 
-  subject = {
-      :send_application => 'Nouvelle demande sur signup.api.gouv.fr',
-      :validate_application => 'Votre demande a été validée',
-      :review_application => 'Votre demande requiert des modifications',
-      :refuse_application => 'Votre demande a été refusée',
-      :update_contacts => 'Contacts modifiés sur signup.api.gouv.fr',
-      :notify_application_sent => "Nous avons bien reçu votre demande d'accès",
-      :create_application => 'Votre demande a été enregistrée'
+  SUBJECTS = {
+      'send_application' => "Nous avons bien reçu votre demande d'accès",
+      'validate_application' => 'Votre demande a été validée',
+      'review_application' => 'Votre demande requiert des modifications',
+      'refuse_application' => 'Votre demande a été refusée',
+      'update_contacts' => 'Contacts modifiés sur signup.api.gouv.fr',
+      'notify_application_sent' => 'Nouvelle demande sur signup.api.gouv.fr',
+      'create_application' => 'Votre demande a été enregistrée'
   }
 
-  mailParams = {
-    "franceconnect" => { 
-      "sender" => "support.partenaires@franceconnect.gouv.fr", 
-      "target_api" => "FranceConnect"
+  MAIL_PARAMS = {
+    'franceconnect' => {
+      'sender' => 'support.partenaires@franceconnect.gouv.fr',
+      'target_api' => 'FranceConnect'
     },
-    "dgfip" => { 
-      "sender" => "contact@api.gouv.fr", 
-      "target_api" => "API « impôt particulier »"
+    'dgfip' => {
+      'sender' => 'contact@api.gouv.fr',
+      'target_api' => 'API « impôt particulier »'
     },
-    "api-particulier" => { 
-      "sender" => "contact@particulier.api.gouv.fr", 
-      "target_api" => "API Particulier"
+    'api-particulier' => {
+      'sender' => 'contact@particulier.api.gouv.fr',
+      'target_api' => 'API Particulier'
     },
-    "api_droits_cnam" => { 
-      "sender" => "contact@api.gouv.fr", 
-      "target_api" => "API CNAM"
+    'api-droits-cnam' => {
+      'sender' => 'contact@api.gouv.fr',
+      'target_api' => 'API CNAM'
     }
   }
 
-  %i[send_application validate_application review_application refuse_application update_contacts notify_application_sent create_application].each do |action|
-    define_method(action) do
-      recipients = case action.to_sym
-      when :create_application
-        user.email
-      when :notify_application_sent
-        user.email
-      else
-        enrollment.other_party(user).map(&:email)
-      end
+  def notification_email
+    @target_api_label = MAIL_PARAMS[params[:target_api]]['target_api']
+    @message = params[:message]
+    @applicant_email = params[:applicant_email]
 
-      return unless recipients.present?
-
-      sender = mailParams[enrollment.fournisseur_de_donnees]["sender"]
-
-      @target_api = mailParams[enrollment.fournisseur_de_donnees]["target_api"]
-      
-      if [:review_application, :refuse_application].include? action.to_sym
-        messages_for_enrollment = Message.where(enrollment_id: enrollment.id)
-        # This infers that the last message corresponds to the action that triggered the email.
-        # If the wrong message is received, this might be the cause
-        # TODO strongly bind the message to the action with database relation
-        @last_message = messages_for_enrollment.order(:created_at).last.content
-      end 
-
-      @email = user.email
-      @url = "#{ENV.fetch('FRONT_HOST')}/#{enrollment.fournisseur_de_donnees}/#{enrollment.id}"
-      mail(to: recipients, subject: subject[action.to_sym], from: sender)
-    end
-  end
-
-  private
-
-  def user
-    params[:user]
-  end
-
-  def enrollment
-    params[:enrollment]
+    @url = "#{ENV.fetch('FRONT_HOST')}/#{params[:target_api]}/#{params[:enrollment_id]}"
+    mail(
+        # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
+        to: params[:to],
+        subject: SUBJECTS[params[:template]],
+        from: MAIL_PARAMS[params[:target_api]]['sender'],
+        template_name: params[:template]
+    )
   end
 end

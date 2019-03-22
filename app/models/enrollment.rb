@@ -34,22 +34,6 @@ class Enrollment < ApplicationRecord
     state :validated
     state :refused
 
-    after_transition any => any do |enrollment, transition|
-      event = transition.event.to_s
-      user = transition.args.first&.fetch(:user)
-      user&.add_role(event.as_personified_event.to_sym, enrollment)
-
-      EnrollmentMailer.with(user: user, enrollment: enrollment).send(event).deliver_later
-    end
-
-    after_transition :pending => :sent do |enrollment, transition|
-      event = transition.event.to_s
-      user = transition.args.first&.fetch(:user)
-      user&.add_role(event.as_personified_event.to_sym, enrollment)
-
-      EnrollmentMailer.with(user: user, enrollment: enrollment).send('notify_application_sent').deliver_later
-    end
-
     event :send_application do
       transition from: :pending, to: :sent
     end
@@ -85,17 +69,12 @@ class Enrollment < ApplicationRecord
     end
   end
 
-  def other_party(user)
-    if user.has_role?(:applicant, self)
-      role = self.class.name.underscore.split('/').last
-      return User.where(role: role)
-    end
-
-    User.with_role(:applicant, self)
-  end
-
   def applicant
     User.with_role(:applicant, self).first
+  end
+
+  def admins
+    User.where(role: self.fournisseur_de_donnees.underscore)
   end
 
   def target_api
