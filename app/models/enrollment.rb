@@ -25,7 +25,6 @@ class Enrollment < ApplicationRecord
   scope :state, -> (state) {where(state: state)}
   scope :fournisseur_de_donnees, -> (fournisseur_de_donnees) {where(fournisseur_de_donnees: fournisseur_de_donnees)}
 
-  # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
     state :pending
     state :sent do
@@ -33,22 +32,6 @@ class Enrollment < ApplicationRecord
     end
     state :validated
     state :refused
-
-    after_transition any => any do |enrollment, transition|
-      event = transition.event.to_s
-      user = transition.args.first&.fetch(:user)
-      user&.add_role(event.as_personified_event.to_sym, enrollment)
-
-      Enrollment::SendMailJob.perform_now(enrollment, user, event)
-    end
-
-    after_transition :pending => :sent do |enrollment, transition|
-      event = transition.event.to_s
-      user = transition.args.first&.fetch(:user)
-      user&.add_role(event.as_personified_event.to_sym, enrollment)
-
-      Enrollment::SendMailJob.perform_now(enrollment, user, 'notify_application_sent')
-    end
 
     event :send_application do
       transition from: :pending, to: :sent
@@ -85,17 +68,12 @@ class Enrollment < ApplicationRecord
     end
   end
 
-  def other_party(user)
-    if user.has_role?(:applicant, self)
-      role = self.class.name.underscore.split('/').last
-      return User.where(role: role)
-    end
-
-    User.with_role(:applicant, self)
-  end
-
   def applicant
     User.with_role(:applicant, self).first
+  end
+
+  def admins
+    User.where(role: self.fournisseur_de_donnees.underscore)
   end
 
   def target_api
