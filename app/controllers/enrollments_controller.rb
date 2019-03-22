@@ -117,7 +117,13 @@ class EnrollmentsController < ApplicationController
     end
 
     if @enrollment.send(event_param.to_sym, user: current_user)
-      current_user&.add_role(event_param.as_personified_event.to_sym, @enrollment)
+      personified_role_names = {
+        'send_application' => :application_sender,
+        'validate_application' => :application_validater,
+        'review_application' => :application_reviewer,
+        'refuse_application' => :application_refuser
+      }
+      current_user&.add_role(personified_role_names[event_param], @enrollment)
 
       EnrollmentMailer.with(
         to: @enrollment.applicant.email,

@@ -25,7 +25,6 @@ class Enrollment < ApplicationRecord
   scope :state, -> (state) {where(state: state)}
   scope :fournisseur_de_donnees, -> (fournisseur_de_donnees) {where(fournisseur_de_donnees: fournisseur_de_donnees)}
 
-  # Note convention on events "#{verb}_#{what}" (see CoreAdditions::String#as_event_personified)
   state_machine :state, initial: :pending do
     state :pending
     state :sent do
