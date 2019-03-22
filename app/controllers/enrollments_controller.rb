@@ -53,7 +53,7 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.save
       current_user.add_role(:applicant, @enrollment)
-      Enrollment::SendMailJob.perform_now(@enrollment, current_user, 'create_application')
+      EnrollmentMailer.with(user: current_user, enrollment: @enrollment).send('create_application').deliver_later
       render json: @enrollment, status: :created, location: enrollment_url(@enrollment)
     else
       render json: @enrollment.errors, status: :unprocessable_entity
@@ -82,7 +82,7 @@ class EnrollmentsController < ApplicationController
     else
       render json: @enrollment.errors, status: :unprocessable_entity
     end
-    Enrollment::SendMailJob.perform_now(@enrollment, current_user, :update_contacts)
+    EnrollmentMailer.with(user: current_user, enrollment: @enrollment).send('update_contacts').deliver_later
   end
 
   # PATCH /enrollment/1/trigger

@@ -39,7 +39,7 @@ class Enrollment < ApplicationRecord
       user = transition.args.first&.fetch(:user)
       user&.add_role(event.as_personified_event.to_sym, enrollment)
 
-      Enrollment::SendMailJob.perform_now(enrollment, user, event)
+      EnrollmentMailer.with(user: user, enrollment: enrollment).send(event).deliver_later
     end
 
     after_transition :pending => :sent do |enrollment, transition|
@@ -47,7 +47,7 @@ class Enrollment < ApplicationRecord
       user = transition.args.first&.fetch(:user)
       user&.add_role(event.as_personified_event.to_sym, enrollment)
 
-      Enrollment::SendMailJob.perform_now(enrollment, user, 'notify_application_sent')
+      EnrollmentMailer.with(user: user, enrollment: enrollment).send('notify_application_sent').deliver_later
     end
 
     event :send_application do
