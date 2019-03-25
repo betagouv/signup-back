@@ -13,10 +13,6 @@ class Message < ApplicationRecord
     User.with_role(:sender, self).first
   end
 
-  def reciepients
-    enrollment.user
-  end
-
   private
 
   def presence_of_content

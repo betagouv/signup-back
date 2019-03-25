@@ -15,7 +15,7 @@ class MessagePolicy < ApplicationPolicy
         return scope.where(enrollment_id: Enrollment.send(target_api.to_sym).pluck(:id)) if user.is_admin?(target_api)
       end
 
-      scope.where(enrollment_id: Enrollment.with_role(:applicant, user).pluck(:id))
+      scope.where(enrollment_id: user.enrollments.pluck(:id))
     end
   end
 end

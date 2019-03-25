@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 class Enrollment < ApplicationRecord
-  DOCUMENT_TYPES = %w[
-  ].freeze
-
   validate :update_validation
 
   before_save :clean_and_format_scopes
@@ -12,6 +9,7 @@ class Enrollment < ApplicationRecord
   accepts_nested_attributes_for :messages
   has_many :documents, as: :attachable
   accepts_nested_attributes_for :documents
+  belongs_to :user
 
   # Be aware with the duplication of attribute with type
   scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
@@ -68,31 +66,12 @@ class Enrollment < ApplicationRecord
     end
   end
 
-  def applicant
-    User.with_role(:applicant, self).first
-  end
-
   def admins
     User.where(role: self.fournisseur_de_donnees.underscore)
   end
 
   def target_api
-    self.class.name.demodulize.underscore
-  end
-
-  def self.with_role(type, user)
-    return super(type, user) unless abstract?
-    Rails.application.eager_load!
-
-    enrollment_ids = descendants.map do |klass|
-      klass.with_role(type, user).pluck(:id)
-    end.flatten
-
-    where(id: enrollment_ids)
-  end
-
-  def self.abstract?
-    name == 'Enrollment'
+    self.fournisseur_de_donnees.underscore
   end
 
   def as_json(*_params)
@@ -100,7 +79,7 @@ class Enrollment < ApplicationRecord
       'updated_at' => updated_at,
       'created_at' => created_at,
       'id' => id,
-      'applicant' => applicant.as_json,
+      'user' => user.as_json,
       'fournisseur_de_donnees' => fournisseur_de_donnees,
       'linked_franceconnect_enrollment_id' => linked_franceconnect_enrollment_id,
       'validation_de_convention' => validation_de_convention,
@@ -162,7 +141,6 @@ class Enrollment < ApplicationRecord
   end
 
   def update_validation
-    errors[:base] << "Vous devez fournir un type d'enrôlement" if self.class.abstract?
     errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche&.fetch('intitule', nil).present?
     errors[:fournisseur_de_donnees] << "Vous devez renseigner le fournisseur de données avant de continuer" unless fournisseur_de_donnees.present?
     errors[:siret] << "Vous devez renseigner le SIRET de votre organisation avant de continuer" unless siret.present?
@@ -179,6 +157,6 @@ class Enrollment < ApplicationRecord
     errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche && demarche['description'].present?
     errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless demarche && demarche['fondement_juridique'].present?
     errors[:demarche] << "Vous devez renseigner le document associé au fondement juridique" unless (demarche && demarche['url_fondement_juridique'].present?) || documents.where(type: 'Document::LegalBasis').present?
-    errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer. Merci de cliquer sur le lien d'activation que vous avez reçu par mail." unless applicant.email_verified
+    errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer. Merci de cliquer sur le lien d'activation que vous avez reçu par mail." unless user.email_verified
   end
 end

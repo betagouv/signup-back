@@ -3,6 +3,8 @@
 class User < ApplicationRecord
   devise :omniauthable, omniauth_providers: [:api_gouv]
 
+  has_many :enrollments
+
   rolify
 
   def self.reconcile(user_info_from_api_gouv)
