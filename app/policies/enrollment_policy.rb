@@ -4,26 +4,31 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
-    record.pending? && user.has_role?(:applicant, record)
-  end
-
-  def update_contacts?
-    record.validated? && user.has_role?(:applicant, record)
-  end
-
-  def send_application?
-    record.can_send_application? && user.has_role?(:applicant, record)
-  end
-
-  %i[validate_application? review_application? refuse_application?].each do |ability|
-    define_method(ability) do
-      record.send("can_#{ability}") &&
-        user.is_admin?(record.target_api)
-    end
+    record.pending? && user == record.user
   end
 
   def delete?
     false
+  end
+
+  def send_application?
+    record.can_send_application? && user == record.user
+  end
+
+  def validate_application?
+    record.can_validate_application? && user.is_admin?(record.target_api)
+  end
+
+  def review_application?
+    record.can_review_application? && user.is_admin?(record.target_api)
+  end
+
+  def refuse_application?
+    record.can_refuse_application? && user.is_admin?(record.target_api)
+  end
+
+  def update_contacts?
+    record.validated? && user == record.user
   end
 
   def permitted_attributes
@@ -73,11 +78,7 @@ class EnrollmentPolicy < ApplicationPolicy
         return scope.no_draft.send(target_api.to_sym) if user.is_admin?(target_api)
       end
 
-      begin
-        scope.with_role(:applicant, user)
-      rescue Exception => e
-        Enrollment.with_role(:applicant, user)
-      end
+      user.enrollments
     end
   end
 end

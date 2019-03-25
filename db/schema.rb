@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190227142543) do
+ActiveRecord::Schema.define(version: 20190325110327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,8 @@ ActiveRecord::Schema.define(version: 20190227142543) do
     t.string "token_id"
     t.string "nom_raison_sociale"
     t.integer "linked_franceconnect_enrollment_id"
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_enrollments_on_user_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -109,4 +111,5 @@ ActiveRecord::Schema.define(version: 20190227142543) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
+  add_foreign_key "enrollments", "users"
 end

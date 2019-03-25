@@ -51,6 +51,8 @@ class EnrollmentsController < ApplicationController
 
     authorize @enrollment, :create?
 
+    @enrollment.user = current_user
+
     if @enrollment.save
       current_user.add_role(:applicant, @enrollment)
 
@@ -126,7 +128,7 @@ class EnrollmentsController < ApplicationController
       current_user&.add_role(personified_role_names[event_param], @enrollment)
 
       EnrollmentMailer.with(
-        to: @enrollment.applicant.email,
+        to: @enrollment.user.email,
         target_api: @enrollment.fournisseur_de_donnees,
         enrollment_id: @enrollment.id,
         template: event_param,
@@ -160,7 +162,6 @@ class EnrollmentsController < ApplicationController
     policy_class = Object.const_get("#{enrollment.class.to_s}Policy")
     enrollment.as_json(
       include: [{ documents: { methods: :type } }, { messages: { include: :sender } }],
-      methods: [:applicant]
     ).merge('acl' => Hash[
       policy_class.acl_methods.map do |method|
         [method.to_s.delete('?'), policy_class.new(current_user, enrollment).send(method)]
