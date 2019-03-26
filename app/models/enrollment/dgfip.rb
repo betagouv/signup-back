@@ -1,6 +1,4 @@
 class Enrollment::Dgfip < Enrollment
-  resourcify
-
   def as_json(*params)
     super(*params).merge({
       'autorite_certification' => autorite_certification,

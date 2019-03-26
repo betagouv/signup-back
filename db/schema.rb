@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190325110327) do
+ActiveRecord::Schema.define(version: 20190326102912) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,19 @@ ActiveRecord::Schema.define(version: 20190325110327) do
     t.index ["user_id"], name: "index_enrollments_on_user_id"
   end
 
+  create_table "events", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.integer "resource_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.bigint "user_id"
+    t.bigint "enrollment_id"
+    t.string "comment"
+    t.index ["enrollment_id"], name: "index_events_on_enrollment_id"
+    t.index ["name"], name: "index_events_on_name"
+    t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.integer "enrollment_id"
     t.text "content"
@@ -84,16 +97,6 @@ ActiveRecord::Schema.define(version: 20190325110327) do
     t.datetime "updated_at", null: false
     t.integer "dgfip_id"
     t.integer "category"
-  end
-
-  create_table "roles", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.string "resource_type"
-    t.integer "resource_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
-    t.index ["name"], name: "index_roles_on_name"
   end
 
   create_table "users", force: :cascade do |t|
@@ -112,4 +115,6 @@ ActiveRecord::Schema.define(version: 20190325110327) do
   end
 
   add_foreign_key "enrollments", "users"
+  add_foreign_key "events", "enrollments"
+  add_foreign_key "events", "users"
 end

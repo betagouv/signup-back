@@ -1,7 +1,0 @@
-<% 1.upto(1000) do |i| %>
-role_<%= i %>:
-  name: applicant
-  resource_type: Enrollment::ApiParticulier
-  resource: enrollment_<%= i %>
-  updated_at: <%= i.hours.ago.to_s(:db) %>
-<% end %>

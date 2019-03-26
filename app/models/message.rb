@@ -1,17 +1,11 @@
 # frozen_string_literal: true
 
-class Message < ApplicationRecord
+class Message < ActiveRecord::Base
   enum category: { refuse_application: 0, review_application: 1 }
   belongs_to :enrollment, optional: true
   belongs_to :dgfip, optional: true, class_name: 'Enrollment::Dgfip'
 
   validate :presence_of_content
-
-  resourcify
-
-  def sender
-    User.with_role(:sender, self).first
-  end
 
   private
 

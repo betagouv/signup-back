@@ -19,15 +19,7 @@ class MessagesController < ApplicationController
 
   # POST /messages
   def create
-    @message = Message.new(message_params)
-    @message.enrollment = @enrollment
-
-    if @message.save
-      current_user.add_role(:sender, @message)
-      render status: :created, json: @message.to_json(methods: [:sender])
-    else
-      render status: :unprocessable_entity, json: @message.errors
-    end
+    raise NotImplementedError, 'cannot create messages'
   end
 
   # PATCH/PUT /messages/1
@@ -37,7 +29,7 @@ class MessagesController < ApplicationController
 
   # DELETE /messages/1
   def destroy
-    @message.destroy
+    raise NotImplementedError, 'cannot destroy messages'
   end
 
   private

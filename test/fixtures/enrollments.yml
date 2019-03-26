@@ -1,10 +1,10 @@
 <% 1.upto(10) do |i| %>
 enrollment_<%= i %>:
-  scopes: '{"cnaf_quotient_familial":"1"}'
+  scopes: '{"cnaf_quotient_familial":"true"}'
   contacts: '{"{\"id\":\"dpo\",\"heading\":\"Délégué à la protection des données\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}","{\"id\":\"responsable_traitement\",\"heading\":\"Responsable de traitement\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}","{\"id\":\"technique\",\"heading\":\"Responsable technique\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}"}'
-  siret: 839517323
+  siret: '12000101100010'
   demarche:
-    intitule: "Enrollement <%= i %>"
+    intitule: "Enrollment <%= i %>"
     fondement_juridique: "cadre juridique"
     description: "Description"
   donnees:
@@ -17,4 +17,5 @@ enrollment_<%= i %>:
   type: Enrollment::ApiParticulier
   updated_at: <%= i.hours.ago.to_s(:db) %>
   created_at: <%= i.hours.ago.to_s(:db) %>
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_service_provider) %>
 <% end %>

@@ -1,6 +1,4 @@
 class Enrollment::Franceconnect < Enrollment
-  resourcify
-
   protected
 
   def sent_validation

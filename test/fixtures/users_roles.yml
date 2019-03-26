@@ -1,5 +1,0 @@
-<% 1.upto(1000) do |i| %>
-user_role_<%= i %>:
-  user_id: <%= ActiveRecord::FixtureSet.identify(:user_service_provider) %>
-  role_id: <%= ActiveRecord::FixtureSet.identify(:"role_#{i}") %>
-<% end %>
