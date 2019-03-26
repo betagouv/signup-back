@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-class User < ApplicationRecord
+class User < ActiveRecord::Base
   devise :omniauthable, omniauth_providers: [:api_gouv]
 
   has_many :enrollments
-
-  rolify
+  has_many :events
 
   def self.reconcile(user_info_from_api_gouv)
     user = where(
@@ -21,9 +20,5 @@ class User < ApplicationRecord
 
   def is_admin?(target_api)
     role == target_api
-  end
-
-  def sent_messages
-    Message.with_role(:sender, self)
   end
 end

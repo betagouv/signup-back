@@ -193,7 +193,6 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rmagick (2.16.0)
-    rolify (5.2.0)
     rspec-core (3.7.1)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
@@ -281,7 +280,6 @@ DEPENDENCIES
   rails (~> 5.1.4)
   rails-i18n
   rmagick
-  rolify
   rspec-rails
   rubyzip
   simplecov

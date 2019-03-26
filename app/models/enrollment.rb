@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Enrollment < ApplicationRecord
+class Enrollment < ActiveRecord::Base
   validate :update_validation
 
   before_save :clean_and_format_scopes
@@ -10,6 +10,7 @@ class Enrollment < ApplicationRecord
   has_many :documents, as: :attachable
   accepts_nested_attributes_for :documents
   belongs_to :user
+  has_many :events
 
   # Be aware with the duplication of attribute with type
   scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
@@ -90,7 +91,7 @@ class Enrollment < ApplicationRecord
       'donnees' => donnees&.merge('destinataires' => donnees&.fetch('destinataires', {})),
       'state' => state,
       'documents' => documents.as_json(methods: :type),
-      'messages' => messages.as_json(include: :sender),
+      'messages' => messages.as_json,
       'token_id' => token_id
     }
   end

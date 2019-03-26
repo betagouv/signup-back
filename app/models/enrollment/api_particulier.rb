@@ -1,6 +1,4 @@
 class Enrollment::ApiParticulier < Enrollment
-  resourcify
-
   protected
 
   def sent_validation

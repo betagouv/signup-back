@@ -54,7 +54,7 @@ class EnrollmentsController < ApplicationController
     @enrollment.user = current_user
 
     if @enrollment.save
-      current_user.add_role(:applicant, @enrollment)
+      @enrollment.events.create(name: 'created', user_id: current_user.id)
 
       EnrollmentMailer.with(
         to: current_user.email,
@@ -75,6 +75,7 @@ class EnrollmentsController < ApplicationController
     authorize @enrollment, :update?
 
     if @enrollment.save
+      @enrollment.events.create(name: 'updated', user_id: current_user.id)
       render json: serialize(@enrollment)
     else
       render json: @enrollment.errors, status: :unprocessable_entity
@@ -87,6 +88,7 @@ class EnrollmentsController < ApplicationController
     authorize @enrollment, :update_contacts?
 
     if @enrollment.save
+      @enrollment.events.create(name: 'updated_contacts', user_id: current_user.id)
       EnrollmentMailer.with(
           to: @enrollment.admins.map(&:email),
           target_api: @enrollment.fournisseur_de_donnees,
@@ -119,13 +121,13 @@ class EnrollmentsController < ApplicationController
     end
 
     if @enrollment.send(event_param.to_sym, user: current_user)
-      personified_role_names = {
-        'send_application' => :application_sender,
-        'validate_application' => :application_validater,
-        'review_application' => :application_reviewer,
-        'refuse_application' => :application_refuser
+      event_param_to_event_names = {
+        'send_application' => 'submitted',
+        'validate_application' => 'validated',
+        'review_application' => 'asked_for_modification',
+        'refuse_application' => 'refused'
       }
-      current_user&.add_role(personified_role_names[event_param], @enrollment)
+      @enrollment.events.create(name: event_param_to_event_names[event_param], user_id: current_user.id)
 
       EnrollmentMailer.with(
         to: @enrollment.user.email,
@@ -161,7 +163,7 @@ class EnrollmentsController < ApplicationController
     Rails.application.eager_load!
     policy_class = Object.const_get("#{enrollment.class.to_s}Policy")
     enrollment.as_json(
-      include: [{ documents: { methods: :type } }, { messages: { include: :sender } }],
+      include: [{ documents: { methods: :type } }]
     ).merge('acl' => Hash[
       policy_class.acl_methods.map do |method|
         [method.to_s.delete('?'), policy_class.new(current_user, enrollment).send(method)]
