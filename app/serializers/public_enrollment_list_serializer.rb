@@ -1,4 +1,4 @@
-class Enrollment::PublicEnrollmentListSerializer < ActiveModel::Serializer
+class PublicEnrollmentListSerializer < ActiveModel::Serializer
   attributes :fournisseur_de_donnees, :siret, :nom_raison_sociale, :updated_at
   attribute :intitule do
     object.demarche&.fetch('intitule', nil)

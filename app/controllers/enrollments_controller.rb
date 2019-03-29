@@ -24,12 +24,12 @@ class EnrollmentsController < ApplicationController
       @enrollments = @enrollments.pending
     end
 
-    render json: @enrollments.map { |e| serialize(e) }
+    render json: @enrollments, each_serializer: LightEnrollmentSerializer
   end
 
   # GET /enrollments/1
   def show
-    render json: serialize(@enrollment)
+    render json: @enrollment
   end
 
   # GET /enrollments/public
@@ -42,7 +42,7 @@ class EnrollmentsController < ApplicationController
       enrollments = enrollments.where("fournisseur_de_donnees = ?", params.fetch(:fournisseur_de_donnees, ''))
     end
 
-    render json: enrollments, each_serializer: Enrollment::PublicEnrollmentListSerializer
+    render json: enrollments, each_serializer: PublicEnrollmentListSerializer
   end
 
   # POST /enrollments
@@ -63,7 +63,7 @@ class EnrollmentsController < ApplicationController
         template: 'create_application',
       ).notification_email.deliver_later
 
-      render json: @enrollment, status: :created, location: enrollment_url(@enrollment)
+      render json: @enrollment
     else
       render json: @enrollment.errors, status: :unprocessable_entity
     end
@@ -76,7 +76,7 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.save
       @enrollment.events.create(name: 'updated', user_id: current_user.id)
-      render json: serialize(@enrollment)
+      render json: @enrollment
     else
       render json: @enrollment.errors, status: :unprocessable_entity
     end
@@ -97,7 +97,7 @@ class EnrollmentsController < ApplicationController
           applicant_email: current_user.email
       ).notification_email.deliver_later
 
-      render json: serialize(@enrollment)
+      render json: @enrollment
     else
       render json: @enrollment.errors, status: :unprocessable_entity
     end
@@ -105,39 +105,32 @@ class EnrollmentsController < ApplicationController
 
   # PATCH /enrollment/1/trigger
   def trigger
-    authorize @enrollment, "#{event_param}?".to_sym
-
-    if event_param.in?(['refuse_application', 'review_application']) and not message_params.has_key?(:messages_attributes)
+    event = params[:event]
+    unless enrollment_class.state_machine.events.map(&:name).include?(event.to_sym)
       return render status: :bad_request, json: {
-        message: ['Le commentaire est obligatoire.']
+          message: ['event not permitted']
       }
     end
-    
-    if message_params.has_key?(:messages_attributes)
-      params =  {
-        messages_attributes: message_params[:messages_attributes].map! {|h| h.merge(category: event_param.to_s)}
-      }
-      @enrollment.update(params)
-    end
+    authorize @enrollment, "#{event}?".to_sym
 
-    if @enrollment.send(event_param.to_sym, user: current_user)
-      event_param_to_event_names = {
+    if @enrollment.send(event.to_sym)
+      state_machine_event_to_event_names = {
         'send_application' => 'submitted',
         'validate_application' => 'validated',
         'review_application' => 'asked_for_modification',
         'refuse_application' => 'refused'
       }
-      @enrollment.events.create(name: event_param_to_event_names[event_param], user_id: current_user.id)
+      @enrollment.events.create!(name: state_machine_event_to_event_names[event], user_id: current_user.id, comment: params[:comment])
 
       EnrollmentMailer.with(
         to: @enrollment.user.email,
         target_api: @enrollment.fournisseur_de_donnees,
         enrollment_id: @enrollment.id,
-        template: event_param,
-        message: message_params.fetch(:messages_attributes, [{}]).first[:content]
+        template: event,
+        message: params[:comment]
       ).notification_email.deliver_later
 
-      if event_param == 'send_application'
+      if event == 'send_application'
         EnrollmentMailer.with(
           to: @enrollment.admins.map(&:email),
           target_api: @enrollment.fournisseur_de_donnees,
@@ -147,7 +140,7 @@ class EnrollmentsController < ApplicationController
         ).notification_email.deliver_later
       end
 
-      render json: serialize(@enrollment)
+      render json: @enrollment
     else
       render status: :unprocessable_entity, json: @enrollment.errors
     end
@@ -157,18 +150,6 @@ class EnrollmentsController < ApplicationController
   def destroy
     authorize @enrollment, :delete?
     @enrollment.destroy
-  end
-
-  def serialize(enrollment)
-    Rails.application.eager_load!
-    policy_class = Object.const_get("#{enrollment.class.to_s}Policy")
-    enrollment.as_json(
-      include: [{ documents: { methods: :type } }]
-    ).merge('acl' => Hash[
-      policy_class.acl_methods.map do |method|
-        [method.to_s.delete('?'), policy_class.new(current_user, enrollment).send(method)]
-      end
-    ])
   end
 
   private
@@ -199,23 +180,5 @@ class EnrollmentsController < ApplicationController
         whitelisted_params[:scopes] = scopes.permit! if scopes.present?
         whitelisted_params.fetch(:donnees, {})[:destinataires] = destinataires.permit! if destinataires.present?
     end
-  end
-
-  def message_params
-    params.fetch(:enrollment, {}).permit(messages_attributes: [:content])
-  end
-
-  def event_param
-    event = params[:event]
-    raise EventNotPermitted unless enrollment_class.state_machine.events.map(&:name).include?(event.to_sym)
-    event
-  end
-
-  class EventNotPermitted < StandardError; end
-
-  rescue_from EventNotPermitted do
-    render status: :bad_request, json: {
-      message: ['event not permitted']
-    }
   end
 end

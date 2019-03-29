@@ -5,8 +5,6 @@ class Enrollment < ActiveRecord::Base
   before_save :clean_and_format_scopes
   before_save :set_company_info
 
-  has_many :messages
-  accepts_nested_attributes_for :messages
   has_many :documents, as: :attachable
   accepts_nested_attributes_for :documents
   belongs_to :user
@@ -73,27 +71,6 @@ class Enrollment < ActiveRecord::Base
 
   def target_api
     self.fournisseur_de_donnees.underscore
-  end
-
-  def as_json(*_params)
-    {
-      'updated_at' => updated_at,
-      'created_at' => created_at,
-      'id' => id,
-      'user' => user.as_json,
-      'fournisseur_de_donnees' => fournisseur_de_donnees,
-      'linked_franceconnect_enrollment_id' => linked_franceconnect_enrollment_id,
-      'validation_de_convention' => validation_de_convention,
-      'scopes' => scopes,
-      'contacts' => contacts,
-      'siret' => siret,
-      'demarche' => demarche,
-      'donnees' => donnees&.merge('destinataires' => donnees&.fetch('destinataires', {})),
-      'state' => state,
-      'documents' => documents.as_json(methods: :type),
-      'messages' => messages.as_json,
-      'token_id' => token_id
-    }
   end
 
   protected
