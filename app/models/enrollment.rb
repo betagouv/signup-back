@@ -10,7 +10,6 @@ class Enrollment < ActiveRecord::Base
   belongs_to :user
   has_many :events
 
-  # Be aware with the duplication of attribute with type
   scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
   scope :franceconnect, -> { where(fournisseur_de_donnees: 'franceconnect') }
