@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190401144527) do
+ActiveRecord::Schema.define(version: 20190401145612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,11 +26,11 @@ ActiveRecord::Schema.define(version: 20190401144527) do
   end
 
   create_table "enrollments", force: :cascade do |t|
-    t.json "scopes", default: {}
+    t.jsonb "scopes", default: {}
     t.json "contacts", array: true
     t.string "siret"
-    t.json "demarche"
-    t.json "donnees", default: {"destinaires"=>{}}
+    t.jsonb "demarche"
+    t.jsonb "donnees", default: {"destinaires"=>{}}
     t.string "state"
     t.boolean "validation_de_convention"
     t.string "fournisseur_de_donnees"
