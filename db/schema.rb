@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190329164933) do
+ActiveRecord::Schema.define(version: 20190401145612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,19 +26,14 @@ ActiveRecord::Schema.define(version: 20190329164933) do
   end
 
   create_table "enrollments", force: :cascade do |t|
-    t.json "scopes", default: {}
+    t.jsonb "scopes", default: {}
     t.json "contacts", array: true
     t.string "siret"
-    t.json "demarche"
-    t.json "donnees", default: {"destinaires"=>{}}
+    t.jsonb "demarche"
+    t.jsonb "donnees", default: {"destinaires"=>{}}
     t.string "state"
     t.boolean "validation_de_convention"
     t.string "fournisseur_de_donnees"
-    t.string "type"
-    t.string "description_service"
-    t.string "fondement_juridique"
-    t.boolean "scope_dgfip_RFR"
-    t.boolean "scope_dgfip_adresse_fiscale_taxation"
     t.integer "nombre_demandes_annuelle"
     t.integer "pic_demandes_par_seconde"
     t.integer "nombre_demandes_mensuelles_jan"
@@ -57,19 +52,11 @@ ActiveRecord::Schema.define(version: 20190329164933) do
     t.string "autorite_homologation_fonction"
     t.date "date_homologation"
     t.date "date_fin_homologation"
-    t.string "delegue_protection_donnees"
-    t.string "certificat_pub_production"
     t.string "autorite_certification"
     t.string "ips_de_production"
-    t.boolean "mise_en_production"
     t.boolean "recette_fonctionnelle"
-    t.boolean "demarche_cnil"
-    t.boolean "administration"
-    t.boolean "france_connect"
-    t.boolean "autorisation_legale"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "url_fondement_juridique"
     t.string "token_id"
     t.string "nom_raison_sociale"
     t.integer "linked_franceconnect_enrollment_id"
