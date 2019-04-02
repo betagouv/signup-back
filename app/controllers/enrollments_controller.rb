@@ -160,7 +160,7 @@ class EnrollmentsController < ApplicationController
 
   def enrollment_class
     type = params.fetch(:enrollment, {})[:fournisseur_de_donnees]
-    type = %w[dgfip api-particulier api-entreprise franceconnect api-droits-cnam].include?(type) ? type : nil
+    type = %w[dgfip api-particulier api-entreprise franceconnect api-droits-cnam api-entreprise].include?(type) ? type : nil
     class_name = type ? "Enrollment::#{type.underscore.classify}" : 'Enrollment'
     class_name.constantize
   end

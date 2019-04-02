@@ -28,4 +28,8 @@
 
 rspec_results.html
 
+# IDE
 .idea
+
+#OSX
+.DS_Store

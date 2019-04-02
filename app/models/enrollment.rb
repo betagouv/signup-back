@@ -14,6 +14,7 @@ class Enrollment < ActiveRecord::Base
   scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
   scope :franceconnect, -> { where(fournisseur_de_donnees: 'franceconnect') }
   scope :api_droits_cnam, -> { where(fournisseur_de_donnees: 'api-droits-cnam') }
+  scope :api_entreprise, -> { where(fournisseur_de_donnees: 'api-entreprise') }
 
   scope :no_draft, -> {where.not(state: %w(pending))}
   scope :pending, -> {where.not(state: %w(validated refused))}

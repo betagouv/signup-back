@@ -27,6 +27,10 @@ class EnrollmentMailer < ActionMailer::Base
     'api-droits-cnam' => {
       'sender' => 'contact@api.gouv.fr',
       'target_api' => 'API CNAM'
+    },
+    "api_entreprise" => { 
+      "sender" => "contact@api.gouv.fr", 
+      "target_api" => "API Entreprise"
     }
   }
 
