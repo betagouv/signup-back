@@ -74,7 +74,7 @@ class EnrollmentPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      %w[dgfip api_particulier franceconnect api_droits_cnam].each do |target_api|
+      %w[dgfip api_particulier franceconnect api_droits_cnam api_entreprise].each do |target_api|
         return scope.no_draft.send(target_api.to_sym) if user.is_admin?(target_api)
       end
 
