@@ -172,7 +172,7 @@ class EnrollmentsController < ApplicationController
   def enrollment_params
     params
       .fetch(:enrollment, {})
-      .permit(*policy(@enrollment || enrollment_class.new).permitted_attributes)
+      .permit(*policy(enrollment_class.new).permitted_attributes)
       .tap do |whitelisted_params|
         enrollment = params.fetch(:enrollment, {})
         scopes = enrollment[:scopes]
