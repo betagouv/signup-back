@@ -1,6 +1,7 @@
 class EnrollmentSerializer < ActiveModel::Serializer
   attributes :updated_at, :created_at, :id, :fournisseur_de_donnees, :linked_franceconnect_enrollment_id,
-             :validation_de_convention, :scopes, :contacts, :siret, :demarche, :state, :token_id
+             :validation_de_convention, :scopes, :contacts, :siret, :demarche, :state, :token_id,
+             :additional_content
 
   belongs_to :user
 
@@ -12,7 +13,6 @@ class EnrollmentSerializer < ActiveModel::Serializer
   end
 
   attribute :acl do
-    puts "#{current_user.inspect} current_user"
     policy_class = Object.const_get("#{object.class.to_s}Policy")
     Hash[
       policy_class.acl_methods.map do |method|

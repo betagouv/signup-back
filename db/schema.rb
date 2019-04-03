@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190401145612) do
+ActiveRecord::Schema.define(version: 20190402091628) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,33 +34,13 @@ ActiveRecord::Schema.define(version: 20190401145612) do
     t.string "state"
     t.boolean "validation_de_convention"
     t.string "fournisseur_de_donnees"
-    t.integer "nombre_demandes_annuelle"
-    t.integer "pic_demandes_par_seconde"
-    t.integer "nombre_demandes_mensuelles_jan"
-    t.integer "nombre_demandes_mensuelles_fev"
-    t.integer "nombre_demandes_mensuelles_mar"
-    t.integer "nombre_demandes_mensuelles_avr"
-    t.integer "nombre_demandes_mensuelles_mai"
-    t.integer "nombre_demandes_mensuelles_jui"
-    t.integer "nombre_demandes_mensuelles_jul"
-    t.integer "nombre_demandes_mensuelles_aou"
-    t.integer "nombre_demandes_mensuelles_sep"
-    t.integer "nombre_demandes_mensuelles_oct"
-    t.integer "nombre_demandes_mensuelles_nov"
-    t.integer "nombre_demandes_mensuelles_dec"
-    t.string "autorite_homologation_nom"
-    t.string "autorite_homologation_fonction"
-    t.date "date_homologation"
-    t.date "date_fin_homologation"
-    t.string "autorite_certification"
-    t.string "ips_de_production"
-    t.boolean "recette_fonctionnelle"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "token_id"
     t.string "nom_raison_sociale"
     t.integer "linked_franceconnect_enrollment_id"
     t.bigint "user_id"
+    t.jsonb "additional_content", default: {}
     t.index ["user_id"], name: "index_enrollments_on_user_id"
   end
 
