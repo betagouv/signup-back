@@ -79,13 +79,6 @@ class Enrollment < ActiveRecord::Base
     # we need to convert boolean values as it is send as string because of the data-form serialisation
     self.scopes = scopes.transform_values { |e| e.to_s == "true" }
 
-    # remove the destinataires associated with disabled scopes
-    scopes.each do |key, value|
-      unless value
-        donnees['destinataires'].delete(key.to_s)
-      end
-    end
-
     # in a similar way, format additional boolean content
     if additional_content.key?('dgfip_data_years')
       self.additional_content['dgfip_data_years'] =
@@ -122,7 +115,7 @@ class Enrollment < ActiveRecord::Base
   end
 
   def update_validation
-    errors[:demarche] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless demarche&.fetch('intitule', nil).present?
+    errors[:intitule] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless intitule.present?
     errors[:fournisseur_de_donnees] << "Vous devez renseigner le fournisseur de données avant de continuer" unless fournisseur_de_donnees.present?
     errors[:siret] << "Vous devez renseigner le SIRET de votre organisation avant de continuer" unless siret.present?
   end
@@ -135,9 +128,9 @@ class Enrollment < ActiveRecord::Base
 
     errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
     errors[:validation_de_convention] << "Vous devez valider les modalités d'utilisation avant de continuer" unless validation_de_convention?
-    errors[:demarche] << "Vous devez renseigner la description de la démarche avant de continuer" unless demarche && demarche['description'].present?
-    errors[:demarche] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless demarche && demarche['fondement_juridique'].present?
-    errors[:demarche] << "Vous devez renseigner le document associé au fondement juridique" unless (demarche && demarche['url_fondement_juridique'].present?) || documents.where(type: 'Document::LegalBasis').present?
+    errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
+    errors[:fondement_juridique_title] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless fondement_juridique_title.present?
+    errors[:fondement_juridique_url] << "Vous devez renseigner le document associé au fondement juridique" unless (fondement_juridique_url.present?) || documents.where(type: 'Document::LegalBasis').present?
     errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer. Merci de cliquer sur le lien d'activation que vous avez reçu par mail." unless user.email_verified
   end
 end

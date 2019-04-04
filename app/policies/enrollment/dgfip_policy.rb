@@ -16,6 +16,13 @@ class Enrollment::DgfipPolicy < EnrollmentPolicy
           :recette_fonctionnelle,
           :rgpd_general_agreement,
           :nombre_demandes_mensuelles => [],
+          scopes: [
+            :dgfip_rfr,
+            :dgfip_nbpart,
+            :dgfip_sitfam,
+            :dgfip_pac,
+            :dgfip_aft
+          ],
           dgfip_data_years: [
             :n_moins_1,
             :n_moins_2

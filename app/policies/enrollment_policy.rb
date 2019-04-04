@@ -39,17 +39,13 @@ class EnrollmentPolicy < ApplicationPolicy
         :fournisseur_de_donnees,
         :linked_franceconnect_enrollment_id,
         :siret,
+        :intitule,
+        :description,
+        :fondement_juridique_title,
+        :fondement_juridique_url,
+        :data_recipients,
+        :data_retention_period,
         contacts: [:id, :heading, :nom, :email, :phone_number],
-        demarche: [
-          :intitule,
-          :fondement_juridique,
-          :description,
-          :url_fondement_juridique
-        ],
-        donnees: [
-          :conservation,
-          :destinataires,
-        ],
         documents_attributes: [
           :attachment,
           :type
