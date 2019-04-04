@@ -173,12 +173,5 @@ class EnrollmentsController < ApplicationController
     params
       .fetch(:enrollment, {})
       .permit(*policy(enrollment_class.new).permitted_attributes)
-      .tap do |whitelisted_params|
-        enrollment = params.fetch(:enrollment, {})
-        scopes = enrollment[:scopes]
-        destinataires = enrollment.fetch(:donnees, {})[:destinataires]
-        whitelisted_params[:scopes] = scopes.permit! if scopes.present?
-        whitelisted_params.fetch(:donnees, {})[:destinataires] = destinataires.permit! if destinataires.present?
-    end
   end
 end
