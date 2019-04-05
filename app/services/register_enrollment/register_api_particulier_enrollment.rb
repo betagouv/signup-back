@@ -6,11 +6,11 @@ class RegisterApiParticulierEnrollment < RegisterEnrollmentService
   def call
     name = "#{@enrollment.nom_raison_sociale} - #{@enrollment.id}"
     email = @enrollment.contacts.select { |contact| contact['id'] == 'technique' }.first['email']
-    token_id = create_enrollment_in_token_manager(@enrollment.id, name, email)
-    @enrollment.update({token_id: token_id})
+    linked_token_manager_id = create_enrollment_in_token_manager(@enrollment.id, name, email)
+    @enrollment.update({linked_token_manager_id: linked_token_manager_id})
 
     scopes = @enrollment[:scopes].reject {|k, v| !v}.keys
-    register_enrollment_in_api_scopes(@enrollment.id.to_s, token_id, 'api-particulier', scopes)
+    register_enrollment_in_api_scopes(@enrollment.id.to_s, linked_token_manager_id, 'api_particulier', scopes)
   end
 
   private
@@ -32,7 +32,7 @@ class RegisterApiParticulierEnrollment < RegisterEnrollmentService
     response = http.request(request)
 
     if response.code != '200'
-      raise "Error when registering token in api-particulier. Error message was: #{response.read_body} (#{response.code})"
+      raise "Error when registering token in API Particulier. Error message was: #{response.read_body} (#{response.code})"
     end
 
     JSON.parse(response.read_body)["_id"]
