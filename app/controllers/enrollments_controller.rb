@@ -9,19 +9,19 @@ class EnrollmentsController < ApplicationController
     @enrollments = enrollments_scope
 
     if params.fetch(:archived, false)
-      @enrollments = @enrollments.archived
+      @enrollments = @enrollments.where(status: ['validated', 'refused'])
     end
 
     if params.fetch(:status, false)
-      @enrollments = @enrollments.status(params.fetch(:status, false))
+      @enrollments = @enrollments.where(status: params.fetch(:status, false))
     end
 
     if params.fetch(:target_api, false)
-      @enrollments = @enrollments.target_api(params.fetch(:target_api, false))
+      @enrollments = @enrollments.where(target_api: params.fetch(:target_api, false))
     end
 
     if not params.fetch(:archived, false) and not params.fetch(:status, false)
-      @enrollments = @enrollments.pending
+      @enrollments = @enrollments.where.not(status: ['validated', 'refused'])
     end
 
     render json: @enrollments, each_serializer: LightEnrollmentSerializer
@@ -35,11 +35,11 @@ class EnrollmentsController < ApplicationController
   # GET /enrollments/public
   def public
     enrollments = Enrollment
-      .where("status = ?", 'validated')
+      .where(status: 'validated')
       .order(updated_at: :desc)
 
     if params.fetch(:target_api, false)
-      enrollments = enrollments.where("target_api = ?", params.fetch(:target_api, ''))
+      enrollments = enrollments.where(target_api: params.fetch(:target_api, false))
     end
 
     render json: enrollments, each_serializer: PublicEnrollmentListSerializer

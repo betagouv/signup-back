@@ -64,11 +64,7 @@ class EnrollmentPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      %w[dgfip api_particulier franceconnect api_droits_cnam api_entreprise].each do |target_api|
-        return scope.no_draft.send(target_api.to_sym) if user.is_admin?(target_api)
-      end
-
-      user.enrollments
+      scope.where("status <> 'pending' AND target_api IN (?)", user.roles).or(scope.where(user_id: user.id))
     end
   end
 end
