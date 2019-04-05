@@ -10,18 +10,6 @@ class Enrollment < ActiveRecord::Base
   belongs_to :user
   has_many :events
 
-  scope :api_particulier, -> { where(target_api: 'api_particulier') }
-  scope :dgfip, -> { where(target_api: 'dgfip') }
-  scope :franceconnect, -> { where(target_api: 'franceconnect') }
-  scope :api_droits_cnam, -> { where(target_api: 'api_droits_cnam') }
-  scope :api_entreprise, -> { where(target_api: 'api_entreprise') }
-
-  scope :no_draft, -> {where.not(status: %w(pending))}
-  scope :pending, -> {where.not(status: %w(validated refused))}
-  scope :archived, -> {where(status: %w(validated refused))}
-  scope :status, -> (status) {where(status: status)}
-  scope :target_api, -> (target_api) {where(target_api: target_api)}
-
   state_machine :status, initial: :pending do
     state :pending
     state :sent do
@@ -66,7 +54,7 @@ class Enrollment < ActiveRecord::Base
   end
 
   def admins
-    User.where(role: self.target_api)
+    User.where('? = ANY(roles)', self.target_api)
   end
 
   protected

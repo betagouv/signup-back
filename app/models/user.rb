@@ -13,12 +13,12 @@ class User < ActiveRecord::Base
     user.update(
       email: user_info_from_api_gouv[:info]['email'],
       email_verified: user_info_from_api_gouv[:info]['email_verified'],
-      role: user_info_from_api_gouv[:info]['legacy_account_type']
+      roles: user_info_from_api_gouv[:info]['roles']
     )
     user
   end
 
   def is_admin?(target_api)
-    role == target_api
+    roles.include? target_api
   end
 end
