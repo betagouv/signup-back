@@ -16,6 +16,10 @@ end
 # UPDATE enrollments SET intitule = demarche->>'intitule';
 # UPDATE enrollments SET description = demarche->>'description';
 #
+# SELECT donnees->'conservation', COUNT(*) FROM enrollments GROUP BY donnees->'conservation';
+# SELECT donnees->'conservation', COUNT(*) FROM enrollments WHERE donnees->'conservation' = '""' GROUP BY donnees->'conservation';
+# UPDATE enrollments SET donnees = jsonb_set(donnees, '{conservation}', '"0"') WHERE donnees->'conservation' = '""' ;
+#
 # UPDATE enrollments SET data_retention_period = (donnees->>'conservation')::int;
 # WITH agg_recipients AS (
 #   SELECT id, string_agg(value, ', ') FROM (

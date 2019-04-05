@@ -12,15 +12,15 @@ class EnrollmentsController < ApplicationController
       @enrollments = @enrollments.archived
     end
 
-    if params.fetch(:state, false)
-      @enrollments = @enrollments.state(params.fetch(:state, false))
+    if params.fetch(:status, false)
+      @enrollments = @enrollments.status(params.fetch(:status, false))
     end
 
-    if params.fetch(:fournisseur_de_donnees, false)
-      @enrollments = @enrollments.fournisseur_de_donnees(params.fetch(:fournisseur_de_donnees, false))
+    if params.fetch(:target_api, false)
+      @enrollments = @enrollments.target_api(params.fetch(:target_api, false))
     end
 
-    if not params.fetch(:archived, false) and not params.fetch(:state, false)
+    if not params.fetch(:archived, false) and not params.fetch(:status, false)
       @enrollments = @enrollments.pending
     end
 
@@ -35,11 +35,11 @@ class EnrollmentsController < ApplicationController
   # GET /enrollments/public
   def public
     enrollments = Enrollment
-      .where("state = ?", 'validated')
+      .where("status = ?", 'validated')
       .order(updated_at: :desc)
 
-    if params.fetch(:fournisseur_de_donnees, false)
-      enrollments = enrollments.where("fournisseur_de_donnees = ?", params.fetch(:fournisseur_de_donnees, ''))
+    if params.fetch(:target_api, false)
+      enrollments = enrollments.where("target_api = ?", params.fetch(:target_api, ''))
     end
 
     render json: enrollments, each_serializer: PublicEnrollmentListSerializer
@@ -58,7 +58,7 @@ class EnrollmentsController < ApplicationController
 
       EnrollmentMailer.with(
         to: current_user.email,
-        target_api: @enrollment.fournisseur_de_donnees,
+        target_api: @enrollment.target_api,
         enrollment_id: @enrollment.id,
         template: 'create_application',
       ).notification_email.deliver_later
@@ -91,7 +91,7 @@ class EnrollmentsController < ApplicationController
       @enrollment.events.create(name: 'updated_contacts', user_id: current_user.id)
       EnrollmentMailer.with(
           to: @enrollment.admins.map(&:email),
-          target_api: @enrollment.fournisseur_de_donnees,
+          target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
           template: 'update_contacts',
           applicant_email: current_user.email
@@ -124,7 +124,7 @@ class EnrollmentsController < ApplicationController
 
       EnrollmentMailer.with(
         to: @enrollment.user.email,
-        target_api: @enrollment.fournisseur_de_donnees,
+        target_api: @enrollment.target_api,
         enrollment_id: @enrollment.id,
         template: event,
         message: params[:comment]
@@ -133,7 +133,7 @@ class EnrollmentsController < ApplicationController
       if event == 'send_application'
         EnrollmentMailer.with(
           to: @enrollment.admins.map(&:email),
-          target_api: @enrollment.fournisseur_de_donnees,
+          target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
           template: 'notify_application_sent',
           applicant_email: current_user.email
@@ -159,8 +159,8 @@ class EnrollmentsController < ApplicationController
   end
 
   def enrollment_class
-    type = params.fetch(:enrollment, {})[:fournisseur_de_donnees]
-    type = %w[dgfip api-particulier api-entreprise franceconnect api-droits-cnam api-entreprise].include?(type) ? type : nil
+    type = params.fetch(:enrollment, {})[:target_api]
+    type = %w[dgfip api_particulier api_entreprise franceconnect api_droits_cnam api_entreprise].include?(type) ? type : nil
     class_name = type ? "Enrollment::#{type.underscore.classify}" : 'Enrollment'
     class_name.constantize
   end

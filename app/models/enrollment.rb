@@ -10,19 +10,19 @@ class Enrollment < ActiveRecord::Base
   belongs_to :user
   has_many :events
 
-  scope :api_particulier, -> { where(fournisseur_de_donnees: 'api-particulier') }
-  scope :dgfip, -> { where(fournisseur_de_donnees: 'dgfip') }
-  scope :franceconnect, -> { where(fournisseur_de_donnees: 'franceconnect') }
-  scope :api_droits_cnam, -> { where(fournisseur_de_donnees: 'api-droits-cnam') }
-  scope :api_entreprise, -> { where(fournisseur_de_donnees: 'api-entreprise') }
+  scope :api_particulier, -> { where(target_api: 'api_particulier') }
+  scope :dgfip, -> { where(target_api: 'dgfip') }
+  scope :franceconnect, -> { where(target_api: 'franceconnect') }
+  scope :api_droits_cnam, -> { where(target_api: 'api_droits_cnam') }
+  scope :api_entreprise, -> { where(target_api: 'api_entreprise') }
 
-  scope :no_draft, -> {where.not(state: %w(pending))}
-  scope :pending, -> {where.not(state: %w(validated refused))}
-  scope :archived, -> {where(state: %w(validated refused))}
-  scope :state, -> (state) {where(state: state)}
-  scope :fournisseur_de_donnees, -> (fournisseur_de_donnees) {where(fournisseur_de_donnees: fournisseur_de_donnees)}
+  scope :no_draft, -> {where.not(status: %w(pending))}
+  scope :pending, -> {where.not(status: %w(validated refused))}
+  scope :archived, -> {where(status: %w(validated refused))}
+  scope :status, -> (status) {where(status: status)}
+  scope :target_api, -> (target_api) {where(target_api: target_api)}
 
-  state_machine :state, initial: :pending do
+  state_machine :status, initial: :pending do
     state :pending
     state :sent do
       validate :sent_validation
@@ -47,15 +47,15 @@ class Enrollment < ActiveRecord::Base
     end
 
     before_transition :sent => :validated do |enrollment, transition|
-      if enrollment.fournisseur_de_donnees == 'api-particulier'
+      if enrollment.target_api == 'api_particulier'
         RegisterApiParticulierEnrollment.call(enrollment)
       end
 
-      if enrollment.fournisseur_de_donnees == 'franceconnect'
+      if enrollment.target_api == 'franceconnect'
         RegisterFranceconnectEnrollment.call(enrollment)
       end
 
-      if enrollment.fournisseur_de_donnees == 'dgfip'
+      if enrollment.target_api == 'dgfip'
         RegisterDgfipEnrollment.call(enrollment)
       end
     end
@@ -66,11 +66,7 @@ class Enrollment < ActiveRecord::Base
   end
 
   def admins
-    User.where(role: self.fournisseur_de_donnees.underscore)
-  end
-
-  def target_api
-    self.fournisseur_de_donnees.underscore
+    User.where(role: self.target_api)
   end
 
   protected
@@ -116,7 +112,7 @@ class Enrollment < ActiveRecord::Base
 
   def update_validation
     errors[:intitule] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless intitule.present?
-    errors[:fournisseur_de_donnees] << "Vous devez renseigner le fournisseur de données avant de continuer" unless fournisseur_de_donnees.present?
+    errors[:target_api] << "Vous devez renseigner le fournisseur de données avant de continuer" unless target_api.present?
     errors[:siret] << "Vous devez renseigner le SIRET de votre organisation avant de continuer" unless siret.present?
   end
 
@@ -127,7 +123,7 @@ class Enrollment < ActiveRecord::Base
     end
 
     errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
-    errors[:validation_de_convention] << "Vous devez valider les modalités d'utilisation avant de continuer" unless validation_de_convention?
+    errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
     errors[:fondement_juridique_title] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless fondement_juridique_title.present?
     errors[:fondement_juridique_url] << "Vous devez renseigner le document associé au fondement juridique" unless (fondement_juridique_url.present?) || documents.where(type: 'Document::LegalBasis').present?

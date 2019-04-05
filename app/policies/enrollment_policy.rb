@@ -35,8 +35,8 @@ class EnrollmentPolicy < ApplicationPolicy
     res = []
     if create? || send_application?
       res.concat([
-        :validation_de_convention,
-        :fournisseur_de_donnees,
+        :cgu_approved,
+        :target_api,
         :linked_franceconnect_enrollment_id,
         :siret,
         :intitule,

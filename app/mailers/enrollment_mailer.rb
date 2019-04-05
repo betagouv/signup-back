@@ -20,17 +20,17 @@ class EnrollmentMailer < ActionMailer::Base
       'sender' => 'contact@api.gouv.fr',
       'target_api' => 'API « impôt particulier »'
     },
-    'api-particulier' => {
+    'api_particulier' => {
       'sender' => 'contact@particulier.api.gouv.fr',
       'target_api' => 'API Particulier'
     },
-    'api-droits-cnam' => {
+    'api_droits_cnam' => {
       'sender' => 'contact@api.gouv.fr',
       'target_api' => 'API CNAM'
     },
-    "api_entreprise" => { 
-      "sender" => "contact@api.gouv.fr", 
-      "target_api" => "API Entreprise"
+    'api_entreprise' => {
+      'sender' => 'contact@api.gouv.fr',
+      'target_api' => 'API Entreprise'
     }
   }
 
@@ -39,7 +39,7 @@ class EnrollmentMailer < ActionMailer::Base
     @message = params[:message]
     @applicant_email = params[:applicant_email]
 
-    @url = "#{ENV.fetch('FRONT_HOST')}/#{params[:target_api]}/#{params[:enrollment_id]}"
+    @url = "#{ENV.fetch('FRONT_HOST')}/#{params[:target_api].gsub(/_/, '-')}/#{params[:enrollment_id]}"
     mail(
         # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
         to: params[:to],

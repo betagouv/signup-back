@@ -10,10 +10,10 @@ class Enrollment::FranceconnectPolicy < EnrollmentPolicy
           :birthdate,
           :birthcountry,
           :birthplace,
-          :given,
-          :family,
+          :given_name,
+          :family_name,
           :email,
-          :preferred,
+          :preferred_username,
           :address,
           :phone
         ],

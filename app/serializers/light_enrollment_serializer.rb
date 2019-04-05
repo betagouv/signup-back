@@ -1,5 +1,5 @@
 class LightEnrollmentSerializer < ActiveModel::Serializer
-  attributes :id, :updated_at, :intitule, :fournisseur_de_donnees, :state
+  attributes :id, :updated_at, :intitule, :target_api, :status
 
   belongs_to :user
 
