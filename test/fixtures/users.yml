@@ -1,4 +1,3 @@
 user_service_provider:
-  email: service_provider@domain.user
+  email: user@test
   uid: 1
-  role: service_provider

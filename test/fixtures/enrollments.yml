@@ -1,20 +1,19 @@
 <% 1.upto(10) do |i| %>
 enrollment_<%= i %>:
-  scopes: '{"cnaf_quotient_familial":"true"}'
+  scopes:
+    cnaf_quotient_familial: true
   contacts: '{"{\"id\":\"dpo\",\"heading\":\"Délégué à la protection des données\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}","{\"id\":\"responsable_traitement\",\"heading\":\"Responsable de traitement\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}","{\"id\":\"technique\",\"heading\":\"Responsable technique\",\"nom\":\"Jean Martin\",\"email\":\"jean.martin@yopmail.com\"}"}'
+  intitule: "Télé-procédure permettant aux usagers d'accéder à leur quotient familial de la CAF pour payer les activités de la Ville de Hem"
+  description: 'Création d''un portail familles permettant aux usagers de renseigner et de modifier leurs données personnelles, de récupérer leur quotient familial CAF, de s''inscrire, de réserver et de payer des activités pour leurs enfants ou eux-mêmes.'
+  fondement_juridique_title: 'Convention d''accès à "Mon compte partenaire" - Ville de Hem / CAF du Nord - Contrat de service pris en application de la convention d''accès à "Mon Compte Partenaire" (mode gestion déléguée) signés le 11 mai 2017.'
+  fondement_juridique_url: 'http://www.bordeaux-metropole.fr/content/download/63810/pdf_file/current'
+  data_retention_period: '36'
+  data_recipients: 'Usagers des services publics de la Ville de Hem'
   siret: '12000101100010'
-  demarche:
-    intitule: "Enrollment <%= i %>"
-    fondement_juridique: "cadre juridique"
-    description: "Description"
-  donnees:
-    conservation: "2"
-    destinataires:
-      cnaf_quotient_familial: "destinataires"
-  state: <%= ["sent", "pending", "validated", "refused"].sample %>
-  validation_de_convention: true
-  fournisseur_de_donnees: api-particulier
-  type: Enrollment::ApiParticulier
+  status: <%= ["sent", "pending", "validated", "refused"].sample %>
+  cgu_approved: true
+  nom_raison_sociale: 'SECRETARIAT GENERAL DU GOUVERNEMENT'
+  target_api: api_particulier
   updated_at: <%= i.hours.ago.to_s(:db) %>
   created_at: <%= i.hours.ago.to_s(:db) %>
   user_id: <%= ActiveRecord::FixtureSet.identify(:user_service_provider) %>
