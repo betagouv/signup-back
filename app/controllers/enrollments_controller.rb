@@ -158,9 +158,10 @@ class EnrollmentsController < ApplicationController
     @enrollment = enrollments_scope.find(params[:id])
   end
 
+  # TODO remove all the shit that follows
   def enrollment_class
     type = params.fetch(:enrollment, {})[:target_api]
-    type = %w[dgfip api_particulier api_entreprise franceconnect api_droits_cnam api_entreprise].include?(type) ? type : nil
+    type = %w[api_particulier franceconnect api_droits_cnam api_entreprise dgfip].include?(type) ? type : nil
     class_name = type ? "Enrollment::#{type.underscore.classify}" : 'Enrollment'
     class_name.constantize
   end
