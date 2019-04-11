@@ -10,7 +10,7 @@ enrollment_<%= i %>:
   data_retention_period: '36'
   data_recipients: 'Usagers des services publics de la Ville de Hem'
   siret: '12000101100010'
-  status: <%= ["sent", "pending", "validated", "refused"].sample %>
+  status: <%= ["sent", "pending", "refused"].sample %>
   cgu_approved: true
   nom_raison_sociale: 'SECRETARIAT GENERAL DU GOUVERNEMENT'
   target_api: api_particulier
