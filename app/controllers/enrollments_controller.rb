@@ -6,7 +6,7 @@ class EnrollmentsController < ApplicationController
 
   # GET /enrollments
   def index
-    @enrollments = get_enrollments
+    @enrollments = policy_scope(Enrollment)
 
     if params.fetch(:archived, false)
       @enrollments = @enrollments.where(status: ['validated', 'refused'])
@@ -48,9 +48,13 @@ class EnrollmentsController < ApplicationController
 
   # POST /enrollments
   def create
-    @enrollment = Enrollment.new(enrollment_params)
-    authorize @enrollment, :create?
+    target_api = params.fetch(:enrollment, {})['target_api']
+    enrollment_class = "Enrollment::#{target_api.underscore.classify}".constantize
+    @enrollment = enrollment_class.new
 
+    authorize @enrollment
+
+    @enrollment.update_attributes(permitted_attributes(@enrollment))
     @enrollment.user = current_user
 
     if @enrollment.save
@@ -71,10 +75,9 @@ class EnrollmentsController < ApplicationController
 
   # PATCH/PUT /enrollments/1
   def update
-    @enrollment.attributes = enrollment_params
-    authorize @enrollment, :update?
+    authorize @enrollment
 
-    if @enrollment.save
+    if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: 'updated', user_id: current_user.id)
       render json: @enrollment
     else
@@ -84,10 +87,9 @@ class EnrollmentsController < ApplicationController
 
   # PATCH /enrollments/1/update_contacts
   def update_contacts
-    @enrollment.attributes = enrollment_params
-    authorize @enrollment, :update_contacts?
+    authorize @enrollment
 
-    if @enrollment.save
+    if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: 'updated_contacts', user_id: current_user.id)
       EnrollmentMailer.with(
           to: @enrollment.admins.map(&:email),
@@ -154,17 +156,11 @@ class EnrollmentsController < ApplicationController
 
   private
 
-  def get_enrollments
-    EnrollmentPolicy::Scope.new(current_user, Enrollment).resolve
-  end
-
   def set_enrollment
-    @enrollment = get_enrollments.find(params[:id])
+    @enrollment = policy_scope(Enrollment).find(params[:id])
   end
 
-  def enrollment_params
-    params
-      .fetch(:enrollment, {})
-      .permit(policy(@enrollment || Enrollment.new).permitted_attributes)
+  def pundit_params_for(record)
+    params.fetch(:enrollment, {})
   end
 end

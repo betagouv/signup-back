@@ -33,31 +33,34 @@ class EnrollmentPolicy < ApplicationPolicy
 
   def permitted_attributes
     res = []
-    if create? || send_application?
-      res.concat([
-        :cgu_approved,
-        :target_api,
-        :linked_franceconnect_enrollment_id,
-        :siret,
-        :intitule,
-        :description,
-        :fondement_juridique_title,
-        :fondement_juridique_url,
-        :data_recipients,
-        :data_retention_period,
-        contacts: [:id, :heading, :nom, :email, :phone_number],
-        documents_attributes: [
-          :attachment,
-          :type
-        ]
-      ])
-    end
 
-    if update_contacts?
-      res.concat([
-        contacts: [:id, :heading, :nom, :email, :phone_number],
-      ])
-    end
+    res.concat([
+      :cgu_approved,
+      :target_api,
+      :linked_franceconnect_enrollment_id,
+      :siret,
+      :intitule,
+      :description,
+      :fondement_juridique_title,
+      :fondement_juridique_url,
+      :data_recipients,
+      :data_retention_period,
+      contacts: [:id, :heading, :nom, :email, :phone_number],
+      documents_attributes: [
+        :attachment,
+        :type
+      ]
+    ])
+
+    res
+  end
+
+  def permitted_attributes_for_update_contacts
+    res = []
+
+    res.concat([
+      contacts: [:id, :heading, :nom, :email, :phone_number],
+    ])
 
     res
   end
