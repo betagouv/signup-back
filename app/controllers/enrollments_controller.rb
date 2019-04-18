@@ -24,7 +24,11 @@ class EnrollmentsController < ApplicationController
       @enrollments = @enrollments.where.not(status: ['validated', 'refused'])
     end
 
-    render json: @enrollments, each_serializer: LightEnrollmentSerializer
+    if params.fetch(:detailed, false)
+      render json: @enrollments
+    else
+      render json: @enrollments, each_serializer: LightEnrollmentSerializer
+    end
   end
 
   # GET /enrollments/1
