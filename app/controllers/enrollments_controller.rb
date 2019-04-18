@@ -2,7 +2,7 @@
 
 class EnrollmentsController < ApplicationController
   before_action :authenticate!, except: [:public]
-  before_action :set_enrollment, only: %i[show update update_contacts trigger destroy]
+  before_action :set_enrollment, only: %i[show update update_contacts trigger]
 
   # GET /enrollments
   def index
@@ -146,12 +146,6 @@ class EnrollmentsController < ApplicationController
     else
       render status: :unprocessable_entity, json: @enrollment.errors
     end
-  end
-
-  # DELETE /enrollments/1
-  def destroy
-    authorize @enrollment, :delete?
-    @enrollment.destroy
   end
 
   private
