@@ -1,5 +1,19 @@
-# frozen_string_literal: true
 class Enrollment < ActiveRecord::Base
+  self.inheritance_column = 'target_api'
+
+  # enable Single Table Inheritance with target_api as discriminatory field
+  class << self
+    # ex: 'api_particulier' => Enrollment::ApiParticulier
+    def find_sti_class(target_api)
+      "Enrollment::#{target_api.underscore.classify}".constantize
+    end
+
+    # ex: Enrollment::ApiParticulier => 'api_particulier'
+    def sti_name
+      self.name.demodulize.underscore
+    end
+  end
+
   validate :update_validation
 
   before_save :clean_and_format_scopes
@@ -23,7 +37,7 @@ class Enrollment < ActiveRecord::Base
     end
 
     event :refuse_application do
-      transition :sent => :refused, :pending => :refused
+      transition :sent => :refused
     end
 
     event :review_application do

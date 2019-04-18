@@ -2,11 +2,11 @@
 
 class EnrollmentsController < ApplicationController
   before_action :authenticate!, except: [:public]
-  before_action :set_enrollment, only: %i[show update update_contacts trigger destroy]
+  before_action :set_enrollment, only: %i[show update update_contacts trigger]
 
   # GET /enrollments
   def index
-    @enrollments = enrollments_scope
+    @enrollments = policy_scope(Enrollment)
 
     if params.fetch(:archived, false)
       @enrollments = @enrollments.where(status: ['validated', 'refused'])
@@ -29,6 +29,7 @@ class EnrollmentsController < ApplicationController
 
   # GET /enrollments/1
   def show
+    authorize @enrollment, :show?
     render json: @enrollment
   end
 
@@ -47,10 +48,13 @@ class EnrollmentsController < ApplicationController
 
   # POST /enrollments
   def create
-    @enrollment = enrollments_scope.new(enrollment_params)
+    target_api = params.fetch(:enrollment, {})['target_api']
+    enrollment_class = "Enrollment::#{target_api.underscore.classify}".constantize
+    @enrollment = enrollment_class.new
 
-    authorize @enrollment, :create?
+    authorize @enrollment
 
+    @enrollment.update_attributes(permitted_attributes(@enrollment))
     @enrollment.user = current_user
 
     if @enrollment.save
@@ -71,10 +75,9 @@ class EnrollmentsController < ApplicationController
 
   # PATCH/PUT /enrollments/1
   def update
-    @enrollment.attributes = enrollment_params
-    authorize @enrollment, :update?
+    authorize @enrollment
 
-    if @enrollment.save
+    if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: 'updated', user_id: current_user.id)
       render json: @enrollment
     else
@@ -84,10 +87,9 @@ class EnrollmentsController < ApplicationController
 
   # PATCH /enrollments/1/update_contacts
   def update_contacts
-    @enrollment.attributes = enrollment_params
-    authorize @enrollment, :update_contacts?
+    authorize @enrollment
 
-    if @enrollment.save
+    if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: 'updated_contacts', user_id: current_user.id)
       EnrollmentMailer.with(
           to: @enrollment.admins.map(&:email),
@@ -106,7 +108,7 @@ class EnrollmentsController < ApplicationController
   # PATCH /enrollment/1/trigger
   def trigger
     event = params[:event]
-    unless enrollment_class.state_machine.events.map(&:name).include?(event.to_sym)
+    unless Enrollment.state_machine.events.map(&:name).include?(event.to_sym)
       return render status: :bad_request, json: {
           message: ['event not permitted']
       }
@@ -146,33 +148,13 @@ class EnrollmentsController < ApplicationController
     end
   end
 
-  # DELETE /enrollments/1
-  def destroy
-    authorize @enrollment, :delete?
-    @enrollment.destroy
-  end
-
   private
 
   def set_enrollment
-    @enrollment = enrollments_scope.find(params[:id])
+    @enrollment = policy_scope(Enrollment).find(params[:id])
   end
 
-  # TODO remove all the shit that follows
-  def enrollment_class
-    type = params.fetch(:enrollment, {})[:target_api]
-    type = %w[api_particulier franceconnect api_droits_cnam api_entreprise dgfip].include?(type) ? type : nil
-    class_name = type ? "Enrollment::#{type.underscore.classify}" : 'Enrollment'
-    class_name.constantize
-  end
-
-  def enrollments_scope
-    EnrollmentPolicy::Scope.new(current_user, enrollment_class).resolve
-  end
-
-  def enrollment_params
-    params
-      .fetch(:enrollment, {})
-      .permit(*policy(enrollment_class.new).permitted_attributes)
+  def pundit_params_for(record)
+    params.fetch(:enrollment, {})
   end
 end
