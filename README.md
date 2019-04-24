@@ -11,3 +11,5 @@ Here are the files you need to create :
 Here are the files you need to update :
 - app/mailers/enrollment_mailer.rb (configure sender and api label for mails)
 - (optional) app/models/enrollment.rb (L51) (register post validation hook)
+
+You must also allow signup to use the new sender email on mailjet (ask Raphaël).
