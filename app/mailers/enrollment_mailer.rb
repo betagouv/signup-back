@@ -31,6 +31,10 @@ class EnrollmentMailer < ActionMailer::Base
     'api_entreprise' => {
       'sender' => 'contact@api.gouv.fr',
       'target_api' => 'API Entreprise'
+    },
+    'preuve_covoiturage' => {
+      'sender' => 'contact@covoiturage.beta.gouv.fr',
+      'target_api' => 'Registre de preuve de covoiturage'
     }
   }
 
