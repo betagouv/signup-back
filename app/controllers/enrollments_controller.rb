@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class EnrollmentsController < ApplicationController
   before_action :authenticate!, except: [:public]
   before_action :set_enrollment, only: %i[show update update_contacts trigger]
