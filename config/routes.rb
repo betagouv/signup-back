@@ -13,6 +13,8 @@ Rails.application.routes.draw do
       end
     end
 
+    get '/stats', to: 'stats#show'
+
     get 'users/access_denied'
   end
 
