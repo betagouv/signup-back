@@ -48,7 +48,7 @@ class StatsController < ApplicationController
         COUNT(*)
       FROM enrollments
       GROUP BY month
-      ORDER BY month DESC;
+      ORDER BY month;
     SQL
     monthly_enrollment_count = ActiveRecord::Base
                                    .connection
