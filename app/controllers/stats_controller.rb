@@ -1,7 +1,7 @@
 class StatsController < ApplicationController
   # GET /stats
   def show
-    # Demande d'habilitation déposées
+    # Demandes d'habilitation déposées
     enrollment_count_query = <<-SQL
       SELECT COUNT(*) FROM enrollments;
     SQL
@@ -10,7 +10,7 @@ class StatsController < ApplicationController
                            .execute(enrollment_count_query)
                            .getvalue(0, 0)
 
-    # Demande d'habilitation validées
+    # Demandes d'habilitation validées
     validated_enrollment_count_query = <<-SQL
       SELECT COUNT(*) FROM enrollments WHERE status = 'validated';
     SQL
@@ -20,12 +20,12 @@ class StatsController < ApplicationController
                                      .getvalue(0, 0)
 
     # Temps moyen de traitement des demandes
-    average_processing_time_query = <<-SQL
-      SELECT justify_interval(avg(validation_duration))
+    average_processing_time_in_days_query = <<-SQL
+      SELECT avg(validation_duration)
       FROM (
         SELECT
           enrollments.id, events_start.created_at AS started_at, events_stop.created_at AS done_at,
-          events_stop.created_at - events_start.created_at AS validation_duration
+          DATE_PART('days', events_stop.created_at - events_start.created_at) AS validation_duration
         FROM enrollments
         INNER JOIN
           events AS events_start ON events_start.enrollment_id = enrollments.id
@@ -36,16 +36,16 @@ class StatsController < ApplicationController
         WHERE status IN ('validated', 'refused')
       ) e;
     SQL
-    average_processing_time = ActiveRecord::Base
+    average_processing_time_in_days = ActiveRecord::Base
                                   .connection
-                                  .execute(average_processing_time_query)
+                                  .execute(average_processing_time_in_days_query)
                                   .getvalue(0, 0)
 
-    # Demande d'habilitation déposées
+    # Demandes d'habilitation déposées
     monthly_enrollment_count_query = <<-SQL
       SELECT
         date_trunc('month', created_at) AS month,
-        COUNT(*) AS sum
+        COUNT(*)
       FROM enrollments
       GROUP BY month
       ORDER BY month DESC;
@@ -55,18 +55,18 @@ class StatsController < ApplicationController
                                    .exec_query(monthly_enrollment_count_query)
                                    .to_hash()
 
-    # Répartition des demandes
+    # Répartition des demandes par API
     enrollment_by_target_api_query = <<-SQL
-      SELECT target_api, COUNT(target_api) FROM enrollments GROUP BY target_api;
+      SELECT target_api AS name, COUNT(target_api) FROM enrollments GROUP BY target_api;
     SQL
     enrollment_by_target_api = ActiveRecord::Base
                                    .connection
                                    .exec_query(enrollment_by_target_api_query)
                                    .to_hash()
 
-    # Répartition des demandes
+    # Répartition des demandes par statut
     enrollment_by_status_query = <<-SQL
-      SELECT status, count(status) FROM enrollments GROUP BY status;
+      SELECT status AS name, count(status) FROM enrollments GROUP BY status;
     SQL
     enrollment_by_status = ActiveRecord::Base
                                .connection
@@ -76,7 +76,7 @@ class StatsController < ApplicationController
     render json: {
         enrollment_count: enrollment_count,
         validated_enrollment_count: validated_enrollment_count,
-        average_processing_time: average_processing_time,
+        average_processing_time_in_days: average_processing_time_in_days,
         monthly_enrollment_count: monthly_enrollment_count,
         enrollment_by_target_api: enrollment_by_target_api,
         enrollment_by_status: enrollment_by_status
