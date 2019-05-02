@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190405144539) do
+ActiveRecord::Schema.define(version: 20190502125536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20190405144539) do
     t.string "fondement_juridique_url"
     t.integer "data_retention_period"
     t.string "data_recipients"
+    t.string "data_retention_comment"
     t.index ["user_id"], name: "index_enrollments_on_user_id"
   end
 
