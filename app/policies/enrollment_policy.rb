@@ -45,6 +45,7 @@ class EnrollmentPolicy < ApplicationPolicy
       :fondement_juridique_url,
       :data_recipients,
       :data_retention_period,
+      :data_retention_comment,
       contacts: [:id, :heading, :nom, :email, :phone_number],
       documents_attributes: [
         :attachment,
