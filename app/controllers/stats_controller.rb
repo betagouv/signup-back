@@ -1,6 +1,12 @@
 class StatsController < ApplicationController
   # GET /stats
   def show
+    # Before adding new stat query, beware that before migrations of 2019-04-02
+    # - there is no 'updated' event nor 'updated_contacts' event
+    # - there was a unicity constraint that does not allow multiple event of the same type
+    #   on the same enrollments. Consequently, some submitted and asked_for_modification
+    #   events are missing in database production
+
     # Demandes d'habilitation déposées
     enrollment_count_query = <<-SQL
       SELECT COUNT(*) FROM enrollments;
@@ -37,9 +43,28 @@ class StatsController < ApplicationController
       ) e;
     SQL
     average_processing_time_in_days = ActiveRecord::Base
-                                  .connection
-                                  .execute(average_processing_time_in_days_query)
-                                  .getvalue(0, 0)
+                                          .connection
+                                          .execute(average_processing_time_in_days_query)
+                                          .getvalue(0, 0)
+
+    # Nombre moyen d'aller retour avant traitement
+    average_go_back_count_query = <<-SQL
+      SELECT avg(count) - 1
+      FROM (
+        SELECT
+          enrollments.id, COUNT(enrollments.id)
+        FROM enrollments
+        LEFT JOIN
+          events ON events.enrollment_id = enrollments.id
+          AND events.name IN ('created', 'asked_for_modification')
+        WHERE enrollments.status IN ('validated', 'refused')
+        GROUP BY enrollments.id
+      ) e;
+    SQL
+    average_go_back_count = ActiveRecord::Base
+                                .connection
+                                .execute(average_go_back_count_query)
+                                .getvalue(0, 0)
 
     # Demandes d'habilitation déposées
     monthly_enrollment_count_query = <<-SQL
@@ -77,6 +102,7 @@ class StatsController < ApplicationController
         enrollment_count: enrollment_count,
         validated_enrollment_count: validated_enrollment_count,
         average_processing_time_in_days: average_processing_time_in_days,
+        average_go_back_count: average_go_back_count,
         monthly_enrollment_count: monthly_enrollment_count,
         enrollment_by_target_api: enrollment_by_target_api,
         enrollment_by_status: enrollment_by_status
