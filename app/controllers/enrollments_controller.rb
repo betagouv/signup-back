@@ -117,15 +117,17 @@ class EnrollmentsController < ApplicationController
     end
     authorize @enrollment, "#{event}?".to_sym
 
-    if @enrollment.send(event.to_sym)
-      state_machine_event_to_event_names = {
+    state_machine_event_to_event_names = {
         'send_application' => 'submitted',
         'validate_application' => 'validated',
         'review_application' => 'asked_for_modification',
         'refuse_application' => 'refused'
-      }
-      @enrollment.events.create!(name: state_machine_event_to_event_names[event], user_id: current_user.id, comment: params[:comment])
+    }
+    # here we create the event first to ensure the comment is present when needed
+    # a cleaner way of doing this should be to create the event before enrollment transition
+    @enrollment.events.create!(name: state_machine_event_to_event_names[event], user_id: current_user.id, comment: params[:comment])
 
+    if @enrollment.send(event.to_sym)
       EnrollmentMailer.with(
         to: @enrollment.user.email,
         target_api: @enrollment.target_api,

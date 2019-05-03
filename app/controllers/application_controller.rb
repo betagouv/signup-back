@@ -27,6 +27,12 @@ class ApplicationController < ActionController::Base
     }
   end
 
+  rescue_from ActiveRecord::RecordInvalid do |_|
+    render status: :unprocessable_entity, json: {
+      message: _.message
+    }
+  end
+
   private
 
   def authenticate!
