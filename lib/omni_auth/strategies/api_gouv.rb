@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'omniauth-oauth2'
 
 module OmniAuth
@@ -29,6 +27,11 @@ module OmniAuth
 
       def callback_url
         "#{ENV['BACK_HOST']}/users/auth/api_gouv/callback"
+      end
+
+      # forward source page param to display a contextualised login page on api-auth
+      def authorize_params
+        super.merge(source: request.params["source"])
       end
     end
   end
