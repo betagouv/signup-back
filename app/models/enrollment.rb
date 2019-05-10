@@ -129,6 +129,9 @@ class Enrollment < ActiveRecord::Base
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
     errors[:fondement_juridique_title] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless fondement_juridique_title.present?
     errors[:fondement_juridique_url] << "Vous devez renseigner le document associé au fondement juridique" unless (fondement_juridique_url.present?) || documents.where(type: 'Document::LegalBasis').present?
-    errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer. Merci de cliquer sur le lien d'activation que vous avez reçu par mail." unless user.email_verified
+    errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer.
+Merci de cliquer sur le lien d'activation que vous avez reçu par mail.
+Vous pouvez également demander un nouveau lien d'activation en cliquant sur le lien
+suivant #{ENV.fetch('OAUTH_HOST')}/users/send-email-verification?notification=email_verification_required" unless user.email_verified
   end
 end
