@@ -80,7 +80,7 @@ class EnrollmentsController < ApplicationController
     authorize @enrollment
 
     if @enrollment.update(permitted_attributes(@enrollment))
-      @enrollment.events.create(name: 'updated', user_id: current_user.id)
+      @enrollment.events.create(name: 'updated', user_id: current_user.id, diff: @enrollment.previous_changes)
       render json: @enrollment
     else
       render json: @enrollment.errors, status: :unprocessable_entity
@@ -92,7 +92,7 @@ class EnrollmentsController < ApplicationController
     authorize @enrollment
 
     if @enrollment.update(permitted_attributes(@enrollment))
-      @enrollment.events.create(name: 'updated_contacts', user_id: current_user.id)
+      @enrollment.events.create(name: 'updated_contacts', user_id: current_user.id, diff: @enrollment.previous_changes)
       EnrollmentMailer.with(
           to: @enrollment.admins.map(&:email),
           target_api: @enrollment.target_api,
@@ -123,8 +123,10 @@ class EnrollmentsController < ApplicationController
         'review_application' => 'asked_for_modification',
         'refuse_application' => 'refused'
     }
-    # here we create the event first to ensure the comment is present when needed
-    # a cleaner way of doing this should be to create the event before enrollment transition
+    # Here we create the event before calling the state change on the enrollment
+    # because we need to run param validation on the comment field before making the state change.
+    # A cleaner way of doing this should be to create the event in the enrollment state machine in
+    # a way that both write queries are made within the same database transaction.
     @enrollment.events.create!(name: state_machine_event_to_event_names[event], user_id: current_user.id, comment: params[:comment])
 
     if @enrollment.send(event.to_sym)

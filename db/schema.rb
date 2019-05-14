@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190502125536) do
+ActiveRecord::Schema.define(version: 20190513094242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20190502125536) do
     t.bigint "user_id"
     t.bigint "enrollment_id"
     t.string "comment"
+    t.jsonb "diff"
     t.index ["enrollment_id"], name: "index_events_on_enrollment_id"
     t.index ["name"], name: "index_events_on_name"
     t.index ["user_id"], name: "index_events_on_user_id"
