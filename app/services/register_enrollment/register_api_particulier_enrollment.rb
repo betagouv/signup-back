@@ -27,7 +27,7 @@ class RegisterApiParticulierEnrollment < RegisterEnrollmentService
     request["cache-control"] = 'no-cache'
     request["x-api-key"] = ENV.fetch('API_PARTICULIER_API_KEY')
 
-    request.body = "{\"name\": #{name.to_json},\"email\": #{email.to_json},\"signup_id\": #{id.to_json}}"
+    request.body = "{\"name\": #{name.to_json},\"email\": #{email.to_json},\"signup_id\": \"#{id.to_json}\"}"
 
     response = http.request(request)
 

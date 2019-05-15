@@ -25,7 +25,7 @@ class RegisterFranceconnectEnrollment < RegisterEnrollmentService
     request["cache-control"] = 'no-cache'
     request["authorization"] = "Bearer #{ENV.fetch('FRANCECONNECT_PARTICULIER_API_KEY') {''}}"
 
-    request.body = "{\"name\": #{name.to_json},\"authorized_emails\": [#{email.to_json}],\"signup_id\": #{id.to_json}, \"scopes\": #{scopes.to_json}}"
+    request.body = "{\"name\": #{name.to_json},\"authorized_emails\": [#{email.to_json}],\"signup_id\": \"#{id.to_json}\", \"scopes\": #{scopes.to_json}}"
 
     response = http.request(request)
 
