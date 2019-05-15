@@ -106,6 +106,7 @@ class Enrollment < ActiveRecord::Base
 
     if response.code == '200'
       nom_raison_sociale = JSON.parse(response.read_body)["etablissement"]["nom_raison_sociale"]
+      self.siret = escapedSpacelessSiret
       self.nom_raison_sociale = nom_raison_sociale
     else
       self.nom_raison_sociale = nil
