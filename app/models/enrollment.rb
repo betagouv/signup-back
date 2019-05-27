@@ -115,8 +115,9 @@ class Enrollment < ActiveRecord::Base
 
   def update_validation
     errors[:intitule] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless intitule.present?
-    errors[:target_api] << "Vous devez renseigner le fournisseur de données avant de continuer" unless target_api.present?
-    errors[:siret] << "Vous devez renseigner le SIRET de votre organisation avant de continuer" unless siret.present?
+    # the following 2 errors should never occur #defensiveprogramming
+    errors[:target_api] << "Une erreur inattendue est survenue: pas d'API cible" unless target_api.present?
+    errors[:organization_id] << "Une erreur inattendue est survenue: pas d'organisation" unless organization_id.present?
   end
 
   def sent_validation

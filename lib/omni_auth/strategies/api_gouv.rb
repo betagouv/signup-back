@@ -13,7 +13,7 @@ module OmniAuth
           verify: false # TODO verify it in production env
         }
       }
-      option :scope, 'openid email roles'
+      option :scope, 'openid email profile roles organizations'
 
       uid {raw_info['sub']}
 
