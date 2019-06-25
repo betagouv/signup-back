@@ -61,4 +61,14 @@ class ApplicationController < ActionController::Base
     oauth_provider = request.headers['X-Oauth-Provider'] || session[:oauth_provider] || 'apiParticulier'
     @client ||= Object.const_get("#{oauth_provider.classify}::OauthClient").new
   end
+
+  def pagination_dict(collection)
+    {
+        current_page: collection.current_page,
+        next_page: collection.next_page,
+        prev_page: collection.prev_page,
+        total_pages: collection.total_pages,
+        total_count: collection.total_count
+    }
+  end
 end

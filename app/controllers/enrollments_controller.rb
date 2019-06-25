@@ -23,10 +23,48 @@ class EnrollmentsController < ApplicationController
     end
 
     if params.fetch(:detailed, false)
-      render json: @enrollments
-    else
-      render json: @enrollments, each_serializer: LightEnrollmentSerializer
+      # NB. if detailed is set to true, the result will not be paginated, nor sorted, nor filtered
+      return render json: @enrollments
     end
+
+    begin
+      sorted_by = JSON.parse(params.fetch(:sortedBy, '[]'))
+      sorted_by.each do |sortItem|
+        sortItem.each do |sortKey, sortDirection|
+          next unless ['updated_at'].include? sortKey
+          next unless ['asc', 'desc'].include? sortDirection
+          @enrollments = @enrollments.order("#{sortKey} #{sortDirection.upcase}")
+        end
+      end
+    rescue JSON::ParserError
+      # silently fail, if the sort is not formatted properly we do not apply it
+    end
+
+    begin
+      filter = JSON.parse(params.fetch(:filter, '[]'))
+      filter.each do |filterItem|
+        filterItem.each do |filterKey, filterValue|
+          next unless ['id', 'nom_raison_sociale', 'target_api'].include? filterKey
+          sanitizedFilterValue = Enrollment.send(:sanitize_sql_like, filterValue)
+          sanitizedFilterValueWithoutAccent = ActiveSupport::Inflector.transliterate(sanitizedFilterValue)
+          @enrollments = @enrollments.where(
+              "LOWER(#{filterKey}::varchar(255)) LIKE ?",
+              "%#{sanitizedFilterValueWithoutAccent.downcase}%"
+          )
+        end
+      end
+    rescue JSON::ParserError
+      # silently fail, if the filter is not formatted properly we do not apply it
+    end
+
+    page = params.fetch(:page, '0')
+    @enrollments = @enrollments.page(page.to_i + 1).per(10)
+
+    render json: @enrollments,
+           each_serializer: LightEnrollmentSerializer,
+           meta: pagination_dict(@enrollments),
+           adapter: :json,
+           root: "enrollments"
   end
 
   # GET /enrollments/1
