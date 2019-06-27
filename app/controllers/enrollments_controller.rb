@@ -44,7 +44,7 @@ class EnrollmentsController < ApplicationController
       filter = JSON.parse(params.fetch(:filter, '[]'))
       filter.each do |filterItem|
         filterItem.each do |filterKey, filterValue|
-          next unless ['id', 'nom_raison_sociale', 'target_api'].include? filterKey
+          next unless ['id', 'nom_raison_sociale', 'target_api', 'status'].include? filterKey
           sanitizedFilterValue = Enrollment.send(:sanitize_sql_like, filterValue)
           sanitizedFilterValueWithoutAccent = ActiveSupport::Inflector.transliterate(sanitizedFilterValue)
           @enrollments = @enrollments.where(
