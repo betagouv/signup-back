@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     end
 
     get '/stats', to: 'stats#show'
+    get '/events/most-used-comments', to: 'events#most_used_comments'
 
     get 'users/access_denied'
   end
