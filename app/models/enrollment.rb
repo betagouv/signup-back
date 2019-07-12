@@ -48,6 +48,21 @@ class Enrollment < ActiveRecord::Base
       transition from: :sent, to: :validated
     end
 
+    before_transition all => all do |enrollment, transition|
+      state_machine_event_to_event_names = {
+          send_application: 'submitted',
+          validate_application: 'validated',
+          review_application: 'asked_for_modification',
+          refuse_application: 'refused'
+      }
+
+      enrollment.events.create!(
+          name: state_machine_event_to_event_names[transition.event],
+          user_id: transition.args[0][:user_id],
+          comment: transition.args[0][:comment]
+      )
+    end
+
     before_transition :sent => :validated do |enrollment, transition|
       if enrollment.target_api == 'api_particulier'
         RegisterApiParticulierEnrollment.call(enrollment)

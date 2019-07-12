@@ -155,19 +155,7 @@ class EnrollmentsController < ApplicationController
     end
     authorize @enrollment, "#{event}?".to_sym
 
-    state_machine_event_to_event_names = {
-        'send_application' => 'submitted',
-        'validate_application' => 'validated',
-        'review_application' => 'asked_for_modification',
-        'refuse_application' => 'refused'
-    }
-    # Here we create the event before calling the state change on the enrollment
-    # because we need to run param validation on the comment field before making the state change.
-    # A cleaner way of doing this should be to create the event in the enrollment state machine in
-    # a way that both write queries are made within the same database transaction.
-    @enrollment.events.create!(name: state_machine_event_to_event_names[event], user_id: current_user.id, comment: params[:comment])
-
-    if @enrollment.send(event.to_sym)
+    if @enrollment.send(event.to_sym, user_id: current_user.id, comment: params[:comment])
       EnrollmentMailer.with(
         to: @enrollment.user.email,
         target_api: @enrollment.target_api,
