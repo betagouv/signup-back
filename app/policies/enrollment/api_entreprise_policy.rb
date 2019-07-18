@@ -15,6 +15,7 @@ class Enrollment::ApiEntreprisePolicy < EnrollmentPolicy
         :certificat_opqibi,
         :certificat_probtp,
         :certificat_qualibat,
+        :certificat_rge_ademe,
         :document_association,
         :exercice,
         :extrait_inpi,
