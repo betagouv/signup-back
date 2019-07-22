@@ -109,7 +109,7 @@ class Enrollment < ActiveRecord::Base
 
   def set_company_info
     escapedSpacelessSiret = CGI.escape(siret.delete(" \t\r\n"))
-    url = URI("https://sirene.entreprise.api.gouv.fr/v1/siret/#{escapedSpacelessSiret}")
+    url = URI("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{escapedSpacelessSiret}")
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
