@@ -27,10 +27,6 @@ class EnrollmentPolicy < ApplicationPolicy
     record.can_refuse_application? && user.is_admin?(record.target_api)
   end
 
-  def update_contacts?
-    record.validated? && user == record.user
-  end
-
   def permitted_attributes
     res = []
 
@@ -52,16 +48,6 @@ class EnrollmentPolicy < ApplicationPolicy
         :attachment,
         :type
       ]
-    ])
-
-    res
-  end
-
-  def permitted_attributes_for_update_contacts
-    res = []
-
-    res.concat([
-      contacts: [:id, :heading, :nom, :email, :phone_number],
     ])
 
     res

@@ -6,7 +6,6 @@ class EnrollmentMailer < ActionMailer::Base
       'validate_application' => 'Votre demande a été validée',
       'review_application' => 'Votre demande requiert des modifications',
       'refuse_application' => 'Votre demande a été refusée',
-      'update_contacts' => 'Contacts modifiés sur signup.api.gouv.fr',
       'notify_application_sent' => 'Nouvelle demande sur signup.api.gouv.fr',
       'create_application' => 'Votre demande a été enregistrée'
   }

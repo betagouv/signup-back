@@ -1,6 +1,6 @@
 class EnrollmentsController < ApplicationController
   before_action :authenticate!, except: [:public]
-  before_action :set_enrollment, only: %i[show update update_contacts trigger]
+  before_action :set_enrollment, only: %i[show update trigger]
 
   # GET /enrollments
   def index
@@ -119,26 +119,6 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: 'updated', user_id: current_user.id, diff: @enrollment.previous_changes)
-      render json: @enrollment
-    else
-      render json: @enrollment.errors, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH /enrollments/1/update_contacts
-  def update_contacts
-    authorize @enrollment
-
-    if @enrollment.update(permitted_attributes(@enrollment))
-      @enrollment.events.create(name: 'updated_contacts', user_id: current_user.id, diff: @enrollment.previous_changes)
-      EnrollmentMailer.with(
-          to: @enrollment.admins.map(&:email),
-          target_api: @enrollment.target_api,
-          enrollment_id: @enrollment.id,
-          template: 'update_contacts',
-          applicant_email: current_user.email
-      ).notification_email.deliver_later
-
       render json: @enrollment
     else
       render json: @enrollment.errors, status: :unprocessable_entity
