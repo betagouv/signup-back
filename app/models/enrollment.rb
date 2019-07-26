@@ -75,6 +75,10 @@ class Enrollment < ActiveRecord::Base
       if enrollment.target_api == 'dgfip'
         RegisterDgfipEnrollment.call(enrollment)
       end
+
+      if enrollment.target_api == 'api_entreprise'
+        RegisterApiEntrepriseEnrollment.call(enrollment)
+      end
     end
 
     event :loop_without_job do
@@ -109,15 +113,7 @@ class Enrollment < ActiveRecord::Base
 
   def set_company_info
     escapedSpacelessSiret = CGI.escape(siret.delete(" \t\r\n"))
-    url = URI("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{escapedSpacelessSiret}")
-
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    request = Net::HTTP::Get.new(url)
-
-    response = http.request(request)
+    response = Http.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{escapedSpacelessSiret}")
 
     if response.code == '200'
       nom_raison_sociale = JSON.parse(response.read_body)["etablissement"]["nom_raison_sociale"]

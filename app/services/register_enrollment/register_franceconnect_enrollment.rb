@@ -15,19 +15,11 @@ class RegisterFranceconnectEnrollment < RegisterEnrollmentService
   private
 
   def create_enrollment_in_token_manager(id, name, email, scopes)
-    url = URI("#{ENV.fetch('FRANCECONNECT_PARTICULIER_HOST')}/api/v2/service-provider/integration/create")
-
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-
-    request = Net::HTTP::Post.new(url)
-    request["content-type"] = 'application/json'
-    request["cache-control"] = 'no-cache'
-    request["authorization"] = "Bearer #{ENV.fetch('FRANCECONNECT_PARTICULIER_API_KEY') {''}}"
-
-    request.body = "{\"name\": #{name.to_json},\"authorized_emails\": [#{email.to_json}],\"signup_id\": \"#{id.to_json}\", \"scopes\": #{scopes.to_json}}"
-
-    response = http.request(request)
+    response = Http.post(
+        "#{ENV.fetch('FRANCECONNECT_PARTICULIER_HOST')}/api/v2/service-provider/integration/create",
+        "{\"name\": #{name.to_json},\"authorized_emails\": [#{email.to_json}],\"signup_id\": \"#{id.to_json}\", \"scopes\": #{scopes.to_json}}",
+        {"authorization" => "Bearer #{ENV.fetch('FRANCECONNECT_PARTICULIER_API_KEY') {''}}"}
+    )
 
     if response.code != '200'
       raise "Error when registering the FS on FranceConnect. Error message was: #{response.read_body} (#{response.code})"

@@ -16,20 +16,11 @@ class RegisterApiParticulierEnrollment < RegisterEnrollmentService
   private
 
   def create_enrollment_in_token_manager(id, name, email)
-    url = URI("#{ENV.fetch('API_PARTICULIER_HOST') {'https://particulier-development.api.gouv.fr'}}/admin/api/token")
-
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    request = Net::HTTP::Post.new(url)
-    request["content-type"] = 'application/json'
-    request["cache-control"] = 'no-cache'
-    request["x-api-key"] = ENV.fetch('API_PARTICULIER_API_KEY')
-
-    request.body = "{\"name\": #{name.to_json},\"email\": #{email.to_json},\"signup_id\": \"#{id.to_json}\"}"
-
-    response = http.request(request)
+    response = Http.post(
+        "#{ENV.fetch('API_PARTICULIER_HOST')}/admin/api/token",
+        "{\"name\": #{name.to_json},\"email\": #{email.to_json},\"signup_id\": \"#{id.to_json}\"}",
+        {"x-api-key" => ENV.fetch('API_PARTICULIER_API_KEY')}
+    )
 
     if response.code != '200'
       raise "Error when registering token in API Particulier. Error message was: #{response.read_body} (#{response.code})"
