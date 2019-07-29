@@ -8,10 +8,10 @@ class User < ActiveRecord::Base
 
   def self.reconcile(user_info_from_api_gouv)
     user = where(
-      uid: user_info_from_api_gouv[:info]['sub']
+      email: user_info_from_api_gouv[:info]['email'],
     ).first_or_create
     user.update(
-      email: user_info_from_api_gouv[:info]['email'],
+      uid: user_info_from_api_gouv[:info]['sub'],
       email_verified: user_info_from_api_gouv[:info]['email_verified'],
       roles: user_info_from_api_gouv[:info]['roles']
     )
