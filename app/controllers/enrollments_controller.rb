@@ -94,7 +94,7 @@ class EnrollmentsController < ApplicationController
 
     authorize @enrollment
 
-    @enrollment.update_attributes(permitted_attributes(@enrollment))
+    @enrollment.assign_attributes(permitted_attributes(@enrollment))
     @enrollment.user = current_user
 
     if @enrollment.save

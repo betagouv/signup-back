@@ -43,11 +43,17 @@ class EnrollmentPolicy < ApplicationPolicy
       :data_recipients,
       :data_retention_period,
       :data_retention_comment,
-      contacts: [:id, :heading, :nom, :email, :phone_number],
+      :dpo_label,
+      :dpo_email,
+      :dpo_phone_number,
+      :responsable_traitement_label,
+      :responsable_traitement_email,
+      :responsable_traitement_phone_number,
+      contacts: [:id, :nom, :email, :phone_number],
       documents_attributes: [
         :attachment,
         :type
-      ]
+      ],
     ])
 
     res
@@ -55,7 +61,9 @@ class EnrollmentPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.where("status <> 'pending' AND target_api IN (?)", user.roles).or(scope.where(user_id: user.id))
+      scope.where("status <> 'pending' AND target_api IN (?)", user.roles)
+          .or(scope.where(user_id: user.id))
+          .or(scope.where(dpo_id: user.id).where(status: 'validated'))
     end
   end
 end

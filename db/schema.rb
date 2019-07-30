@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190729122915) do
+ActiveRecord::Schema.define(version: 20190729133302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,14 @@ ActiveRecord::Schema.define(version: 20190729122915) do
     t.string "data_recipients"
     t.string "data_retention_comment"
     t.integer "organization_id"
+    t.bigint "dpo_id"
+    t.string "dpo_label"
+    t.string "dpo_phone_number"
+    t.bigint "responsable_traitement_id"
+    t.string "responsable_traitement_label"
+    t.string "responsable_traitement_phone_number"
+    t.index ["dpo_id"], name: "index_enrollments_on_dpo_id"
+    t.index ["responsable_traitement_id"], name: "index_enrollments_on_responsable_traitement_id"
     t.index ["user_id"], name: "index_enrollments_on_user_id"
   end
 
@@ -75,6 +83,8 @@ ActiveRecord::Schema.define(version: 20190729122915) do
   end
 
   add_foreign_key "enrollments", "users"
+  add_foreign_key "enrollments", "users", column: "dpo_id"
+  add_foreign_key "enrollments", "users", column: "responsable_traitement_id"
   add_foreign_key "events", "enrollments"
   add_foreign_key "events", "users"
 end
