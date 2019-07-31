@@ -15,6 +15,7 @@ gem 'json-schema'
 gem 'jwt'
 gem 'kaminari'
 gem 'mailjet'
+gem 'mongo', '2.5.1'
 gem 'omniauth-oauth2'
 gem 'pg'
 gem 'prawn-rails'
@@ -26,7 +27,6 @@ gem 'rails-i18n'
 gem 'rmagick'
 gem 'rubyzip'
 gem 'state_machines-activerecord'
-gem 'mongo', '2.5.1'
 
 group :development, :test do
   gem 'database_cleaner'
@@ -38,8 +38,9 @@ end
 
 group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'rubocop', '~> 0.73.0'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
-gem "active_model_serializers", "~> 0.10.9"
+gem 'active_model_serializers', '~> 0.10.9'
