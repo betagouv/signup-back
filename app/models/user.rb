@@ -2,19 +2,22 @@
 
 class User < ActiveRecord::Base
   devise :omniauthable, omniauth_providers: [:api_gouv]
+  validates :email, format: {with: URI::MailTo::EMAIL_REGEXP, message: 'Vous devez renseigner un email valide'}
 
   has_many :enrollments
+  has_many :dpo_enrollments, foreign_key: :dpo_id, class_name: :Enrollment
+  has_many :responsable_traitement_enrollments, foreign_key: :responsable_traitement_id, class_name: :Enrollment
   has_many :events
 
-  def self.reconcile(user_info_from_api_gouv)
+  def self.reconcile(external_user_info)
     user = where(
-      email: user_info_from_api_gouv[:info]['email'],
-    ).first_or_create
-    user.update(
-      uid: user_info_from_api_gouv[:info]['sub'],
-      email_verified: user_info_from_api_gouv[:info]['email_verified'],
-      roles: user_info_from_api_gouv[:info]['roles']
-    )
+        email: external_user_info['email'],
+    ).first_or_create!
+
+    user.update(uid: external_user_info['sub']) if external_user_info.key?('sub')
+    user.update(email_verified: external_user_info['email_verified']) if external_user_info.key?('email_verified')
+    user.update(roles: external_user_info['roles']) if external_user_info.key?('roles')
+
     user
   end
 

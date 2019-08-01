@@ -23,6 +23,8 @@ class Enrollment < ActiveRecord::Base
   accepts_nested_attributes_for :documents
   belongs_to :user
   has_many :events
+  belongs_to :dpo, class_name: :User, foreign_key: :dpo_id, optional: true
+  belongs_to :responsable_traitement, class_name: :User, foreign_key: :responsable_traitement_id, optional: true
 
   state_machine :status, initial: :pending do
     state :pending
@@ -90,16 +92,32 @@ class Enrollment < ActiveRecord::Base
     User.where('? = ANY(roles)', self.target_api)
   end
 
+  def dpo_email=(email)
+    self.dpo = User.reconcile({'email' => email})
+  end
+
+  def dpo_email
+    self.dpo.try(:email)
+  end
+
+  def responsable_traitement_email=(email)
+    self.responsable_traitement = User.reconcile({'email' => email})
+  end
+
+  def responsable_traitement_email
+    self.responsable_traitement.try(:email)
+  end
+
   protected
 
   def clean_and_format_scopes
     # we need to convert boolean values as it is send as string because of the data-form serialisation
-    self.scopes = scopes.transform_values { |e| e.to_s == "true" }
+    self.scopes = scopes.transform_values {|e| e.to_s == "true"}
 
     # in a similar way, format additional boolean content
     if additional_content.key?('dgfip_data_years')
       self.additional_content['dgfip_data_years'] =
-          additional_content['dgfip_data_years'].transform_values { |e| e.to_s == "true" }
+          additional_content['dgfip_data_years'].transform_values {|e| e.to_s == "true"}
     end
     if additional_content.key?('rgpd_general_agreement')
       self.additional_content['rgpd_general_agreement'] =
@@ -132,10 +150,15 @@ class Enrollment < ActiveRecord::Base
   end
 
   def sent_validation
-    %w[dpo technique responsable_traitement]. each do |contact_type|
-      contact = contacts&.find { |e| e['id'] == contact_type }
-      errors[:contacts] << "Vous devez renseigner le #{contact&.fetch('heading', nil)} avant de continuer" unless contact&.fetch('nom', false)&.present? && contact&.fetch('email', false)&.present?
-    end
+    contact = contacts&.find {|e| e['id'] == 'technique'}
+    errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch('email', false)&.present?
+
+    errors[:dpo_label] << "Vous devez renseigner un nom pour le délégué à la protection des données avant de continuer" unless dpo_label.present?
+    errors[:dpo_email] << "Vous devez renseigner un email pour le délégué à la protection des données avant de continuer" unless dpo_email.present?
+    errors[:dpo_phone_number] << "Vous devez renseigner un numéro de téléphone pour le délégué à la protection des données avant de continuer" unless dpo_phone_number.present?
+    errors[:responsable_traitement_label] << "Vous devez renseigner un nom pour le responsable de traitement avant de continuer" unless responsable_traitement_label.present?
+    errors[:responsable_traitement_email] << "Vous devez renseigner un email pour le responsable de traitement avant de continuer" unless responsable_traitement_email.present?
+    errors[:responsable_traitement_phone_number] << "Vous devez renseigner un numéro de téléphone pour le responsable de traitement avant de continuer" unless responsable_traitement_phone_number.present?
 
     errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
     errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?

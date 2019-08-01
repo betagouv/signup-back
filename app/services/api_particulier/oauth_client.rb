@@ -27,7 +27,7 @@ class ApiParticulier::OauthClient
     end
 
     raise ApplicationController::AccessDenied, res.body unless res.success?
-    User.reconcile({info: res.body})
+    User.reconcile(res.body)
   rescue StandardError => e
     raise ApplicationController::AccessDenied, e.message
   end

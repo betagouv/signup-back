@@ -6,20 +6,14 @@ class EnrollmentsController < ApplicationController
   def index
     @enrollments = policy_scope(Enrollment)
 
-    if params.fetch(:archived, false)
-      @enrollments = @enrollments.where(status: ['validated', 'refused'])
-    end
+    @enrollments = @enrollments.where(status: %w[validated refused]) if params.fetch(:archived, false)
 
-    if params.fetch(:status, false)
-      @enrollments = @enrollments.where(status: params.fetch(:status, false))
-    end
+    @enrollments = @enrollments.where(status: params.fetch(:status, false)) if params.fetch(:status, false)
 
-    if params.fetch(:target_api, false)
-      @enrollments = @enrollments.where(target_api: params.fetch(:target_api, false))
-    end
+    @enrollments = @enrollments.where(target_api: params.fetch(:target_api, false)) if params.fetch(:target_api, false)
 
-    if not params.fetch(:archived, false) and not params.fetch(:status, false)
-      @enrollments = @enrollments.where.not(status: ['validated', 'refused'])
+    if !params.fetch(:archived, false) && !params.fetch(:status, false)
+      @enrollments = @enrollments.where.not(status: %w[validated refused])
     end
 
     if params.fetch(:detailed, false)
@@ -28,12 +22,13 @@ class EnrollmentsController < ApplicationController
     end
 
     begin
-      sorted_by = JSON.parse(params.fetch(:sortedBy, '[]'))
-      sorted_by.each do |sortItem|
-        sortItem.each do |sortKey, sortDirection|
-          next unless ['updated_at'].include? sortKey
-          next unless ['asc', 'desc'].include? sortDirection
-          @enrollments = @enrollments.order("#{sortKey} #{sortDirection.upcase}")
+      sorted_by = JSON.parse(params.fetch(:sortedBy, "[]"))
+      sorted_by.each do |sort_item|
+        sort_item.each do |sort_key, sort_direction|
+          next unless ["updated_at"].include? sort_key
+          next unless %w[asc desc].include? sort_direction
+
+          @enrollments = @enrollments.order("#{sort_key} #{sort_direction.upcase}")
         end
       end
     rescue JSON::ParserError
@@ -41,15 +36,16 @@ class EnrollmentsController < ApplicationController
     end
 
     begin
-      filter = JSON.parse(params.fetch(:filter, '[]'))
-      filter.each do |filterItem|
-        filterItem.each do |filterKey, filterValue|
-          next unless ['id', 'nom_raison_sociale', 'target_api', 'status'].include? filterKey
-          sanitizedFilterValue = Enrollment.send(:sanitize_sql_like, filterValue)
-          sanitizedFilterValueWithoutAccent = ActiveSupport::Inflector.transliterate(sanitizedFilterValue)
+      filter = JSON.parse(params.fetch(:filter, "[]"))
+      filter.each do |filter_item|
+        filter_item.each do |filter_key, filter_value|
+          next unless %w[id nom_raison_sociale target_api status].include? filter_key
+
+          sanitized_filter_value = Enrollment.send(:sanitize_sql_like, filter_value)
+          san_fil_val_without_accent = ActiveSupport::Inflector.transliterate(sanitized_filter_value)
           @enrollments = @enrollments.where(
-              "LOWER(#{filterKey}::varchar(255)) LIKE ?",
-              "%#{sanitizedFilterValueWithoutAccent.downcase}%"
+            "LOWER(#{filter_key}::varchar(255)) LIKE ?",
+            "%#{san_fil_val_without_accent.downcase}%"
           )
         end
       end
@@ -57,7 +53,7 @@ class EnrollmentsController < ApplicationController
       # silently fail, if the filter is not formatted properly we do not apply it
     end
 
-    page = params.fetch(:page, '0')
+    page = params.fetch(:page, "0")
     @enrollments = @enrollments.page(page.to_i + 1).per(10)
 
     render json: @enrollments,
@@ -76,35 +72,33 @@ class EnrollmentsController < ApplicationController
   # GET /enrollments/public
   def public
     enrollments = Enrollment
-      .where(status: 'validated')
+      .where(status: "validated")
       .order(updated_at: :desc)
 
-    if params.fetch(:target_api, false)
-      enrollments = enrollments.where(target_api: params.fetch(:target_api, false))
-    end
+    enrollments = enrollments.where(target_api: params.fetch(:target_api, false)) if params.fetch(:target_api, false)
 
     render json: enrollments, each_serializer: PublicEnrollmentListSerializer
   end
 
   # POST /enrollments
   def create
-    target_api = params.fetch(:enrollment, {})['target_api']
+    target_api = params.fetch(:enrollment, {})["target_api"]
     enrollment_class = "Enrollment::#{target_api.underscore.classify}".constantize
     @enrollment = enrollment_class.new
 
     authorize @enrollment
 
-    @enrollment.update_attributes(permitted_attributes(@enrollment))
+    @enrollment.assign_attributes(permitted_attributes(@enrollment))
     @enrollment.user = current_user
 
     if @enrollment.save
-      @enrollment.events.create(name: 'created', user_id: current_user.id)
+      @enrollment.events.create(name: "created", user_id: current_user.id)
 
       EnrollmentMailer.with(
         to: current_user.email,
         target_api: @enrollment.target_api,
         enrollment_id: @enrollment.id,
-        template: 'create_application',
+        template: "create_application"
       ).notification_email.deliver_later
 
       render json: @enrollment
@@ -118,7 +112,7 @@ class EnrollmentsController < ApplicationController
     authorize @enrollment
 
     if @enrollment.update(permitted_attributes(@enrollment))
-      @enrollment.events.create(name: 'updated', user_id: current_user.id, diff: @enrollment.previous_changes)
+      @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
       render json: @enrollment
     else
       render json: @enrollment.errors, status: :unprocessable_entity
@@ -130,7 +124,7 @@ class EnrollmentsController < ApplicationController
     event = params[:event]
     unless Enrollment.state_machine.events.map(&:name).include?(event.to_sym)
       return render status: :bad_request, json: {
-          message: ['event not permitted']
+        message: ["event not permitted"],
       }
     end
     authorize @enrollment, "#{event}?".to_sym
@@ -144,12 +138,12 @@ class EnrollmentsController < ApplicationController
         message: params[:comment]
       ).notification_email.deliver_later
 
-      if event == 'send_application'
+      if event == "send_application"
         EnrollmentMailer.with(
           to: @enrollment.admins.map(&:email),
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
-          template: 'notify_application_sent',
+          template: "notify_application_sent",
           applicant_email: current_user.email
         ).notification_email.deliver_later
       end
@@ -166,7 +160,7 @@ class EnrollmentsController < ApplicationController
     @enrollment = policy_scope(Enrollment).find(params[:id])
   end
 
-  def pundit_params_for(record)
+  def pundit_params_for(_record)
     params.fetch(:enrollment, {})
   end
 end
