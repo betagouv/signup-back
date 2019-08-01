@@ -49,7 +49,7 @@ class EnrollmentPolicy < ApplicationPolicy
       :responsable_traitement_label,
       :responsable_traitement_email,
       :responsable_traitement_phone_number,
-      contacts: [:id, :nom, :email, :phone_number],
+      contacts: [:id, :email, :phone_number],
       documents_attributes: [
         :attachment,
         :type
