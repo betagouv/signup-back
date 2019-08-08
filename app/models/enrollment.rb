@@ -93,7 +93,11 @@ class Enrollment < ActiveRecord::Base
   end
 
   def dpo_email=(email)
-    self.dpo = User.reconcile({'email' => email})
+    self.dpo = if email.empty?
+      nil
+    else
+      User.reconcile({'email' => email})
+    end
   end
 
   def dpo_email
@@ -101,7 +105,11 @@ class Enrollment < ActiveRecord::Base
   end
 
   def responsable_traitement_email=(email)
-    self.responsable_traitement = User.reconcile({'email' => email})
+    self.responsable_traitement = if email.empty?
+      nil
+    else
+      User.reconcile({'email' => email})
+    end
   end
 
   def responsable_traitement_email
