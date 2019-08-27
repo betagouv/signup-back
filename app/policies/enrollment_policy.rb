@@ -64,6 +64,7 @@ class EnrollmentPolicy < ApplicationPolicy
       scope.where("status <> 'pending' AND target_api IN (?)", user.roles)
           .or(scope.where(user_id: user.id))
           .or(scope.where(dpo_id: user.id).where(status: 'validated'))
+          .or(scope.where(responsable_traitement_id: user.id).where(status: 'validated'))
     end
   end
 end
