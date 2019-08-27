@@ -147,6 +147,22 @@ class EnrollmentsController < ApplicationController
           applicant_email: current_user.email
         ).notification_email.deliver_later
       end
+      if event == "validate_application"
+        EnrollmentMailer.with(
+          to: @enrollment.responsable_traitement.email,
+          target_api: @enrollment.target_api,
+          enrollment_id: @enrollment.id,
+          template: "notify_application_validated",
+          rgpd_role: "responsable de traitement",
+        ).notification_email.deliver_later
+        EnrollmentMailer.with(
+          to: @enrollment.dpo.email,
+          target_api: @enrollment.target_api,
+          enrollment_id: @enrollment.id,
+          template: "notify_application_validated",
+          rgpd_role: "délégué à la protection des données",
+        ).notification_email.deliver_later
+      end
 
       render json: @enrollment
     else
