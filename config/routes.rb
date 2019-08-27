@@ -22,5 +22,5 @@ Rails.application.routes.draw do
     devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   end
 
-  get '/uploads/:model/:type/:mounted_as/:id/:filename', to: 'documents#show'
+  get '/uploads/:model/:type/:mounted_as/:id/:filename', to: 'documents#show', constraints: {filename: /[^\/]+/}
 end
