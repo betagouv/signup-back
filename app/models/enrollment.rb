@@ -31,11 +31,12 @@ class Enrollment < ActiveRecord::Base
     state :sent do
       validate :sent_validation
     end
+    state :modification_pending
     state :validated
     state :refused
 
     event :send_application do
-      transition from: :pending, to: :sent
+      transition from: [:pending, :modification_pending], to: :sent
     end
 
     event :refuse_application do
@@ -43,7 +44,7 @@ class Enrollment < ActiveRecord::Base
     end
 
     event :review_application do
-      transition from: :sent, to: :pending
+      transition from: :sent, to: :modification_pending
     end
 
     event :validate_application do
