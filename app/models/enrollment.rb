@@ -1,5 +1,5 @@
 class Enrollment < ActiveRecord::Base
-  self.inheritance_column = 'target_api'
+  self.inheritance_column = "target_api"
 
   # enable Single Table Inheritance with target_api as discriminatory field
   class << self
@@ -10,7 +10,7 @@ class Enrollment < ActiveRecord::Base
 
     # ex: Enrollment::ApiParticulier => 'api_particulier'
     def sti_name
-      self.name.demodulize.underscore
+      name.demodulize.underscore
     end
   end
 
@@ -40,7 +40,7 @@ class Enrollment < ActiveRecord::Base
     end
 
     event :refuse_application do
-      transition :sent => :refused
+      transition sent: :refused
     end
 
     event :review_application do
@@ -53,29 +53,29 @@ class Enrollment < ActiveRecord::Base
 
     before_transition all => all do |enrollment, transition|
       state_machine_event_to_event_names = {
-          send_application: 'submitted',
-          validate_application: 'validated',
-          review_application: 'asked_for_modification',
-          refuse_application: 'refused'
+        send_application: "submitted",
+        validate_application: "validated",
+        review_application: "asked_for_modification",
+        refuse_application: "refused",
       }
 
       enrollment.events.create!(
-          name: state_machine_event_to_event_names[transition.event],
-          user_id: transition.args[0][:user_id],
-          comment: transition.args[0][:comment]
+        name: state_machine_event_to_event_names[transition.event],
+        user_id: transition.args[0][:user_id],
+        comment: transition.args[0][:comment]
       )
     end
 
-    before_transition :sent => :validated do |enrollment, transition|
-      if enrollment.target_api == 'api_particulier'
+    before_transition sent: :validated do |enrollment, transition|
+      if enrollment.target_api == "api_particulier"
         RegisterApiParticulierEnrollment.call(enrollment)
       end
 
-      if enrollment.target_api == 'franceconnect'
+      if enrollment.target_api == "franceconnect"
         RegisterFranceconnectEnrollment.call(enrollment)
       end
 
-      if enrollment.target_api == 'dgfip'
+      if enrollment.target_api == "dgfip"
         RegisterDgfipEnrollment.call(enrollment)
       end
     end
@@ -86,61 +86,61 @@ class Enrollment < ActiveRecord::Base
   end
 
   def admins
-    User.where('? = ANY(roles)', self.target_api)
+    User.where("? = ANY(roles)", target_api)
   end
 
   def dpo_email=(email)
     self.dpo = if email.empty?
       nil
     else
-      User.reconcile({'email' => email})
+      User.reconcile({"email" => email})
     end
   end
 
   def dpo_email
-    self.dpo.try(:email)
+    dpo.try(:email)
   end
 
   def responsable_traitement_email=(email)
     self.responsable_traitement = if email.empty?
       nil
     else
-      User.reconcile({'email' => email})
+      User.reconcile({"email" => email})
     end
   end
 
   def responsable_traitement_email
-    self.responsable_traitement.try(:email)
+    responsable_traitement.try(:email)
   end
 
   protected
 
   def clean_and_format_scopes
     # we need to convert boolean values as it is send as string because of the data-form serialisation
-    self.scopes = scopes.transform_values {|e| e.to_s == "true"}
+    self.scopes = scopes.transform_values { |e| e.to_s == "true" }
 
     # in a similar way, format additional boolean content
-    if additional_content.key?('dgfip_data_years')
-      self.additional_content['dgfip_data_years'] =
-          additional_content['dgfip_data_years'].transform_values {|e| e.to_s == "true"}
+    if additional_content.key?("dgfip_data_years")
+      additional_content["dgfip_data_years"] =
+        additional_content["dgfip_data_years"].transform_values { |e| e.to_s == "true" }
     end
-    if additional_content.key?('rgpd_general_agreement')
-      self.additional_content['rgpd_general_agreement'] =
-          additional_content['rgpd_general_agreement'].to_s == "true"
+    if additional_content.key?("rgpd_general_agreement")
+      additional_content["rgpd_general_agreement"] =
+        additional_content["rgpd_general_agreement"].to_s == "true"
     end
-    if additional_content.key?('has_alternative_authentication_methods')
-      self.additional_content['has_alternative_authentication_methods'] =
-          additional_content['has_alternative_authentication_methods'].to_s == "true"
+    if additional_content.key?("has_alternative_authentication_methods")
+      additional_content["has_alternative_authentication_methods"] =
+        additional_content["has_alternative_authentication_methods"].to_s == "true"
     end
   end
 
   def set_company_info
-    escapedSpacelessSiret = CGI.escape(siret.delete(" \t\r\n"))
-    response = Http.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{escapedSpacelessSiret}")
+    escaped_spaceless_siret = CGI.escape(siret.delete(" \t\r\n"))
+    response = Http.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{escaped_spaceless_siret}")
 
-    if response.code == '200'
+    if response.code == "200"
       nom_raison_sociale = JSON.parse(response.read_body)["etablissement"]["nom_raison_sociale"]
-      self.siret = escapedSpacelessSiret
+      self.siret = escaped_spaceless_siret
       self.nom_raison_sociale = nom_raison_sociale
     else
       self.nom_raison_sociale = nil
@@ -155,8 +155,8 @@ class Enrollment < ActiveRecord::Base
   end
 
   def sent_validation
-    contact = contacts&.find {|e| e['id'] == 'technique'}
-    errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch('email', false)&.present?
+    contact = contacts&.find { |e| e["id"] == "technique" }
+    errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch("email", false)&.present?
 
     errors[:dpo_label] << "Vous devez renseigner un nom pour le délégué à la protection des données avant de continuer" unless dpo_label.present?
     errors[:dpo_email] << "Vous devez renseigner un email pour le délégué à la protection des données avant de continuer" unless dpo_email.present?
@@ -169,10 +169,12 @@ class Enrollment < ActiveRecord::Base
     errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
     errors[:fondement_juridique_title] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless fondement_juridique_title.present?
-    errors[:fondement_juridique_url] << "Vous devez renseigner le document associé au fondement juridique" unless (fondement_juridique_url.present?) || documents.where(type: 'Document::LegalBasis').present?
-    errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer.
+    errors[:fondement_juridique_url] << "Vous devez renseigner le document associé au fondement juridique" unless (fondement_juridique_url.present?) || documents.where(type: "Document::LegalBasis").present?
+    unless user.email_verified
+      errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer.
 Merci de cliquer sur le lien d'activation que vous avez reçu par mail.
 Vous pouvez également demander un nouveau lien d'activation en cliquant sur le lien
-suivant #{ENV.fetch('OAUTH_HOST')}/users/send-email-verification?notification=email_verification_required" unless user.email_verified
+suivant #{ENV.fetch("OAUTH_HOST")}/users/send-email-verification?notification=email_verification_required"
+    end
   end
 end
