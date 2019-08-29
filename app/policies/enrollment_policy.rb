@@ -4,7 +4,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
-    record.pending? && user == record.user
+    (record.pending? || record.modification_pending?) && user == record.user
   end
 
   def delete?
@@ -52,7 +52,7 @@ class EnrollmentPolicy < ApplicationPolicy
       contacts: [:id, :email, :phone_number],
       documents_attributes: [
         :attachment,
-        :type
+        :type,
       ],
     ])
 
@@ -62,9 +62,9 @@ class EnrollmentPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       scope.where("status <> 'pending' AND target_api IN (?)", user.roles)
-          .or(scope.where(user_id: user.id))
-          .or(scope.where(dpo_id: user.id).where(status: 'validated'))
-          .or(scope.where(responsable_traitement_id: user.id).where(status: 'validated'))
+        .or(scope.where(user_id: user.id))
+        .or(scope.where(dpo_id: user.id).where(status: "validated"))
+        .or(scope.where(responsable_traitement_id: user.id).where(status: "validated"))
     end
   end
 end
