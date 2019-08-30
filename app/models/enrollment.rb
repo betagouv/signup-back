@@ -35,6 +35,10 @@ class Enrollment < ActiveRecord::Base
     state :validated
     state :refused
 
+    event :notify do
+      transition modification_pending: same
+    end
+
     event :send_application do
       transition from: [:pending, :modification_pending], to: :sent
     end
@@ -53,6 +57,7 @@ class Enrollment < ActiveRecord::Base
 
     before_transition all => all do |enrollment, transition|
       state_machine_event_to_event_names = {
+        notify: "notified",
         send_application: "submitted",
         validate_application: "validated",
         review_application: "asked_for_modification",
