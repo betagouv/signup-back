@@ -3,10 +3,10 @@ class EventsController < ApplicationController
 
   # GET /events/most-used-comments
   def most_used_comments
-    event = params.fetch(:event, '')
-    target_api = params.fetch(:target_api, '')
+    event = params.fetch(:event, "")
+    target_api = params.fetch(:target_api, "")
 
-    return render status: :bad_request, json: {} unless event.in?(['validated', 'refused', 'asked_for_modification'])
+    return render status: :bad_request, json: {} unless event.in?(%w[notified validated refused asked_for_modification])
     return render status: :forbidden, json: {} unless current_user.is_admin?(target_api)
 
     comments_query = <<-SQL
@@ -19,9 +19,9 @@ class EventsController < ApplicationController
       LIMIT 10;
     SQL
     comments = ActiveRecord::Base
-                   .connection
-                   .exec_query(comments_query, nil, [[nil, event], [nil, target_api]])
-                   .to_hash()
+      .connection
+      .exec_query(comments_query, nil, [[nil, event], [nil, target_api]])
+      .to_hash
 
     render json: comments
   end

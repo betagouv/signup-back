@@ -11,6 +11,10 @@ class EnrollmentPolicy < ApplicationPolicy
     false
   end
 
+  def notify?
+    record.can_notify? && user.is_admin?(record.target_api)
+  end
+
   def send_application?
     record.can_send_application? && user == record.user
   end
