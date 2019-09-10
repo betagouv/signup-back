@@ -1,5 +1,5 @@
 class EnrollmentsController < ApplicationController
-  before_action :authenticate!, except: [:public]
+  before_action :authenticate_user!, except: [:public]
   before_action :set_enrollment, only: %i[show update trigger]
 
   # GET /enrollments
@@ -128,6 +128,37 @@ class EnrollmentsController < ApplicationController
       }
     end
     authorize @enrollment, "#{event}?".to_sym
+
+    # We update userinfo when "event" is "send_application"
+    # This is convenient when a user submit a new enrollment while is email is not validated:
+    # 1. the user submits the enrollment
+    # 2. he gets the error "you must validate your email before submitting"
+    # 3. he clicks on the validation link
+    # 4. since his profile is reloaded here, he can now submit his enrollment
+    #   without logging in and out again
+    #
+    # Note that the functional usefulness of this feature is still to prove, plus, there is
+    # to much code for this, and dangerous one, like putting an accesstoken in a clientside
+    # sessions. We may prefer to force email validation when the user register.
+    if event == "send_application" && !@enrollment.user.email_verified
+      # This is a defensive programming test because we must not update an user illegitimately
+      if current_user.email == @enrollment.user.email
+        begin
+          @enrollment.user.email_verified = RefreshUser.call(session[:access_token]).email_verified
+        rescue => e
+          # If there is an error, we assume that the access token as expired
+          # we force the logout so the token can be refreshed.
+          # NB: if the error is something else, the user will keep clicking on "soumettre"
+          # without any effect. We log this in case some user get stuck into this
+          session.delete("access_token")
+          session.delete("id_token")
+          session.delete("user_organizations")
+          sign_out current_user
+          puts "#{e.message.inspect} e.message"
+          raise ApplicationController::AccessDenied, e.message
+        end
+      end
+    end
 
     if @enrollment.send(event.to_sym, user_id: current_user.id, comment: params[:comment])
       EnrollmentMailer.with(

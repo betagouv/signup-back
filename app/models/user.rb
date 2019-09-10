@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 class User < ActiveRecord::Base
   devise :omniauthable, omniauth_providers: [:api_gouv]
-  validates :email, format: {with: URI::MailTo::EMAIL_REGEXP, message: 'Vous devez renseigner un email valide'}
+  validates :email, format: {with: URI::MailTo::EMAIL_REGEXP, message: "Vous devez renseigner un email valide"}
 
   has_many :enrollments
   has_many :dpo_enrollments, foreign_key: :dpo_id, class_name: :Enrollment
@@ -11,12 +9,12 @@ class User < ActiveRecord::Base
 
   def self.reconcile(external_user_info)
     user = where(
-        email: external_user_info['email'],
+      email: external_user_info["email"],
     ).first_or_create!
 
-    user.update(uid: external_user_info['sub']) if external_user_info.key?('sub')
-    user.update(email_verified: external_user_info['email_verified']) if external_user_info.key?('email_verified')
-    user.update(roles: external_user_info['roles']) if external_user_info.key?('roles')
+    user.update(uid: external_user_info["sub"]) if external_user_info.key?("sub")
+    user.update(email_verified: external_user_info["email_verified"]) if external_user_info.key?("email_verified")
+    user.update(roles: external_user_info["roles"]) if external_user_info.key?("roles")
 
     user
   end
