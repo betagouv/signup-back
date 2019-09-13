@@ -10,7 +10,7 @@ module OmniAuth
         authorize_url: "/oauth/authorize",
         auth_scheme: :basic_auth,
         ssl: {
-          verify: false,
+          verify: ENV["BACK_HOST"].include?("development") ? false : true,
         },
       }
       option :scope, "openid email profile roles organizations"

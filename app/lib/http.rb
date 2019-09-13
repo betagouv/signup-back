@@ -19,7 +19,7 @@ module Http
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http.verify_mode = ENV["BACK_HOST"].include?("development") ? OpenSSL::SSL::VERIFY_NONE : OpenSSL::SSL::VERIFY_PEER
 
     request = Net::HTTP::Post.new(url)
     request["content-type"] = "application/json"
