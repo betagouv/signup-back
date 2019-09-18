@@ -21,7 +21,7 @@ module Users
 
     def after_sign_in_path_for(_scope)
       return_url = session.delete("returnUrl")
-      "https://signup-development.api.gouv.fr#{return_url}"
+      "#{ENV["FRONT_HOST"]}#{return_url}"
     end
 
     def passthru
