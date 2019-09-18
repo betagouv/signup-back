@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Rails.application.routes.draw do
   scope :api do
     resources :enrollments do
@@ -14,12 +12,18 @@ Rails.application.routes.draw do
 
     get "/stats", to: "stats#show"
     get "/events/most-used-comments", to: "events#most_used_comments"
+    get "/users/me", to: "users#me"
 
-    get "users/access_denied"
+    devise_scope :user do
+      get "/users/sign_out", to: "users/sessions#destroy", as: :destroy_user_session
+    end
   end
 
   devise_scope :api do
-    devise_for :users, controllers: {omniauth_callbacks: "users/omniauth_callbacks"}
+    devise_for :users, controllers: {
+      omniauth_callbacks: "users/sessions",
+      sessions: "devise/sessions",
+    }
   end
 
   get "/uploads/:model/:type/:mounted_as/:id/:filename", to: "documents#show", constraints: {filename: /[^\/]+/}

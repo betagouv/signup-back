@@ -1,9 +1,9 @@
-# frozen_string_literal: true
-
 class UsersController < ApplicationController
-  def access_denied
-    render status: :unauthorized, json: {
-      message: 'access denied'
-    }
+  before_action :authenticate_user!
+
+  def me
+    user = current_user.attributes
+    user[:organizations] = session[:user_organizations]
+    render json: user.as_json
   end
 end

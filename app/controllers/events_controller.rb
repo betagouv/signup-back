@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_action :authenticate!
+  before_action :authenticate_user!
 
   # GET /events/most-used-comments
   def most_used_comments

@@ -5,24 +5,24 @@ class RegisterApiParticulierEnrollment < RegisterEnrollmentService
 
   def call
     name = "#{@enrollment.nom_raison_sociale} - #{@enrollment.id}"
-    email = @enrollment.contacts.select { |contact| contact['id'] == 'technique' }.first['email']
+    email = @enrollment.contacts.select { |contact| contact["id"] == "technique" }.first["email"]
     linked_token_manager_id = create_enrollment_in_token_manager(@enrollment.id, name, email)
     @enrollment.update({linked_token_manager_id: linked_token_manager_id})
 
-    scopes = @enrollment[:scopes].reject {|k, v| !v}.keys
-    register_enrollment_in_api_scopes(@enrollment.id.to_s, linked_token_manager_id, 'api_particulier', scopes)
+    scopes = @enrollment[:scopes].reject { |k, v| !v }.keys
+    register_enrollment_in_api_scopes(@enrollment.id.to_s, linked_token_manager_id, "api_particulier", scopes)
   end
 
   private
 
   def create_enrollment_in_token_manager(id, name, email)
     response = Http.post(
-        "#{ENV.fetch('API_PARTICULIER_HOST')}/admin/api/token",
-        "{\"name\": #{name.to_json},\"email\": #{email.to_json},\"signup_id\": \"#{id.to_json}\"}",
-        {"x-api-key" => ENV.fetch('API_PARTICULIER_API_KEY')}
+      "#{ENV.fetch("API_PARTICULIER_HOST")}/admin/api/token",
+      "{\"name\": #{name.to_json},\"email\": #{email.to_json},\"signup_id\": \"#{id.to_json}\"}",
+      {"x-api-key" => ENV.fetch("API_PARTICULIER_API_KEY")}
     )
 
-    if response.code != '200'
+    if response.code != "200"
       raise "Error when registering token in API Particulier. Error message was: #{response.read_body} (#{response.code})"
     end
 
