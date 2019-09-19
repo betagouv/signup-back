@@ -14,11 +14,11 @@ class Enrollment::FranceconnectPolicy < EnrollmentPolicy
         :email,
         :preferred_username,
         :address,
-        :phone
+        :phone,
       ],
       additional_content: [
-        :has_alternative_authentication_methods
-      ]
+        :has_alternative_authentication_methods,
+      ],
     ])
 
     res

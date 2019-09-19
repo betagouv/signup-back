@@ -6,7 +6,7 @@ class Enrollment::PreuveCovoituragePolicy < EnrollmentPolicy
       scopes: [
         :operator,
         :territory,
-      ]
+      ],
     ])
 
     res

@@ -24,9 +24,9 @@ class Enrollment::DgfipPolicy < EnrollmentPolicy
         ],
         dgfip_data_years: [
           :n_moins_1,
-          :n_moins_2
-        ]
-      ]
+          :n_moins_2,
+        ],
+      ],
     ])
 
     res

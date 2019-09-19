@@ -23,7 +23,7 @@ class Enrollment::ApiEntreprisePolicy < EnrollmentPolicy
         :entreprises,
         :etablissements,
         :liasse_fiscale,
-      ]
+      ],
     ])
 
     res
