@@ -3,6 +3,13 @@ class Enrollment::DgfipPolicy < EnrollmentPolicy
     res = super
 
     res.concat([
+      scopes: [
+        :dgfip_rfr,
+        :dgfip_nbpart,
+        :dgfip_sitfam,
+        :dgfip_pac,
+        :dgfip_aft,
+      ],
       additional_content: [
         :autorite_certification,
         :ips_de_production,
@@ -14,14 +21,7 @@ class Enrollment::DgfipPolicy < EnrollmentPolicy
         :pic_demandes_par_seconde,
         :recette_fonctionnelle,
         :rgpd_general_agreement,
-        :nombre_demandes_mensuelles => [],
-        scopes: [
-          :dgfip_rfr,
-          :dgfip_nbpart,
-          :dgfip_sitfam,
-          :dgfip_pac,
-          :dgfip_aft
-        ],
+        nombre_demandes_mensuelles: [],
         dgfip_data_years: [
           :n_moins_1,
           :n_moins_2,
