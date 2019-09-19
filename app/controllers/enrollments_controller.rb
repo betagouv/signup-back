@@ -6,19 +6,25 @@ class EnrollmentsController < ApplicationController
   def index
     @enrollments = policy_scope(Enrollment)
 
-    @enrollments = @enrollments.where(status: %w[validated refused]) if params.fetch(:archived, false)
-
-    @enrollments = @enrollments.where(status: params.fetch(:status, false)) if params.fetch(:status, false)
-
     @enrollments = @enrollments.where(target_api: params.fetch(:target_api, false)) if params.fetch(:target_api, false)
 
-    if !params.fetch(:archived, false) && !params.fetch(:status, false)
-      @enrollments = @enrollments.where.not(status: %w[validated refused])
+    has_filter_by_status = false
+    begin
+      filter = JSON.parse(params.fetch(:filter, "[]"))
+      has_filter_by_status = filter.any? { |f| f.key? "status" }
+    rescue JSON::ParserError
+      # silently fail, if the filter is not formatted properly we assume there is no filter by status
     end
 
-    if params.fetch(:detailed, false)
-      # NB. if detailed is set to true, the result will not be paginated, nor sorted, nor filtered
-      return render json: @enrollments
+    unless has_filter_by_status
+      #  if filter by status is set, it overrides archive and status params (ie. we do not apply archive and status params)
+      @enrollments = @enrollments.where(status: %w[validated refused]) if params.fetch(:archived, false)
+
+      @enrollments = @enrollments.where(status: params.fetch(:status, false)) if params.fetch(:status, false)
+
+      if !params.fetch(:archived, false) && !params.fetch(:status, false)
+        @enrollments = @enrollments.where.not(status: %w[validated refused])
+      end
     end
 
     begin
@@ -54,10 +60,17 @@ class EnrollmentsController < ApplicationController
     end
 
     page = params.fetch(:page, "0")
-    @enrollments = @enrollments.page(page.to_i + 1).per(10)
+    size = params.fetch(:size, "10")
+    @enrollments = @enrollments.page(page.to_i + 1).per(size.to_i)
+
+    serializer = LightEnrollmentSerializer
+
+    if params.fetch(:detailed, false)
+      serializer = EnrollmentSerializer
+    end
 
     render json: @enrollments,
-           each_serializer: LightEnrollmentSerializer,
+           each_serializer: serializer,
            meta: pagination_dict(@enrollments),
            adapter: :json,
            root: "enrollments"
