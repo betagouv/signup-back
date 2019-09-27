@@ -173,8 +173,8 @@ class Enrollment < ActiveRecord::Base
     errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
     errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
-    errors[:fondement_juridique_title] << "Vous devez renseigner le fondement juridique de la démarche avant de continuer" unless fondement_juridique_title.present?
-    errors[:fondement_juridique_url] << "Vous devez renseigner le document associé au fondement juridique" unless (fondement_juridique_url.present?) || documents.where(type: "Document::LegalBasis").present?
+    errors[:fondement_juridique_title] << "Vous devez renseigner la nature du texte vous autorisant à traiter les données avant de continuer" unless fondement_juridique_title.present?
+    errors[:fondement_juridique_url] << "Vous devez joindre l'URL ou le document du texte relatif au traitement avant de continuer" unless (fondement_juridique_url.present?) || documents.where(type: "Document::LegalBasis").present?
     unless user.email_verified
       errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer.
 Merci de cliquer sur le lien d'activation que vous avez reçu par mail.
