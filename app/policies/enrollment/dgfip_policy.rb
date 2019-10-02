@@ -9,6 +9,8 @@ class Enrollment::DgfipPolicy < EnrollmentPolicy
         :dgfip_sitfam,
         :dgfip_pac,
         :dgfip_aft,
+        :dgfip_data_years_n_moins_1,
+        :dgfip_data_years_n_moins_2,
       ],
       additional_content: [
         :autorite_certification,
@@ -22,10 +24,6 @@ class Enrollment::DgfipPolicy < EnrollmentPolicy
         :recette_fonctionnelle,
         :rgpd_general_agreement,
         nombre_demandes_mensuelles: [],
-        dgfip_data_years: [
-          :n_moins_1,
-          :n_moins_2,
-        ],
       ],
     ])
 
