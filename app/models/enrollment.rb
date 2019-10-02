@@ -125,10 +125,6 @@ class Enrollment < ActiveRecord::Base
     self.scopes = scopes.transform_values { |e| e.to_s == "true" }
 
     # in a similar way, format additional boolean content
-    if additional_content.key?("dgfip_data_years")
-      additional_content["dgfip_data_years"] =
-        additional_content["dgfip_data_years"].transform_values { |e| e.to_s == "true" }
-    end
     if additional_content.key?("rgpd_general_agreement")
       additional_content["rgpd_general_agreement"] =
         additional_content["rgpd_general_agreement"].to_s == "true"
