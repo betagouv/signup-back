@@ -26,7 +26,11 @@ class EnrollmentMailer < ActionMailer::Base
     },
     "api_impot_particulier" => {
       "sender" => "contact@api.gouv.fr",
-      "target_api" => "API « impôt particulier »",
+      "target_api" => "API « impôt particulier » 1/2",
+    },
+    "api_impot_particulier_step2" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API « impôt particulier » 2/2",
     },
     "api_droits_cnam" => {
       "sender" => "contact@api.gouv.fr",
