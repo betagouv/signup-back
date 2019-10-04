@@ -43,7 +43,7 @@ class EnrollmentMailer < ActionMailer::Base
     "preuve_covoiturage" => {
       "sender" => "contact@covoiturage.beta.gouv.fr",
       "target_api" => "Registre de preuve de covoiturage",
-    }
+    },
   }
 
   def notification_email
@@ -53,12 +53,14 @@ class EnrollmentMailer < ActionMailer::Base
     @rgpd_role = params[:rgpd_role]
 
     @url = "#{ENV.fetch("FRONT_HOST")}/#{params[:target_api].tr("_", "-")}/#{params[:enrollment_id]}"
+    @front_host = ENV.fetch("FRONT_HOST")
     mail(
       # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
       to: params[:to],
       subject: SUBJECTS[params[:template]],
       from: MAIL_PARAMS[params[:target_api]]["sender"],
-      template_name: params[:template]
+      template_path: %W[enrollment_mailer/#{params[:target_api]} enrollment_mailer],
+      template_name: params[:template],
     )
   end
 end
