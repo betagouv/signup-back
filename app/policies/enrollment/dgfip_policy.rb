@@ -6,9 +6,8 @@ class Enrollment::DgfipPolicy < EnrollmentPolicy
       scopes: [
         :dgfip_rfr,
         :dgfip_nbpart,
-        :dgfip_sitfam,
-        :dgfip_pac,
         :dgfip_aft,
+        :dgfip_locaux_th,
         :dgfip_data_years_n_moins_1,
         :dgfip_data_years_n_moins_2,
       ],
