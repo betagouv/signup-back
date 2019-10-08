@@ -13,7 +13,6 @@ class Enrollment::DgfipPolicy < EnrollmentPolicy
         :dgfip_data_years_n_moins_2,
       ],
       additional_content: [
-        :autorite_certification,
         :ips_de_production,
         :autorite_homologation_nom,
         :autorite_homologation_fonction,
