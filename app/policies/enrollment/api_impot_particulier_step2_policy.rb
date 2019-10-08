@@ -12,7 +12,6 @@ class Enrollment::ApiImpotParticulierStep2Policy < EnrollmentPolicy
         :type,
       ],
       additional_content: [
-        :autorite_certification,
         :ips_de_production,
         :autorite_homologation_nom,
         :autorite_homologation_fonction,
