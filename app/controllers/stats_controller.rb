@@ -33,18 +33,21 @@ class StatsController < ApplicationController
 
     # Temps moyen de traitement des demandes
     average_processing_time_in_days_query = <<-SQL
+      WITH events_first_submit as (
+        SELECT DISTINCT ON (enrollment_id) *
+        FROM events WHERE name = 'submitted' ORDER BY enrollment_id, created_at DESC
+      )
       SELECT avg(validation_duration)
       FROM (
         SELECT
-          enrollments.id, events_start.created_at AS started_at, events_stop.created_at AS done_at,
-          DATE_PART('days', events_stop.created_at - events_start.created_at) AS validation_duration
+          enrollments.id, events_stop.created_at AS done_at, events_first_submit.created_at AS submitted_at,
+          DATE_PART('days', events_stop.created_at - events_first_submit.created_at) AS validation_duration
         FROM enrollments
-        INNER JOIN
-          events AS events_start ON events_start.enrollment_id = enrollments.id
-          AND events_start.name = 'created'
         INNER JOIN
           events AS events_stop ON events_stop.enrollment_id = enrollments.id
           AND events_stop.name IN ('validated', 'refused')
+        INNER JOIN
+          events_first_submit ON events_first_submit.enrollment_id = enrollments.id
         WHERE status IN ('validated', 'refused')
         AND #{filter_by_target_api_criteria}
       ) e;
