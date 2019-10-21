@@ -80,8 +80,8 @@ class Enrollment < ActiveRecord::Base
         RegisterFranceconnectEnrollment.call(enrollment)
       end
 
-      if enrollment.target_api == "dgfip"
-        RegisterDgfipEnrollment.call(enrollment)
+      if enrollment.target_api == "api_impot_particulier"
+        RegisterApiImpotParticulierEnrollment.call(enrollment)
       end
     end
 

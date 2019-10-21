@@ -16,10 +16,6 @@ class EnrollmentMailer < ActionMailer::Base
       "sender" => "support.partenaires@franceconnect.gouv.fr",
       "target_api" => "FranceConnect",
     },
-    "dgfip" => {
-      "sender" => "contact@api.gouv.fr",
-      "target_api" => "API Impôt particulier",
-    },
     "api_particulier" => {
       "sender" => "contact@particulier.api.gouv.fr",
       "target_api" => "API Particulier",

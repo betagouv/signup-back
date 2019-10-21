@@ -1,4 +1,4 @@
-class RegisterDgfipEnrollment < RegisterEnrollmentService
+class RegisterApiImpotParticulierEnrollment < RegisterEnrollmentService
   def initialize(enrollment)
     @enrollment = enrollment
   end
