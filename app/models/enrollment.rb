@@ -44,7 +44,7 @@ class Enrollment < ActiveRecord::Base
     end
 
     event :refuse_application do
-      transition sent: :refused
+      transition from: [:modification_pending, :sent], to: :refused
     end
 
     event :review_application do
