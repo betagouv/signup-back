@@ -17,7 +17,7 @@ class Enrollment::ApiImpotParticulierStep2 < Enrollment
     errors[:autorite_homologation_fonction] << "Vous devez renseigner la fonction de l'autorité d'homologation avant de continuer" unless additional_content&.fetch('autorite_homologation_fonction', false)&.present?
     errors[:date_homologation] << "Vous devez renseigner la date de début de l’homologation avant de continuer" unless additional_content&.fetch('date_homologation', false)&.present?
     errors[:date_fin_homologation] << "Vous devez renseigner la date de fin de l’homologation avant de continuer" unless additional_content&.fetch('date_fin_homologation', false)&.present?
-    errors[:documents_attributes] << "Vous devez joindre le document de décision d’homologation avant de continuer" unless documents.where(type: "DecisionHomologation").present?
+    errors[:documents_attributes] << "Vous devez joindre le document de décision d’homologation avant de continuer" unless documents.where(type: "Document::DecisionHomologation").present?
 
     # Entrant technique
     errors[:ips_de_production] << "Vous devez renseigner les IP(s) de production avant de continuer" unless additional_content&.fetch('ips_de_production', false)&.present?
@@ -25,7 +25,10 @@ class Enrollment::ApiImpotParticulierStep2 < Enrollment
     # Volumetrie
     errors[:nombre_demandes_annuelle] << "Vous devez renseigner le nombre de demandes annuelle avant de continuer" unless additional_content&.fetch('nombre_demandes_annuelle', false)&.present?
     errors[:pic_demandes_par_seconde] << "Vous devez renseigner le nombre de demandes mensuel par heure avant de continuer" unless additional_content&.fetch('pic_demandes_par_seconde', false)&.present?
-    errors[:nombre_demandes_mensuelles] << "Vous devez renseigner le nombre de demandes mensuel pour chaque mois avant de continuer" unless additional_content&.fetch('nombre_demandes_mensuelles', false)&.present&.lenght == 12
+
+    if additional_content&.fetch('nombre_demandes_mensuelles', [])&.include? '' || additional_content&.fetch('nombre_demandes_mensuelles', [])&.lenght != 12
+      errors[:nombre_demandes_mensuelles] << "Vous devez renseigner le nombre de demandes mensuel pour chaque mois avant de continuer"
+    end
 
     # Recette fonctionnelle
     errors[:recette_fonctionnelle] << "Vous devez attester avoir réaliser une recette fonctionnelle avant de continuer" unless additional_content&.fetch('recette_fonctionnelle', false)&.present?
