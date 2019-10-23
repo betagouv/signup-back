@@ -13,6 +13,7 @@ class Enrollment::ApiImpotParticulierPolicy < EnrollmentPolicy
       ],
       additional_content: [
         :rgpd_general_agreement,
+        :production_date,
       ],
     ])
 
