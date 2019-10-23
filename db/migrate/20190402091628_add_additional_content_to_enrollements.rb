@@ -2,7 +2,7 @@ class AddAdditionalContentToEnrollements < ActiveRecord::Migration[5.1]
   def change
     add_column :enrollments, :additional_content, :jsonb, default: {}
     remove_column :enrollments, :nombre_demandes_annuelle
-    remove_column :enrollments, :pic_demandes_par_seconde
+    remove_column :enrollments, :pic_demandes_par_heure
     remove_column :enrollments, :nombre_demandes_mensuelles_jan
     remove_column :enrollments, :nombre_demandes_mensuelles_fev
     remove_column :enrollments, :nombre_demandes_mensuelles_mar
