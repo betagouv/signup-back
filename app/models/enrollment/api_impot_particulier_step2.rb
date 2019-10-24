@@ -24,7 +24,7 @@ class Enrollment::ApiImpotParticulierStep2 < Enrollment
 
     # Volumetrie
     errors[:nombre_demandes_annuelle] << "Vous devez renseigner le nombre de demandes annuelle avant de continuer" unless additional_content&.fetch("nombre_demandes_annuelle", false)&.present?
-    errors[:pic_demandes_par_seconde] << "Vous devez renseigner le nombre de demandes mensuel par heure avant de continuer" unless additional_content&.fetch("pic_demandes_par_seconde", false)&.present?
+    errors[:pic_demandes_par_heure] << "Vous devez renseigner le nombre de demandes mensuel par heure avant de continuer" unless additional_content&.fetch("pic_demandes_par_heure", false)&.present?
 
     if (additional_content&.fetch("nombre_demandes_mensuelles", [])&.include? "") || (additional_content&.fetch("nombre_demandes_mensuelles", [])&.length != 12)
       errors[:nombre_demandes_mensuelles] << "Vous devez renseigner le nombre de demandes mensuel pour chaque mois avant de continuer"

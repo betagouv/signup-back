@@ -18,7 +18,7 @@ class Enrollment::ApiImpotParticulierStep2Policy < EnrollmentPolicy
         :date_homologation,
         :date_fin_homologation,
         :nombre_demandes_annuelle,
-        :pic_demandes_par_seconde,
+        :pic_demandes_par_heure,
         :recette_fonctionnelle,
         nombre_demandes_mensuelles: [],
       ],
