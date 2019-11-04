@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :enrollments do
       collection do
         get :public
+        get :user
       end
       member do
         get :convention
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
     get "/stats", to: "stats#show"
     get "/events/most-used-comments", to: "events#most_used_comments"
     get "/users/me", to: "users#me"
+    get "/enrollments/user", to: "enrollments#user"
 
     devise_scope :user do
       get "/users/sign_out", to: "users/sessions#destroy", as: :destroy_user_session

@@ -82,6 +82,14 @@ class EnrollmentsController < ApplicationController
     render json: @enrollment
   end
 
+  # GET /enrollments/user
+  def user
+    @enrollments = policy_scope(Enrollment)
+      .order(updated_at: :desc)
+
+    render json: @enrollments, each_serializer: UserEnrollmentListSerializer
+  end
+
   # GET /enrollments/public
   def public
     enrollments = Enrollment
