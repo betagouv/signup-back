@@ -9,6 +9,7 @@ class EnrollmentSerializer < ActiveModel::Serializer
   belongs_to :user
 
   has_many :documents
+  has_many :events
 
   attribute :acl do
     Hash[
