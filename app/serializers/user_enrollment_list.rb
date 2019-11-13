@@ -6,8 +6,7 @@ class UserEnrollmentListSerializer < ActiveModel::Serializer
              :target_api,
              :status,
              :siret,
-             :intitule,
-             :responsable_traitement_label
+             :intitule
 
   belongs_to :user
 
