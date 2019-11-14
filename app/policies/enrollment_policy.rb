@@ -39,7 +39,6 @@ class EnrollmentPolicy < ApplicationPolicy
       :target_api,
       :linked_franceconnect_enrollment_id,
       :organization_id,
-      :siret, # TODO consistency issue, do not get the siret from front end but rather on user.organization
       :intitule,
       :description,
       :fondement_juridique_title,

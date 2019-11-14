@@ -7,7 +7,6 @@ module Users
     def api_gouv
       session[:id_token] = request.env["omniauth.auth"]["credentials"].id_token
       session[:access_token] = request.env["omniauth.auth"]["credentials"].token
-      session[:user_organizations] = request.env["omniauth.auth"]["info"].organizations
       user = User.reconcile(request.env["omniauth.auth"]["info"])
       sign_in_and_redirect user
     end
@@ -50,7 +49,7 @@ module Users
     end
 
     def translation_scope
-      'devise.omniauth_callbacks'
+      "devise.omniauth_callbacks"
     end
   end
 end

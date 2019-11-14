@@ -136,14 +136,19 @@ class Enrollment < ActiveRecord::Base
   end
 
   def set_company_info
-    escaped_spaceless_siret = CGI.escape(siret.delete(" \t\r\n"))
-    response = Http.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{escaped_spaceless_siret}")
+    # taking the siret from users organization ensure the user belongs to the organization
+    # this might not be the proper place to do this kind of authorization check
+    selected_organization = user.organizations.find { |o| o["id"] == organization_id }
+    siret = selected_organization["siret"]
+
+    response = Http.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{siret}")
 
     if response.code == "200"
       nom_raison_sociale = JSON.parse(response.read_body)["etablissement"]["nom_raison_sociale"]
-      self.siret = escaped_spaceless_siret
+      self.siret = siret
       self.nom_raison_sociale = nom_raison_sociale
     else
+      self.siret = nil
       self.nom_raison_sociale = nil
     end
   end
