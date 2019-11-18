@@ -79,10 +79,6 @@ class Enrollment < ActiveRecord::Base
       if enrollment.target_api == "franceconnect"
         RegisterFranceconnectEnrollment.call(enrollment)
       end
-
-      if enrollment.target_api == "api_impot_particulier"
-        RegisterApiImpotParticulierEnrollment.call(enrollment)
-      end
     end
 
     event :loop_without_job do

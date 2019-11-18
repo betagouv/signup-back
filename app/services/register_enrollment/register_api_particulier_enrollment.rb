@@ -6,19 +6,17 @@ class RegisterApiParticulierEnrollment < RegisterEnrollmentService
   def call
     name = "#{@enrollment.nom_raison_sociale} - #{@enrollment.id}"
     email = @enrollment.contacts.select { |contact| contact["id"] == "technique" }.first["email"]
-    linked_token_manager_id = create_enrollment_in_token_manager(@enrollment.id, name, email)
-    @enrollment.update({linked_token_manager_id: linked_token_manager_id})
-
     scopes = @enrollment[:scopes].reject { |k, v| !v }.keys
-    register_enrollment_in_api_scopes(@enrollment.id.to_s, linked_token_manager_id, "api_particulier", scopes)
+    linked_token_manager_id = create_enrollment_in_token_manager(@enrollment.id, name, email, scopes)
+    @enrollment.update({linked_token_manager_id: linked_token_manager_id})
   end
 
   private
 
-  def create_enrollment_in_token_manager(id, name, email)
+  def create_enrollment_in_token_manager(id, name, email, scopes)
     response = Http.post(
       "#{ENV.fetch("API_PARTICULIER_HOST")}/admin/api/token",
-      "{\"name\": #{name.to_json},\"email\": #{email.to_json},\"signup_id\": \"#{id.to_json}\"}",
+      "{\"name\": #{name.to_json},\"email\": #{email.to_json},\"signup_id\": \"#{id.to_json}\", \"scopes\": #{scopes.to_json}}",
       {"x-api-key" => ENV.fetch("API_PARTICULIER_API_KEY")}
     )
 
