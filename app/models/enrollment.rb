@@ -17,7 +17,7 @@ class Enrollment < ActiveRecord::Base
   validate :update_validation
 
   before_save :clean_and_format_scopes
-  before_save :set_company_info
+  before_save :set_company_info, if: :will_save_change_to_organization_id?
 
   has_many :documents, as: :attachable
   accepts_nested_attributes_for :documents
