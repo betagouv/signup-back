@@ -32,30 +32,7 @@ class StatsController < ApplicationController
       .getvalue(0, 0)
 
     # Temps moyen de traitement des demandes
-    average_processing_time_in_days_query = <<-SQL
-      WITH events_first_submit as (
-        SELECT DISTINCT ON (enrollment_id) *
-        FROM events WHERE name = 'submitted' ORDER BY enrollment_id, created_at DESC
-      )
-      SELECT avg(validation_duration)
-      FROM (
-        SELECT
-          enrollments.id, events_stop.created_at AS done_at, events_first_submit.created_at AS submitted_at,
-          DATE_PART('days', events_stop.created_at - events_first_submit.created_at) AS validation_duration
-        FROM enrollments
-        INNER JOIN
-          events AS events_stop ON events_stop.enrollment_id = enrollments.id
-          AND events_stop.name IN ('validated', 'refused')
-        INNER JOIN
-          events_first_submit ON events_first_submit.enrollment_id = enrollments.id
-        WHERE status IN ('validated', 'refused')
-        AND #{filter_by_target_api_criteria}
-      ) e;
-    SQL
-    average_processing_time_in_days = ActiveRecord::Base
-      .connection
-      .execute(average_processing_time_in_days_query)
-      .getvalue(0, 0)
+    average_processing_time_in_days = GetAverageProcessingTimeInDays.call(target_api)
 
     # Nombre moyen d'aller retour avant traitement
     average_go_back_count_query = <<-SQL
@@ -124,6 +101,16 @@ class StatsController < ApplicationController
       monthly_enrollment_count: monthly_enrollment_count,
       enrollment_by_target_api: enrollment_by_target_api,
       enrollment_by_status: enrollment_by_status,
+    }
+  end
+
+  def average_processing_time_in_days
+    target_api = params.permit(:target_api)[:target_api]
+
+    average_processing_time_in_days = GetAverageProcessingTimeInDays.call(target_api)
+
+    render json: {
+      average_processing_time_in_days: average_processing_time_in_days,
     }
   end
 end
