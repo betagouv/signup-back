@@ -14,6 +14,7 @@ module Users
     # GET /users/sign_out
     def destroy
       session.delete("access_token")
+      # note that we do not delete the id_token here because we need it in redirection url
       sign_out_and_redirect current_user
     end
 
