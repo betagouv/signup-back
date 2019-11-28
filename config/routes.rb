@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     get "/stats/average_processing_time_in_days", to: "stats#average_processing_time_in_days"
     get "/events/most-used-comments", to: "events#most_used_comments"
     get "/users/me", to: "users#me"
+    get "/users/join-organization", to: "users#join_organization"
 
     devise_scope :user do
       get "/users/sign_out", to: "users/sessions#destroy", as: :destroy_user_session
