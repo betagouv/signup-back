@@ -14,7 +14,6 @@ module Users
     # GET /users/sign_out
     def destroy
       session.delete("access_token")
-      session.delete("user_organizations")
       sign_out_and_redirect current_user
     end
 

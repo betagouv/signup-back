@@ -173,7 +173,6 @@ class EnrollmentsController < ApplicationController
           # without any effect. We log this in case some user get stuck into this
           session.delete("access_token")
           session.delete("id_token")
-          session.delete("user_organizations")
           sign_out current_user
           puts "#{e.message.inspect} e.message"
           raise ApplicationController::AccessDenied, e.message
