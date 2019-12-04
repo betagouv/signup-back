@@ -8,8 +8,8 @@ class Enrollment::ApiImpotParticulierPolicy < EnrollmentPolicy
         :dgfip_nbpart,
         :dgfip_aft,
         :dgfip_locaux_th,
-        :dgfip_data_years_n_moins_1,
-        :dgfip_data_years_n_moins_2,
+        :dgfip_annee_n_moins_1,
+        :dgfip_annee_n_moins_2,
       ],
       additional_content: [
         :rgpd_general_agreement,
