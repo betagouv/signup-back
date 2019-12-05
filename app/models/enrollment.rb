@@ -79,6 +79,10 @@ class Enrollment < ActiveRecord::Base
       if enrollment.target_api == "franceconnect"
         RegisterFranceconnectEnrollment.call(enrollment)
       end
+
+      if enrollment.target_api == "api_entreprise"
+        RegisterApiEntrepriseEnrollment.call(enrollment)
+      end
     end
 
     event :loop_without_job do
