@@ -1,3 +1,7 @@
-user_service_provider:
+user:
+  uid: 1 # keep this id synchronised with the corresponding uid in api-auth/scripts/fixtures.sql
   email: user@test
-  uid: 1
+
+admin_franceconnect:
+  uid: 3 # keep this id synchronised with the corresponding uid in api-auth/scripts/fixtures.sql
+  email: franceconnect@test
