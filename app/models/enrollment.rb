@@ -22,7 +22,7 @@ class Enrollment < ActiveRecord::Base
   has_many :documents, as: :attachable
   accepts_nested_attributes_for :documents
   belongs_to :user
-  has_many :events
+  has_many :events, dependent: :destroy
   belongs_to :dpo, class_name: :User, foreign_key: :dpo_id, optional: true
   belongs_to :responsable_traitement, class_name: :User, foreign_key: :responsable_traitement_id, optional: true
 

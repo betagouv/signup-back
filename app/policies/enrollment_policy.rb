@@ -8,7 +8,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def delete?
-    false
+    (record.pending? || record.modification_pending?) && user == record.user
   end
 
   def notify?
