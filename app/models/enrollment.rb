@@ -144,6 +144,7 @@ class Enrollment < ActiveRecord::Base
       self.siret = siret
       self.nom_raison_sociale = nom_raison_sociale
     else
+      self.organization_id = nil
       self.siret = nil
       self.nom_raison_sociale = nil
     end
