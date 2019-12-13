@@ -79,6 +79,10 @@ class Enrollment < ActiveRecord::Base
       if enrollment.target_api == "franceconnect"
         RegisterFranceconnectEnrollment.call(enrollment)
       end
+
+      if enrollment.target_api == "api_entreprise" && ENV["USE_API_ENTREPRISE_REGISTERER"].present?
+        RegisterApiEntrepriseEnrollment.call(enrollment)
+      end
     end
 
     event :loop_without_job do
@@ -112,6 +116,10 @@ class Enrollment < ActiveRecord::Base
 
   def responsable_traitement_email
     responsable_traitement.try(:email)
+  end
+
+  def submitted_at
+    events.where(name: "submitted").order("created_at").last["created_at"]
   end
 
   protected

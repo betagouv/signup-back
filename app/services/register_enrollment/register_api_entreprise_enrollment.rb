@@ -4,37 +4,44 @@ class RegisterApiEntrepriseEnrollment < RegisterEnrollmentService
   end
 
   def call
-    name = "#{@enrollment.nom_raison_sociale} - #{@enrollment.id}"
+    name = @enrollment.intitule
     email = @enrollment.user.email
     scopes = @enrollment[:scopes]
     contacts = @enrollment.contacts
-    linked_token_manager_id = create_enrollment_in_token_manager(name, email, scopes, contacts)
-    @enrollment.update({linked_token_manager_id: linked_token_manager_id})
+    siret = @enrollment[:siret]
+    cgu_agreement_date = @enrollment.submitted_at
+    create_enrollment_in_token_manager(name, email, scopes, contacts, siret, cgu_agreement_date)
   end
 
   private
 
-  def create_enrollment_in_token_manager(name, email, scopes, contacts)
+  def create_enrollment_in_token_manager(name, email, scopes, contacts, siret, cgu_agreement_date)
     api_key = ENV.fetch("API_ENTREPRISE_API_KEY")
 
-    # 1. create user
-    create_user_response = Http.post(
-      "#{ENV.fetch("API_ENTREPRISE_HOST")}/api/admin/users/",
-      "{\"email\": #{email.to_json}}",
-      {"Authorization" => "Bearer #{api_key}"}
-    )
-
-    # 1. b) catch user already exists error
-    if (create_user_response.code != "201") && !((create_user_response.code == "422") && (JSON.parse(create_user_response.body)["errors"]["email"].first == "value already exists"))
-      # in the case the user exists already, we do not care about updating the contacts
-      raise "Error when registering user in API Particulier. Error message was: #{create_user_response.body} (#{create_user_response.code})"
-    end
-
-    # 2. get user id within the list of users
-    # TODO entreprise: to avoid this, add a get user by mail endpoint
+    # 1. get user id within the list of users
+    # TODO API Entreprise: to avoid this, add a get user by mail endpoint
     list_users_response = Http.get("#{ENV.fetch("API_ENTREPRISE_HOST")}/api/admin/users/", {"Authorization" => "Bearer #{api_key}"})
     users = JSON.parse(list_users_response.body)
-    user_id = users.detect { |user| user["email"] == email }["id"]
+    user = users.detect { |user| user["email"] == email }
+
+    if user.nil?
+      # 2. if user does not exist, create the user
+      # note that the siret recorded is the siret of the first demand for this users
+      # further siret will not be recorded
+      create_user_response = Http.post(
+        "#{ENV.fetch("API_ENTREPRISE_HOST")}/api/admin/users/",
+        "{\"email\": #{email.to_json}, \"context\": #{siret.to_json},\"cgu_agreement_date\": #{cgu_agreement_date.to_json}}",
+        {"Authorization" => "Bearer #{api_key}"}
+      )
+
+      if create_user_response.code != "201"
+        raise "Error when registering user in API entreprise dashboard. Error message was: #{create_user_response.body} (#{create_user_response.code})"
+      end
+
+      user = JSON.parse(create_user_response.body)
+    end
+
+    user_id = user["id"]
 
     # 3. create token
     formatted_contacts = contacts
@@ -64,6 +71,7 @@ class RegisterApiEntrepriseEnrollment < RegisterEnrollmentService
       raise "Error when registering token in API Particulier. Error message was: #{create_token_response.body} (#{create_token_response.code})"
     end
 
+    # TODO API Entreprise: return token id, so we can forge an url that point to the token directly
     user_id
   end
 end
