@@ -21,6 +21,14 @@ class RegisterApiEntrepriseEnrollment < RegisterEnrollmentService
     # 1. get user id within the list of users
     # TODO API Entreprise: to avoid this, add a get user by mail endpoint
     list_users_response = Http.get("#{ENV.fetch("API_ENTREPRISE_HOST")}/api/admin/users/", {"Authorization" => "Bearer #{api_key}"})
+    if list_users_response.code != "200"
+      raise ApplicationController::BadGateway.new(
+        "dashboard API entreprise",
+        "#{ENV.fetch("API_ENTREPRISE_HOST")}/api/admin/user/",
+        list_users_response.code,
+        list_users_response.body,
+      )
+    end
     users = JSON.parse(list_users_response.body)
     user = users.detect { |user| user["email"] == email }
 
@@ -35,7 +43,12 @@ class RegisterApiEntrepriseEnrollment < RegisterEnrollmentService
       )
 
       if create_user_response.code != "201"
-        raise "Error when registering user in API entreprise dashboard. Error message was: #{create_user_response.body} (#{create_user_response.code})"
+        raise ApplicationController::BadGateway.new(
+          "dashboard API entreprise",
+          "#{ENV.fetch("API_ENTREPRISE_HOST")}/api/admin/users/",
+          create_user_response.code,
+          create_user_response.body,
+        )
       end
 
       user = JSON.parse(create_user_response.body)
@@ -68,10 +81,24 @@ class RegisterApiEntrepriseEnrollment < RegisterEnrollmentService
     )
 
     if create_token_response.code != "201"
-      raise "Error when registering token in API Particulier. Error message was: #{create_token_response.body} (#{create_token_response.code})"
+      raise ApplicationController::BadGateway.new(
+        "dashboard API entreprise",
+        "#{ENV.fetch("API_ENTREPRISE_HOST")}/api/admin/users/#{user_id}/jwt_api_entreprise",
+        create_token_response.code,
+        create_token_response.body,
+      )
     end
 
     # TODO API Entreprise: return token id, so we can forge an url that point to the token directly
     user_id
+  # error list from https://stackoverflow.com/questions/5370697/what-s-the-best-way-to-handle-exceptions-from-nethttp#answer-11802674
+  rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET,
+         EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError, SocketError => e
+    raise ApplicationController::BadGateway.new(
+      "dashboard API entreprise",
+      ENV.fetch("API_ENTREPRISE_HOST").to_s,
+      nil,
+      nil,
+    ), e.message
   end
 end

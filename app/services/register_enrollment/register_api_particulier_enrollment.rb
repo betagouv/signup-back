@@ -21,9 +21,24 @@ class RegisterApiParticulierEnrollment < RegisterEnrollmentService
     )
 
     if response.code != "200"
-      raise "Error when registering token in API Particulier. Error message was: #{response.read_body} (#{response.code})"
+      raise ApplicationController::BadGateway.new(
+        "espace admin API Particulier",
+        "#{ENV.fetch("API_PARTICULIER_HOST")}/admin/api/token",
+        response.code,
+        response.body,
+      )
     end
 
     JSON.parse(response.read_body)["_id"]
+
+  # error list from https://stackoverflow.com/questions/5370697/what-s-the-best-way-to-handle-exceptions-from-nethttp#answer-11802674
+  rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET,
+         EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError, SocketError => e
+    raise ApplicationController::BadGateway.new(
+      "espace admin API Particulier",
+      "#{ENV.fetch("API_PARTICULIER_HOST")}/admin/api/token",
+      nil,
+      nil,
+    ), e.message
   end
 end

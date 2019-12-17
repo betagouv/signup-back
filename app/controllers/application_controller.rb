@@ -2,12 +2,31 @@ class ApplicationController < ActionController::API
   class AccessDenied < StandardError
   end
 
+  class BadGateway < StandardError
+    attr_reader :endpoint_name
+    attr_reader :url
+    attr_reader :http_code
+    attr_reader :http_body
+    def initialize(endpoint_name, url, http_code, http_body)
+      @endpoint_name = endpoint_name
+      @url = url
+      @http_code = http_code
+      @http_body = http_body
+    end
+  end
+
   include Pundit
 
   rescue_from AccessDenied do |e|
     render status: :unauthorized, json: {
       message: "Vous n'êtes pas autorisé à accéder à cette API",
       detail: e.message,
+    }
+  end
+
+  rescue_from BadGateway do |e|
+    render status: :bad_gateway, json: {
+      message: "Une erreur \"#{e.endpoint_name}\" est survenue. Voici les détails techniques :\n- url: #{e.url}\n- http code: #{e.http_code.to_s}\n- http body: #{e.http_body.to_json}\n- message: #{e.message.to_s}",
     }
   end
 

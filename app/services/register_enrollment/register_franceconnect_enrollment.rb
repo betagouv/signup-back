@@ -20,10 +20,25 @@ class RegisterFranceconnectEnrollment < RegisterEnrollmentService
     )
 
     if response.code != "200"
-      raise "Error when registering the FS on FranceConnect. Error message was: #{response.read_body} (#{response.code})"
+      raise ApplicationController::BadGateway.new(
+        "Espace Partenaire FranceConnect",
+        "#{ENV.fetch("FRANCECONNECT_PARTICULIER_HOST")}/api/v2/service-provider/integration/create",
+        response.code,
+        response.body,
+      )
     end
 
     # The id returned here is the signup id. It is not a generated id from "espace partenaires".
     JSON.parse(response.read_body)["_id"]
+
+  # error list from https://stackoverflow.com/questions/5370697/what-s-the-best-way-to-handle-exceptions-from-nethttp#answer-11802674
+  rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET,
+         EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError, SocketError => e
+    raise ApplicationController::BadGateway.new(
+      "Espace Partenaire FranceConnect",
+      "#{ENV.fetch("FRANCECONNECT_PARTICULIER_HOST")}/api/v2/service-provider/integration/create",
+      nil,
+      nil,
+    ), e.message
   end
 end
