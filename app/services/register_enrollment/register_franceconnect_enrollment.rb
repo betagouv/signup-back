@@ -13,6 +13,7 @@ class RegisterFranceconnectEnrollment < RegisterEnrollmentService
   private
 
   def create_enrollment_in_token_manager(id, name, email, scopes)
+    # note that the FC team test this call with this bash script: https://gitlab.com/france-connect/FranceConnect/snippets/1828712
     response = Http.post(
       "#{ENV.fetch("FRANCECONNECT_PARTICULIER_HOST")}/api/v2/service-provider/integration/create",
       "{\"name\": #{name.to_json},\"authorized_emails\": [#{email.to_json}],\"signup_id\": \"#{id.to_json}\", \"scopes\": #{scopes.to_json}}",
