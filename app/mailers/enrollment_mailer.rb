@@ -47,6 +47,8 @@ class EnrollmentMailer < ActionMailer::Base
     @message = params[:message]
     @applicant_email = params[:applicant_email]
     @rgpd_role = params[:rgpd_role]
+    @owner_email = params[:owner_email]
+    @nom_raison_sociale = params[:nom_raison_sociale]
 
     @url = "#{ENV.fetch("FRONT_HOST")}/#{params[:target_api].tr("_", "-")}/#{params[:enrollment_id]}"
     @front_host = ENV.fetch("FRONT_HOST")

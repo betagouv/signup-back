@@ -205,6 +205,8 @@ class EnrollmentsController < ApplicationController
           enrollment_id: @enrollment.id,
           template: "notify_application_validated",
           rgpd_role: "responsable de traitement",
+          owner_email: @enrollment.user.email,
+          nom_raison_sociale: @enrollment.nom_raison_sociale
         ).notification_email.deliver_later
       end
       if event == "validate_application" && @enrollment.dpo.present?
@@ -214,6 +216,8 @@ class EnrollmentsController < ApplicationController
           enrollment_id: @enrollment.id,
           template: "notify_application_validated",
           rgpd_role: "délégué à la protection des données",
+          owner_email: @enrollment.user.email,
+          nom_raison_sociale: @enrollment.nom_raison_sociale
         ).notification_email.deliver_later
       end
 
