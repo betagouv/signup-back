@@ -159,10 +159,10 @@ class Enrollment < ActiveRecord::Base
   end
 
   def update_validation
-    errors[:intitule] << "Vous devez renseigner l'intitulé de la démarche avant de continuer" unless intitule.present?
+    errors[:intitule] << "Vous devez renseigner l'intitulé de la démarche avant de continuer. Aucun changement n'a été sauvegardé." unless intitule.present?
     # the following 2 errors should never occur #defensiveprogramming
-    errors[:target_api] << "Une erreur inattendue est survenue: pas d'API cible" unless target_api.present?
-    errors[:organization_id] << "Une erreur inattendue est survenue: pas d'organisation" unless organization_id.present?
+    errors[:target_api] << "Une erreur inattendue est survenue: pas d'API cible. Aucun changement n'a été sauvegardé." unless target_api.present?
+    errors[:organization_id] << "Une erreur inattendue est survenue: pas d'organisation. Aucun changement n'a été sauvegardé." unless organization_id.present?
   end
 
   def sent_validation

@@ -2,10 +2,10 @@ class Enrollment::ApiImpotParticulierStep2 < Enrollment
   protected
 
   def update_validation
-    errors[:linked_franceconnect_enrollment_id] << "Vous devez associer cette demande à une demande Franceconnect validée" unless linked_franceconnect_enrollment_id.present?
+    errors[:linked_franceconnect_enrollment_id] << "Vous devez associer cette demande à une demande Franceconnect validée. Aucun changement n'a été sauvegardé." unless linked_franceconnect_enrollment_id.present?
     # the following 2 errors should never occur #defensiveprogramming
-    errors[:target_api] << "Une erreur inattendue est survenue: pas d’API cible" unless target_api.present?
-    errors[:organization_id] << "Une erreur inattendue est survenue: pas d’organisation" unless organization_id.present?
+    errors[:target_api] << "Une erreur inattendue est survenue: pas d’API cible. Aucun changement n'a été sauvegardé." unless target_api.present?
+    errors[:organization_id] << "Une erreur inattendue est survenue: pas d’organisation. Aucun changement n'a été sauvegardé." unless organization_id.present?
   end
 
   def sent_validation
