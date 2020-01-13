@@ -1,16 +1,6 @@
 class EnrollmentMailer < ActionMailer::Base
   default charset: "UTF-8"
 
-  SUBJECTS = {
-    "send_application" => "Nous avons bien reçu votre demande d'accès",
-    "validate_application" => "Votre demande a été validée",
-    "review_application" => "Votre demande requiert des modifications",
-    "refuse_application" => "Votre demande a été refusée",
-    "notify_application_sent" => "Nouvelle demande sur signup.api.gouv.fr",
-    "notify_application_validated" => "Nouvelle demande d'habilitation api.gouv.fr",
-    "create_application" => "Votre demande a été enregistrée",
-  }
-
   MAIL_PARAMS = {
     "franceconnect" => {
       "sender" => "support.partenaires@franceconnect.gouv.fr",
@@ -49,13 +39,26 @@ class EnrollmentMailer < ActionMailer::Base
     @rgpd_role = params[:rgpd_role]
     @owner_email = params[:owner_email]
     @nom_raison_sociale = params[:nom_raison_sociale]
+    @intitule = params[:intitule]
+    @target_api_support_email = MAIL_PARAMS[params[:target_api]]["sender"]
 
     @url = "#{ENV.fetch("FRONT_HOST")}/#{params[:target_api].tr("_", "-")}/#{params[:enrollment_id]}"
     @front_host = ENV.fetch("FRONT_HOST")
+
+    subjects = {
+      "send_application" => "Nous avons bien reçu votre demande d'accès",
+      "validate_application" => "Votre demande a été validée",
+      "review_application" => "Votre demande requiert des modifications",
+      "refuse_application" => "Votre demande a été refusée",
+      "notify_application_sent" => "Nouvelle demande sur signup.api.gouv.fr",
+      "notify_application_validated" => "Vous avez été désigné #{@rgpd_role} pour l’organisation #{@nom_raison_sociale}",
+      "create_application" => "Votre demande a été enregistrée",
+    }
+
     mail(
       # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
       to: params[:to],
-      subject: SUBJECTS[params[:template]],
+      subject: subjects[params[:template]],
       from: MAIL_PARAMS[params[:target_api]]["sender"],
       template_path: %W[enrollment_mailer/#{params[:target_api]} enrollment_mailer],
       template_name: params[:template],
