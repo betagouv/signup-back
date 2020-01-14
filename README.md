@@ -1,6 +1,6 @@
 # Signup.api.gouv.fr Back
 
-Installation instructions can be found [here](https://gitlab.incubateur.net/beta.gouv.fr/api-particulier-ansible).
+Installation instructions can be found [here](https://gitlab.com/etalab/api.gouv.fr/signup-ansible).
 
 ## How to enroll a new API
 
