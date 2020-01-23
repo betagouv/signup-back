@@ -26,7 +26,7 @@ class ApplicationController < ActionController::API
 
   rescue_from BadGateway do |e|
     render status: :bad_gateway, json: {
-      message: "Une erreur \"#{e.endpoint_name}\" est survenue. Voici les détails techniques :\n- url: #{e.url}\n- http code: #{e.http_code.to_s}\n- http body: #{e.http_body.to_json}\n- message: #{e.message.to_s}",
+      message: "Impossible d'envoyer les données à \"#{e.endpoint_name}\".\n\nMerci de communiquer les détails techniques de l'erreur à contact@api.gouv.fr :\n- url: #{e.url}\n- http code: #{e.http_code.to_s}\n- http body: #{e.http_body.to_json}\n- message: #{e.message.to_s}",
     }
   end
 
