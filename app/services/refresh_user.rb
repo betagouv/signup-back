@@ -5,14 +5,11 @@ class RefreshUser < ApplicationService
 
   def call
     response = Http.get(
-      "#{ENV.fetch("OAUTH_HOST")}/oauth/userinfo",
-      {"Authorization" => "Bearer #{@access_token}"}
+      "#{ENV.fetch("OAUTH_HOST")}a/oauth/userinfo",
+      @access_token,
+      "api auth"
     )
 
-    if response.code != "200"
-      raise "Error when refreshing user data. Error message was: #{response.read_body} (#{response.code})"
-    end
-
-    User.reconcile(JSON.parse(response.body))
+    User.reconcile(response.parse)
   end
 end

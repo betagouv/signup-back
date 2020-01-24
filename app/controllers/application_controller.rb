@@ -3,12 +3,12 @@ class ApplicationController < ActionController::API
   end
 
   class BadGateway < StandardError
-    attr_reader :endpoint_name
+    attr_reader :endpoint_label
     attr_reader :url
     attr_reader :http_code
     attr_reader :http_body
-    def initialize(endpoint_name, url, http_code, http_body)
-      @endpoint_name = endpoint_name
+    def initialize(endpoint_label, url, http_code, http_body)
+      @endpoint_label = endpoint_label
       @url = url
       @http_code = http_code
       @http_body = http_body
@@ -26,7 +26,7 @@ class ApplicationController < ActionController::API
 
   rescue_from BadGateway do |e|
     render status: :bad_gateway, json: {
-      message: "Impossible d'envoyer les données à \"#{e.endpoint_name}\".\n\nMerci de communiquer les détails techniques de l'erreur à contact@api.gouv.fr :\n- url: #{e.url}\n- http code: #{e.http_code.to_s}\n- http body: #{e.http_body.to_json}\n- message: #{e.message.to_s}",
+      message: "Impossible d'envoyer les données à \"#{e.endpoint_label}\".\n\nMerci de communiquer les détails techniques de l'erreur à contact@api.gouv.fr :\n- url: #{e.url}\n- http code: #{e.http_code}\n- http body: #{e.http_body.to_json}\n- message: #{e.message}",
     }
   end
 
@@ -42,9 +42,9 @@ class ApplicationController < ActionController::API
     }
   end
 
-  rescue_from ActiveRecord::RecordInvalid do |_|
+  rescue_from ActiveRecord::RecordInvalid do |e|
     render status: :unprocessable_entity, json: {
-      message: _.message,
+      message: e.message,
     }
   end
 
