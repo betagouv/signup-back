@@ -1,33 +1,51 @@
 module Http
-  def self.get(url_as_string, headers = {})
-    url = URI(url_as_string)
+  def self.get(url_as_string, api_key, endpoint_label)
+    response = HTTP
+      .auth("Bearer #{api_key}")
+      .headers(accept: "application/json")
+      .get(url_as_string)
 
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    unless response.status.success?
+      raise ApplicationController::BadGateway.new(
+        endpoint_label,
+        url_as_string,
+        response.code,
+        response.parse,
+      )
+    end
 
-    request = Net::HTTP::Get.new(url)
-    request["content-type"] = "application/json"
-    request["cache-control"] = "no-cache"
-    headers.each { |k, v| request[k] = v }
-
-    http.request(request)
+    response
+  rescue HTTP::Error => e
+    raise ApplicationController::BadGateway.new(
+      endpoint_label,
+      url_as_string,
+      nil,
+      nil,
+    ), e.message
   end
 
-  def self.post(url_as_string, body, headers = {})
-    url = URI(url_as_string)
+  def self.post(url_as_string, body, api_key, endpoint_label)
+    response = HTTP
+      .auth("Bearer #{api_key}")
+      .headers(accept: "application/json")
+      .post(url_as_string, json: body)
 
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = ENV["BACK_HOST"].include?("development") ? OpenSSL::SSL::VERIFY_NONE : OpenSSL::SSL::VERIFY_PEER
+    unless response.status.success?
+      raise ApplicationController::BadGateway.new(
+        endpoint_label,
+        url_as_string,
+        response.code,
+        response.parse,
+      )
+    end
 
-    request = Net::HTTP::Post.new(url)
-    request["content-type"] = "application/json"
-    request["cache-control"] = "no-cache"
-    headers.each { |k, v| request[k] = v }
-
-    request.body = body
-
-    http.request(request)
+    response
+  rescue HTTP::Error => e
+    raise ApplicationController::BadGateway.new(
+      endpoint_label,
+      url_as_string,
+      nil,
+      nil,
+    ), e.message
   end
 end

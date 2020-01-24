@@ -8,6 +8,7 @@ end
 gem "carrierwave"
 gem "carrierwave-i18n"
 gem "devise"
+gem "http"
 gem "kaminari"
 gem "mailjet"
 gem "omniauth-oauth2"

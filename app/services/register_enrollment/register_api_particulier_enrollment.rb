@@ -5,8 +5,8 @@ class RegisterApiParticulierEnrollment < RegisterEnrollmentService
 
   def call
     name = "#{@enrollment.nom_raison_sociale} - #{@enrollment.id}"
-    email = @enrollment.contacts.select { |contact| contact["id"] == "technique" }.first["email"]
-    scopes = @enrollment[:scopes].reject { |k, v| !v }.keys
+    email = @enrollment.contacts.find { |contact| contact["id"] == "technique" }["email"]
+    scopes = @enrollment[:scopes].reject { |_, v| !v }.keys
     linked_token_manager_id = create_enrollment_in_token_manager(@enrollment.id, name, email, scopes)
     @enrollment.update({linked_token_manager_id: linked_token_manager_id})
   end
@@ -14,29 +14,36 @@ class RegisterApiParticulierEnrollment < RegisterEnrollmentService
   private
 
   def create_enrollment_in_token_manager(id, name, email, scopes)
-    response = Http.post(
-      "#{ENV.fetch("API_PARTICULIER_HOST")}/admin/api/token",
-      "{\"name\": #{name.to_json},\"email\": #{email.to_json},\"signup_id\": \"#{id.to_json}\", \"scopes\": #{scopes.to_json}}",
-      {"x-api-key" => ENV.fetch("API_PARTICULIER_API_KEY")}
-    )
+    endpoint_label = "espace admin API Particulier"
+    url_as_string = "#{ENV.fetch("API_PARTICULIER_HOST")}/admin/api/token"
+    body = {
+      name: name,
+      email: email,
+      signup_id: id,
+      scopes: scopes,
+    }
+    api_key = ENV.fetch("API_PARTICULIER_API_KEY")
 
-    if response.code != "200"
+    response = HTTP
+      .auth("Bearer #{api_key}")
+      .headers(accept: "application/json")
+      .headers("x-api-key" => api_key)
+      .post(url_as_string, json: body)
+
+    unless response.status.success?
       raise ApplicationController::BadGateway.new(
-        "espace admin API Particulier",
-        "#{ENV.fetch("API_PARTICULIER_HOST")}/admin/api/token",
+        endpoint_label,
+        url_as_string,
         response.code,
-        response.body,
+        response.parse,
       )
     end
 
-    JSON.parse(response.read_body)["_id"]
-
-  # error list from https://stackoverflow.com/questions/5370697/what-s-the-best-way-to-handle-exceptions-from-nethttp#answer-11802674
-  rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET,
-         EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError, SocketError => e
+    response.parse["_id"]
+  rescue HTTP::Error => e
     raise ApplicationController::BadGateway.new(
-      "espace admin API Particulier",
-      "#{ENV.fetch("API_PARTICULIER_HOST")}/admin/api/token",
+      endpoint_label,
+      url_as_string,
       nil,
       nil,
     ), e.message

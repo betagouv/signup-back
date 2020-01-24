@@ -71,7 +71,7 @@ class Enrollment < ActiveRecord::Base
       )
     end
 
-    before_transition sent: :validated do |enrollment, transition|
+    before_transition sent: :validated do |enrollment, _|
       if enrollment.target_api == "api_particulier"
         RegisterApiParticulierEnrollment.call(enrollment)
       end
@@ -145,10 +145,10 @@ class Enrollment < ActiveRecord::Base
     selected_organization = user.organizations.find { |o| o["id"] == organization_id }
     siret = selected_organization["siret"]
 
-    response = Http.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{siret}")
+    response = HTTP.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{siret}")
 
-    if response.code == "200"
-      nom_raison_sociale = JSON.parse(response.read_body)["etablissement"]["nom_raison_sociale"]
+    if response.status.success?
+      nom_raison_sociale = response.parse["etablissement"]["nom_raison_sociale"]
       self.siret = siret
       self.nom_raison_sociale = nom_raison_sociale
     else
@@ -180,7 +180,7 @@ class Enrollment < ActiveRecord::Base
     errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
     errors[:fondement_juridique_title] << "Vous devez renseigner la nature du texte vous autorisant à traiter les données avant de continuer" unless fondement_juridique_title.present?
-    errors[:fondement_juridique_url] << "Vous devez joindre l'URL ou le document du texte relatif au traitement avant de continuer" unless (fondement_juridique_url.present?) || documents.where(type: "Document::LegalBasis").present?
+    errors[:fondement_juridique_url] << "Vous devez joindre l'URL ou le document du texte relatif au traitement avant de continuer" unless fondement_juridique_url.present? || documents.where(type: "Document::LegalBasis").present?
     unless user.email_verified
       errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer.
 Merci de cliquer sur le lien d'activation que vous avez reçu par mail.
