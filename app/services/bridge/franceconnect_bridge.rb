@@ -1,4 +1,4 @@
-class RegisterFranceconnectEnrollment < RegisterEnrollmentService
+class FranceconnectBridge < BridgeService
   def initialize(enrollment)
     @enrollment = enrollment
   end

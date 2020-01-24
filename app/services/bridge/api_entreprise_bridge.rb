@@ -1,4 +1,4 @@
-class RegisterApiEntrepriseEnrollment < RegisterEnrollmentService
+class ApiEntrepriseBridge < BridgeService
   def initialize(enrollment)
     @enrollment = enrollment
   end
