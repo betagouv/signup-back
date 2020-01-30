@@ -23,7 +23,7 @@ class EnrollmentMailer < ActionMailer::Base
       "target_api" => "API CNAM",
     },
     "api_entreprise" => {
-      "sender" => "contact@api.gouv.fr",
+      "sender" => "support@entreprise.api.gouv.fr",
       "target_api" => "API Entreprise",
     },
     "preuve_covoiturage" => {
