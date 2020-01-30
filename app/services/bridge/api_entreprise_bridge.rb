@@ -75,7 +75,7 @@ class ApiEntrepriseBridge < BridgeService
         subject: name,
         roles: formatted_scopes,
         contacts: formatted_contacts,
-        authorization_request_id: id,
+        authorization_request_id: id.to_s,
       },
       api_key,
       "dashboard API entreprise"
