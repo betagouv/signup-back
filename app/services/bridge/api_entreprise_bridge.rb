@@ -10,12 +10,12 @@ class ApiEntrepriseBridge < BridgeService
     contacts = @enrollment.contacts
     siret = @enrollment[:siret]
     cgu_agreement_date = @enrollment.submitted_at
-    create_enrollment_in_token_manager(name, email, scopes, contacts, siret, cgu_agreement_date)
+    create_enrollment_in_token_manager(@enrollment.id, name, email, scopes, contacts, siret, cgu_agreement_date)
   end
 
   private
 
-  def create_enrollment_in_token_manager(name, email, scopes, contacts, siret, cgu_agreement_date)
+  def create_enrollment_in_token_manager(id, name, email, scopes, contacts, siret, cgu_agreement_date)
     api_host = ENV.fetch("API_ENTREPRISE_HOST")
     api_key = ENV.fetch("API_ENTREPRISE_API_KEY")
 
@@ -75,6 +75,7 @@ class ApiEntrepriseBridge < BridgeService
         subject: name,
         roles: formatted_scopes,
         contacts: formatted_contacts,
+        authorization_request_id: id,
       },
       api_key,
       "dashboard API entreprise"
