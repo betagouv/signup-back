@@ -5,7 +5,7 @@ class RefreshUser < ApplicationService
 
   def call
     response = Http.get(
-      "#{ENV.fetch("OAUTH_HOST")}a/oauth/userinfo",
+      "#{ENV.fetch("OAUTH_HOST")}/oauth/userinfo",
       @access_token,
       "api auth"
     )
