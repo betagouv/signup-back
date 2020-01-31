@@ -1,6 +1,6 @@
-# Signup.api.gouv.fr Back
+# Backend de signup.api.gouv.fr
 
-Installation instructions can be found [here](https://gitlab.com/etalab/api.gouv.fr/signup-ansible).
+Les instructions d'installation se trouve ici : https://github.com/betagouv/signup-ansible
 
 ## How to enroll a new API
 
