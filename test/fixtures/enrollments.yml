@@ -14,7 +14,7 @@ DEFAULTS: &DEFAULTS
     family_name: true
     birthcountry: true
     preferred_username: false
-  contacts: '{"{\"id\":\"technique\",\"email\":\"user@test\"}"}'
+  contacts: '{"{\"id\":\"technique\",\"email\":\"user@yopmail.com\"}"}'
   organization_id: 1
   siret: "21920023500014"
   nom_raison_sociale: "COMMUNE DE CLAMART - MAIRIE"
