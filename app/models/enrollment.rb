@@ -72,15 +72,15 @@ class Enrollment < ActiveRecord::Base
     end
 
     before_transition sent: :validated do |enrollment, _|
-      if enrollment.target_api == "api_particulier"
+      if enrollment.target_api == "api_particulier" && ! ENV["DISABLE_API_PARTICULIER_BRIDGE"].present?
         ApiParticulierBridge.call(enrollment)
       end
 
-      if enrollment.target_api == "franceconnect"
+      if enrollment.target_api == "franceconnect" && ! ENV["DISABLE_FRANCECONNECT_BRIDGE"].present?
         FranceconnectBridge.call(enrollment)
       end
 
-      if enrollment.target_api == "api_entreprise" && ENV["USE_API_ENTREPRISE_REGISTERER"].present?
+      if enrollment.target_api == "api_entreprise" && ! ENV["DISABLE_API_ENTREPRISE_BRIDGE"].present?
         ApiEntrepriseBridge.call(enrollment)
       end
     end
