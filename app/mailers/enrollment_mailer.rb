@@ -55,6 +55,11 @@ class EnrollmentMailer < ActionMailer::Base
       "create_application" => "Votre demande a été enregistrée",
     }
 
+    @average_processing_time_in_days = nil
+    if params[:template] == "send_application"
+      @average_processing_time_in_days = GetAverageProcessingTimeInDays.call(params[:target_api])
+    end
+
     mail(
       # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
       to: params[:to],
