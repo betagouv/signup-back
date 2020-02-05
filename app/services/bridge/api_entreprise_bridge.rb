@@ -19,10 +19,9 @@ class ApiEntrepriseBridge < BridgeService
     api_host = ENV.fetch("API_ENTREPRISE_HOST")
     api_key = ENV.fetch("API_ENTREPRISE_API_KEY")
 
-    # 1. get user id within the list of users
-    # TODO API Entreprise: to avoid this, add a get user by mail endpoint
+    # 1. get user id via user search
     list_users_response = Http.get(
-      "#{api_host}/api/admin/users/",
+      "#{api_host}/api/admin/users/?email=#{email}",
       api_key,
       "dashboard API entreprise"
     )
