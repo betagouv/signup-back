@@ -28,7 +28,17 @@ module OmniAuth
       # forward source page param to display a contextualised login page on api-auth
       def authorize_params
         session["returnUrl"] = request.params["returnUrl"] if request.params.key?("returnUrl")
-        super.merge(source: request.params["source"])
+        source = if request.params.key?("source")
+          request.params["source"]
+        elsif request.params.key?("returnUrl") &&
+          %w(/franceconnect /api-particulier /api-entreprise /api-impot-particulier /api-droits-cnam)
+            .include?(request.params["returnUrl"])
+          request.params["returnUrl"].sub(/^\//, "signup_")
+        else
+          'signup'
+        end
+
+        super.merge(source: source)
       end
 
       credentials do
