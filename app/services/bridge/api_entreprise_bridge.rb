@@ -10,7 +10,8 @@ class ApiEntrepriseBridge < BridgeService
     contacts = @enrollment.contacts
     siret = @enrollment[:siret]
     cgu_agreement_date = @enrollment.submitted_at
-    create_enrollment_in_token_manager(@enrollment.id, name, email, scopes, contacts, siret, cgu_agreement_date)
+    linked_token_manager_id = create_enrollment_in_token_manager(@enrollment.id, name, email, scopes, contacts, siret, cgu_agreement_date)
+    @enrollment.update({linked_token_manager_id: linked_token_manager_id})
   end
 
   private
@@ -68,7 +69,7 @@ class ApiEntrepriseBridge < BridgeService
         }
       }
 
-    Http.post(
+    create_jwt_response = Http.post(
       "#{api_host}/api/admin/users/#{user_id}/jwt_api_entreprise",
       {
         subject: name,
@@ -80,7 +81,9 @@ class ApiEntrepriseBridge < BridgeService
       "dashboard API entreprise"
     )
 
-    # TODO API Entreprise: return token id, so we can forge an url that point to the token directly
-    user_id
+    jwt = create_jwt_response.parse["new_token"]
+    parsed_jwt = JWT.decode(jwt, nil, false)
+
+    parsed_jwt[0]["jti"]
   end
 end
