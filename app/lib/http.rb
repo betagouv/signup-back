@@ -24,11 +24,11 @@ module Http
     ), e.message
   end
 
-  def self.post(url_as_string, body, api_key, endpoint_label)
+  def self.request(http_verb, url_as_string, body, api_key, endpoint_label)
     response = HTTP
       .auth("Bearer #{api_key}")
       .headers(accept: "application/json")
-      .post(url_as_string, json: body)
+      .send(http_verb, url_as_string, json: body)
 
     unless response.status.success?
       raise ApplicationController::BadGateway.new(
@@ -47,5 +47,13 @@ module Http
       nil,
       nil,
     ), e.message
+  end
+
+  def self.post(url_as_string, body, api_key, endpoint_label)
+    request(:post, url_as_string, body, api_key, endpoint_label)
+  end
+
+  def self.patch(url_as_string, body, api_key, endpoint_label)
+    request(:patch, url_as_string, body, api_key, endpoint_label)
   end
 end
