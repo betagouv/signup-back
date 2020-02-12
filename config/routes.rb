@@ -6,8 +6,8 @@ Rails.application.routes.draw do
         get :user
       end
       member do
-        get :convention
         patch :trigger
+        get :copy
       end
     end
 

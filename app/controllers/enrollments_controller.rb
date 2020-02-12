@@ -1,6 +1,6 @@
 class EnrollmentsController < ApplicationController
   before_action :authenticate_user!, except: [:public]
-  before_action :set_enrollment, only: %i[show update trigger destroy]
+  before_action :set_enrollment, only: %i[show update trigger copy destroy]
 
   # GET /enrollments
   def index
@@ -227,6 +227,20 @@ class EnrollmentsController < ApplicationController
     else
       render status: :unprocessable_entity, json: @enrollment.errors
     end
+  end
+
+  # PATCH /enrollment/1/copy
+  def copy
+    copied_enrollment = @enrollment.dup
+    copied_enrollment.status = :pending
+    copied_enrollment.documents = @enrollment.documents.dup
+    copied_enrollment.save
+    copied_enrollment.events.create(
+      name: "copied",
+      user_id: current_user.id,
+      comment: "Demande d'origine : ##{@enrollment.id}"
+    )
+    render json: copied_enrollment
   end
 
   def destroy

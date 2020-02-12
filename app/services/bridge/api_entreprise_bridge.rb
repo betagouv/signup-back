@@ -10,12 +10,32 @@ class ApiEntrepriseBridge < BridgeService
     contacts = @enrollment.contacts
     siret = @enrollment[:siret]
     cgu_agreement_date = @enrollment.submitted_at
-    create_enrollment_in_token_manager(@enrollment.id, name, email, scopes, contacts, siret, cgu_agreement_date)
+    previous_linked_token_manager_id = @enrollment.linked_token_manager_id
+    linked_token_manager_id = create_enrollment_in_token_manager(
+      @enrollment.id,
+      name,
+      email,
+      scopes,
+      contacts,
+      siret,
+      cgu_agreement_date,
+      previous_linked_token_manager_id
+    )
+    @enrollment.update({linked_token_manager_id: linked_token_manager_id})
   end
 
   private
 
-  def create_enrollment_in_token_manager(id, name, email, scopes, contacts, siret, cgu_agreement_date)
+  def create_enrollment_in_token_manager(
+    id,
+    name,
+    email,
+    scopes,
+    contacts,
+    siret,
+    cgu_agreement_date,
+    linked_token_manager_id
+  )
     api_host = ENV.fetch("API_ENTREPRISE_HOST")
     api_key = ENV.fetch("API_ENTREPRISE_API_KEY")
 
@@ -68,7 +88,7 @@ class ApiEntrepriseBridge < BridgeService
         }
       }
 
-    Http.post(
+    create_jwt_response = Http.post(
       "#{api_host}/api/admin/users/#{user_id}/jwt_api_entreprise",
       {
         subject: name,
@@ -80,7 +100,24 @@ class ApiEntrepriseBridge < BridgeService
       "dashboard API entreprise"
     )
 
-    # TODO API Entreprise: return token id, so we can forge an url that point to the token directly
-    user_id
+    raw_jwt = create_jwt_response.parse["new_token"]
+    jwt = JWT.decode(raw_jwt, nil, false)
+    jwt_id = jwt[0]["jti"]
+
+    # 4. if this authorization request already has a linked_token_manager_id
+    # we archive the previous token. This happens when the authorization request
+    # was copied from another authorization request.
+    unless linked_token_manager_id.nil?
+      Http.patch(
+        "#{api_host}/api/admin/jwt_api_entreprise/#{linked_token_manager_id}",
+        {
+          archived: true,
+        },
+        api_key,
+        "dashboard API entreprise"
+      )
+    end
+
+    jwt_id
   end
 end
