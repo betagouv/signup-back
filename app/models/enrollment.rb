@@ -23,6 +23,7 @@ class Enrollment < ActiveRecord::Base
   accepts_nested_attributes_for :documents
   belongs_to :user
   has_many :events, dependent: :destroy
+  belongs_to :copied_from_enrollment, class_name: :Enrollment, foreign_key: :copied_from_enrollment_id, optional: true
   belongs_to :dpo, class_name: :User, foreign_key: :dpo_id, optional: true
   belongs_to :responsable_traitement, class_name: :User, foreign_key: :responsable_traitement_id, optional: true
 
@@ -126,6 +127,8 @@ class Enrollment < ActiveRecord::Base
     copied_enrollment = self.dup
     copied_enrollment.status = :pending
     copied_enrollment.user = current_user
+    copied_enrollment.linked_token_manager_id = nil
+    copied_enrollment.copied_from_enrollment = self
     copied_enrollment.save
     copied_enrollment.events.create(
       name: "copied",

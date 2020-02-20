@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_14_151401) do
+ActiveRecord::Schema.define(version: 2020_02_20_155526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,8 @@ ActiveRecord::Schema.define(version: 2019_11_14_151401) do
     t.bigint "responsable_traitement_id"
     t.string "responsable_traitement_label"
     t.string "responsable_traitement_phone_number"
+    t.bigint "copied_from_enrollment_id"
+    t.index ["copied_from_enrollment_id"], name: "index_enrollments_on_copied_from_enrollment_id"
     t.index ["dpo_id"], name: "index_enrollments_on_dpo_id"
     t.index ["responsable_traitement_id"], name: "index_enrollments_on_responsable_traitement_id"
     t.index ["user_id"], name: "index_enrollments_on_user_id"
@@ -83,6 +85,7 @@ ActiveRecord::Schema.define(version: 2019_11_14_151401) do
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
+  add_foreign_key "enrollments", "enrollments", column: "copied_from_enrollment_id"
   add_foreign_key "enrollments", "users"
   add_foreign_key "enrollments", "users", column: "dpo_id"
   add_foreign_key "enrollments", "users", column: "responsable_traitement_id"
