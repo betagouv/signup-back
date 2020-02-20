@@ -233,13 +233,17 @@ class EnrollmentsController < ApplicationController
   def copy
     copied_enrollment = @enrollment.dup
     copied_enrollment.status = :pending
-    copied_enrollment.documents = @enrollment.documents.dup
     copied_enrollment.save
     copied_enrollment.events.create(
       name: "copied",
       user_id: current_user.id,
       comment: "Demande d'origine : ##{@enrollment.id}"
     )
+    @enrollment.documents.each do |document|
+      copied_document = document.dup
+      copied_document.attachment= File.open(document.attachment.file.file)
+      copied_enrollment.documents << copied_document
+    end
     render json: copied_enrollment
   end
 
