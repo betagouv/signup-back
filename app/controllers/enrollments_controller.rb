@@ -84,9 +84,11 @@ class EnrollmentsController < ApplicationController
 
   # GET /enrollments/user
   def user
+    # set an arbitrary limit to 100 to mitigate DDOS on this endpoint
+    # we do not expect a user to have more than 100 enrollments within less than 4 organisations
     @enrollments = policy_scope(Enrollment)
       .order(updated_at: :desc)
-
+      .limit(100)
     render json: @enrollments, each_serializer: UserEnrollmentListSerializer
   end
 
