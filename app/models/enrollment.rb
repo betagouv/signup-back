@@ -143,6 +143,9 @@ class Enrollment < ActiveRecord::Base
     # taking the siret from users organization ensure the user belongs to the organization
     # this might not be the proper place to do this kind of authorization check
     selected_organization = user.organizations.find { |o| o["id"] == organization_id }
+    if selected_organization.nil?
+      raise ApplicationController::Forbidden, "Vous ne pouvez pas déposer une demande pour une organisation à laquelle vous n'appartenez pas"
+    end
     siret = selected_organization["siret"]
 
     response = HTTP.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{siret}")
