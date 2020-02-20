@@ -122,6 +122,25 @@ class Enrollment < ActiveRecord::Base
     events.where(name: "submitted").order("created_at").last["created_at"]
   end
 
+  def copy(current_user)
+    copied_enrollment = self.dup
+    copied_enrollment.status = :pending
+    copied_enrollment.user = current_user
+    copied_enrollment.save
+    copied_enrollment.events.create(
+      name: "copied",
+      user_id: current_user.id,
+      comment: "Demande d'origine : ##{self.id}"
+    )
+    self.documents.each do |document|
+      copied_document = document.dup
+      copied_document.attachment= File.open(document.attachment.file.file)
+      copied_enrollment.documents << copied_document
+    end
+
+    copied_enrollment
+  end
+
   protected
 
   def clean_and_format_scopes
