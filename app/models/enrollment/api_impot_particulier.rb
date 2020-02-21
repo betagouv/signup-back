@@ -2,7 +2,7 @@ class Enrollment::ApiImpotParticulier < Enrollment
   protected
 
   def update_validation
-    errors[:linked_franceconnect_enrollment_id] << "Vous devez associer cette demande à une demande Franceconnect validée. Aucun changement n'a été sauvegardé." unless linked_franceconnect_enrollment_id.present?
+    errors[:previous_enrollment_id] << "Vous devez associer cette demande à une demande Franceconnect validée. Aucun changement n'a été sauvegardé." unless previous_enrollment_id.present?
     super
   end
 

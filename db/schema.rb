@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_20_155526) do
+ActiveRecord::Schema.define(version: 2020_02_20_184847) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2020_02_20_155526) do
     t.datetime "updated_at", null: false
     t.string "linked_token_manager_id"
     t.string "nom_raison_sociale"
-    t.integer "linked_franceconnect_enrollment_id"
+    t.integer "previous_enrollment_id"
     t.bigint "user_id"
     t.jsonb "additional_content", default: {}
     t.string "intitule"
@@ -86,6 +86,7 @@ ActiveRecord::Schema.define(version: 2020_02_20_155526) do
   end
 
   add_foreign_key "enrollments", "enrollments", column: "copied_from_enrollment_id"
+  add_foreign_key "enrollments", "enrollments", column: "previous_enrollment_id"
   add_foreign_key "enrollments", "users"
   add_foreign_key "enrollments", "users", column: "dpo_id"
   add_foreign_key "enrollments", "users", column: "responsable_traitement_id"

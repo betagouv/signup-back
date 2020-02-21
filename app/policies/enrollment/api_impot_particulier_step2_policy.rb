@@ -4,7 +4,7 @@ class Enrollment::ApiImpotParticulierStep2Policy < EnrollmentPolicy
 
     res.concat([
       :target_api,
-      :linked_franceconnect_enrollment_id,
+      :previous_enrollment_id,
       :organization_id,
       :siret,
       documents_attributes: [
