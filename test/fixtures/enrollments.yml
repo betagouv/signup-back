@@ -1,6 +1,7 @@
 DEFAULTS: &DEFAULTS
   target_api: "franceconnect"
-  linked_franceconnect_enrollment_id: null
+  previous_enrollment_id: null
+  copied_from_enrollment_id: null
   cgu_approved: true
   scopes:
     email: true

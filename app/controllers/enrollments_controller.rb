@@ -45,12 +45,21 @@ class EnrollmentsController < ApplicationController
       filter = JSON.parse(params.fetch(:filter, "[]"))
       filter.each do |filter_item|
         filter_item.each do |filter_key, filter_value|
-          next unless %w[id nom_raison_sociale target_api status].include? filter_key
+          next unless %w[id nom_raison_sociale target_api status user.email].include? filter_key
+          sanitized_filter_key = filter_key
 
           sanitized_filter_value = Enrollment.send(:sanitize_sql_like, filter_value)
           san_fil_val_without_accent = ActiveSupport::Inflector.transliterate(sanitized_filter_value)
+
+          if filter_key.start_with? "user."
+            @enrollments = @enrollments.joins(
+              "INNER JOIN users \"user\" ON \"user\".id = enrollments.user_id"
+            )
+            sanitized_filter_key = filter_key.split(".").map { |e| "\"#{e}\"" }.join(".")
+          end
+
           @enrollments = @enrollments.where(
-            "LOWER(#{filter_key}::varchar(255)) LIKE ?",
+            "LOWER(#{sanitized_filter_key}::varchar(255)) LIKE ?",
             "%#{san_fil_val_without_accent.downcase}%"
           )
         end
@@ -84,9 +93,11 @@ class EnrollmentsController < ApplicationController
 
   # GET /enrollments/user
   def user
+    # set an arbitrary limit to 100 to mitigate DDOS on this endpoint
+    # we do not expect a user to have more than 100 enrollments within less than 4 organisations
     @enrollments = policy_scope(Enrollment)
       .order(updated_at: :desc)
-
+      .limit(100)
     render json: @enrollments, each_serializer: UserEnrollmentListSerializer
   end
 
@@ -231,15 +242,7 @@ class EnrollmentsController < ApplicationController
 
   # PATCH /enrollment/1/copy
   def copy
-    copied_enrollment = @enrollment.dup
-    copied_enrollment.status = :pending
-    copied_enrollment.documents = @enrollment.documents.dup
-    copied_enrollment.save
-    copied_enrollment.events.create(
-      name: "copied",
-      user_id: current_user.id,
-      comment: "Demande d'origine : ##{@enrollment.id}"
-    )
+    copied_enrollment = @enrollment.copy current_user
     render json: copied_enrollment
   end
 

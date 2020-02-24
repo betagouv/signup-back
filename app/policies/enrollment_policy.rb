@@ -37,7 +37,7 @@ class EnrollmentPolicy < ApplicationPolicy
     res.concat([
       :cgu_approved,
       :target_api,
-      :linked_franceconnect_enrollment_id,
+      :previous_enrollment_id,
       :organization_id,
       :intitule,
       :description,

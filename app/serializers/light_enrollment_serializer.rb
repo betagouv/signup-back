@@ -10,4 +10,8 @@ class LightEnrollmentSerializer < ActiveModel::Serializer
       end
     ]
   end
+
+  attribute :is_renewal do
+    object.copied_from_enrollment_id.present?
+  end
 end

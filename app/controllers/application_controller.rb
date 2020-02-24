@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::API
   class AccessDenied < StandardError
   end
+  class Forbidden < StandardError
+  end
 
   class BadGateway < StandardError
     attr_reader :endpoint_label
@@ -21,6 +23,12 @@ class ApplicationController < ActionController::API
     render status: :unauthorized, json: {
       message: "Vous n'êtes pas autorisé à accéder à cette API",
       detail: e.message,
+    }
+  end
+
+  rescue_from Forbidden do |e|
+    render status: :forbidden, json: {
+      message: e.message,
     }
   end
 

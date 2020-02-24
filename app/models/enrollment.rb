@@ -23,6 +23,9 @@ class Enrollment < ActiveRecord::Base
   accepts_nested_attributes_for :documents
   belongs_to :user
   has_many :events, dependent: :destroy
+  belongs_to :copied_from_enrollment, class_name: :Enrollment, foreign_key: :copied_from_enrollment_id, optional: true
+  validates :copied_from_enrollment, uniqueness: true
+  belongs_to :previous_enrollment, class_name: :Enrollment, foreign_key: :previous_enrollment_id, optional: true
   belongs_to :dpo, class_name: :User, foreign_key: :dpo_id, optional: true
   belongs_to :responsable_traitement, class_name: :User, foreign_key: :responsable_traitement_id, optional: true
 
@@ -122,6 +125,27 @@ class Enrollment < ActiveRecord::Base
     events.where(name: "submitted").order("created_at").last["created_at"]
   end
 
+  def copy(current_user)
+    copied_enrollment = self.dup
+    copied_enrollment.status = :pending
+    copied_enrollment.user = current_user
+    copied_enrollment.linked_token_manager_id = nil
+    copied_enrollment.copied_from_enrollment = self
+    copied_enrollment.save!
+    copied_enrollment.events.create(
+      name: "copied",
+      user_id: current_user.id,
+      comment: "Demande d'origine : ##{self.id}"
+    )
+    self.documents.each do |document|
+      copied_document = document.dup
+      copied_document.attachment= File.open(document.attachment.file.file)
+      copied_enrollment.documents << copied_document
+    end
+
+    copied_enrollment
+  end
+
   protected
 
   def clean_and_format_scopes
@@ -143,6 +167,9 @@ class Enrollment < ActiveRecord::Base
     # taking the siret from users organization ensure the user belongs to the organization
     # this might not be the proper place to do this kind of authorization check
     selected_organization = user.organizations.find { |o| o["id"] == organization_id }
+    if selected_organization.nil?
+      raise ApplicationController::Forbidden, "Vous ne pouvez pas déposer une demande pour une organisation à laquelle vous n'appartenez pas"
+    end
     siret = selected_organization["siret"]
 
     response = HTTP.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{siret}")

@@ -1,5 +1,5 @@
 class EnrollmentSerializer < ActiveModel::Serializer
-  attributes :updated_at, :created_at, :id, :target_api, :linked_franceconnect_enrollment_id,
+  attributes :updated_at, :created_at, :id, :target_api, :previous_enrollment_id, :copied_from_enrollment_id,
              :cgu_approved, :scopes, :contacts, :organization_id, :siret, :status, :linked_token_manager_id, :additional_content,
              :intitule, :description, :fondement_juridique_title, :fondement_juridique_url, :data_recipients,
              :data_retention_period, :data_retention_comment, :dpo_label, :dpo_email, :dpo_phone_number,
