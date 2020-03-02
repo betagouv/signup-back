@@ -17,5 +17,8 @@ class Enrollment::ApiEntreprise < Enrollment
     errors[:contacts] << "Vous devez renseigner un numéro de téléphone valide pour le contact métier avant de continuer" unless phone_number_regex.match?(contact_metier&.fetch("phone_number", false))
 
     errors[:scopes] << "Vous devez cocher au moins un périmètre de donnée avant de continuer" unless scopes.any? { |_, v| v }
+
+    errors[:data_retention_period] << "Vous devez renseigner la conservation des données avant de continuer" unless data_retention_period.present?
+    errors[:data_recipients] << "Vous devez renseigner les destinataires des données avant de continuer" unless data_recipients.present?
   end
 end
