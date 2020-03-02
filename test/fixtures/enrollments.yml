@@ -5,16 +5,13 @@ DEFAULTS: &DEFAULTS
   cgu_approved: true
   scopes:
     email: true
-    phone: true
     gender: true
     openid: true
-    address: true
     birthdate: true
     birthplace: true
     given_name: true
     family_name: true
     birthcountry: true
-    preferred_username: false
   contacts: '{"{\"id\":\"technique\",\"email\":\"user@yopmail.com\"}"}'
   organization_id: 1
   siret: "21920023500014"

@@ -12,9 +12,6 @@ class Enrollment::FranceconnectPolicy < EnrollmentPolicy
         :given_name,
         :family_name,
         :email,
-        :preferred_username,
-        :address,
-        :phone,
       ],
       additional_content: [
         :has_alternative_authentication_methods,
