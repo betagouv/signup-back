@@ -19,8 +19,7 @@ module Users
     end
 
     def after_sign_in_path_for(_scope)
-      return_url = session.delete("returnUrl")
-      "#{ENV["FRONT_HOST"]}#{return_url}"
+      request.env["omniauth.origin"] || ENV["FRONT_HOST"]
     end
 
     def passthru
@@ -37,7 +36,7 @@ module Users
 
     protected
 
-    #  source https://github.com/plataformatec/devise/blob/db011c0192495c2f1ff28f1599d9de7b7ed76485/app/controllers/devise/omniauth_callbacks_controller.rb
+    # source https://github.com/plataformatec/devise/blob/db011c0192495c2f1ff28f1599d9de7b7ed76485/app/controllers/devise/omniauth_callbacks_controller.rb
     # We want this controller to inherit form Devise::SessionsController and Devise::OmniauthCallbacksController.
     # The solution is to inherit form the first and implement the missing method of the second.
     def failure_message
