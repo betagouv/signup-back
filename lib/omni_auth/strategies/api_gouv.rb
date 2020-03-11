@@ -25,20 +25,10 @@ module OmniAuth
         "#{ENV["BACK_HOST"]}/users/auth/api_gouv/callback"
       end
 
-      # forward source page param to display a contextualised login page on api-auth
       def authorize_params
-        session["returnUrl"] = request.params["returnUrl"] if request.params.key?("returnUrl")
-        source = if request.params.key?("source")
-          request.params["source"]
-        elsif request.params.key?("returnUrl") &&
-          %w(/franceconnect /api-particulier /api-entreprise /api-impot-particulier /api-droits-cnam)
-            .include?(request.params["returnUrl"])
-          request.params["returnUrl"].sub(/^\//, "signup_")
-        else
-          'signup'
-        end
+        prompt = request.params["prompt"] == "create_account" ? "create_account" : "login"
 
-        super.merge(source: source)
+        super.merge(prompt: prompt)
       end
 
       credentials do
