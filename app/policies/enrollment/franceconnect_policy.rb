@@ -10,7 +10,7 @@ class Enrollment::FranceconnectPolicy < EnrollmentPolicy
         :birthplace,
         :birthcountry,
         :gender,
-        :prefered_username,
+        :preferred_username,
         :email,
         :openid,
       ],
