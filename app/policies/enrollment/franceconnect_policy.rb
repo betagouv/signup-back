@@ -4,14 +4,15 @@ class Enrollment::FranceconnectPolicy < EnrollmentPolicy
 
     res.concat([
       scopes: [
-        :openid,
-        :gender,
-        :birthdate,
-        :birthcountry,
-        :birthplace,
-        :given_name,
         :family_name,
+        :given_name,
+        :birthdate,
+        :birthplace,
+        :birthcountry,
+        :gender,
+        :prefered_username,
         :email,
+        :openid,
       ],
       additional_content: [
         :has_alternative_authentication_methods,
