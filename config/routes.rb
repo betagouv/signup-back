@@ -7,7 +7,8 @@ Rails.application.routes.draw do
       end
       member do
         patch :trigger
-        get :copy
+        post :copy
+        get :copies
       end
     end
 

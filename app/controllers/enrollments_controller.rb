@@ -240,10 +240,20 @@ class EnrollmentsController < ApplicationController
     end
   end
 
-  # PATCH /enrollment/1/copy
+  # POST /enrollment/1/copy
   def copy
     copied_enrollment = @enrollment.copy current_user
     render json: copied_enrollment
+  end
+
+  # GET enrollments/1/copies
+  def copies
+    @enrollments = policy_scope(Enrollment)
+      .where(copied_from_enrollment_id: params[:id])
+    render json: @enrollments,
+           each_serializer: LightEnrollmentSerializer,
+           adapter: :json,
+           root: "enrollments"
   end
 
   def destroy
