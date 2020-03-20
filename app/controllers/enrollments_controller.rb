@@ -70,6 +70,7 @@ class EnrollmentsController < ApplicationController
 
     page = params.fetch(:page, "0")
     size = params.fetch(:size, "10")
+    size = "100" if size.to_i > 100
     @enrollments = @enrollments.page(page.to_i + 1).per(size.to_i)
 
     serializer = LightEnrollmentSerializer
