@@ -1,0 +1,9 @@
+Une demande d'habilitation <%= @target_api_label %> pour le FS "<%= @nom_raison_sociale %> - <%= @previous_enrollment_id %>" vient d'être validée.
+
+En conséquence, merci d'autoriser les scopes suivant pour le sus-mentionné FS :
+
+<% @scopes.each do |scope| %>
+- <%= scope %>
+<% end %>
+
+Ceci est un email automatique, merci de ne pas y répondre.

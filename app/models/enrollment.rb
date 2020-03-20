@@ -86,6 +86,14 @@ class Enrollment < ActiveRecord::Base
       if enrollment.target_api == "api_entreprise" && ! ENV["DISABLE_API_ENTREPRISE_BRIDGE"].present?
         ApiEntrepriseBridge.call(enrollment)
       end
+
+      if enrollment.target_api == "api_droits_cnam" && ! ENV["DISABLE_API_DROITS_CNAM_BRIDGE"].present?
+        ApiDroitsCnamBridge.call(enrollment)
+      end
+
+      if enrollment.target_api == "api_impot_particulier" && ! ENV["DISABLE_API_IMPOT_PARTICULIER_BRIDGE"].present?
+        ApiImpotParticulierBridge.call(enrollment)
+      end
     end
 
     event :loop_without_job do
