@@ -81,6 +81,7 @@ class EnrollmentMailer < ActionMailer::Base
       to: "support.partenaires@franceconnect.gouv.fr",
       subject: "[Signup] nouveaux scopes pour \"#{@nom_raison_sociale} - #{@previous_enrollment_id}\"",
       from: MAIL_PARAMS[params[:target_api]]["sender"],
+      cc: "signup@api.gouv.fr",
       template_path: "enrollment_mailer",
       template_name: "add_scopes_in_franceconnect",
     )
