@@ -26,9 +26,11 @@ module OmniAuth
       end
 
       def authorize_params
-        prompt = request.params["prompt"] == "create_account" ? "create_account" : "login"
+        if request.params["prompt"] == "create_account"
+          return super.merge(prompt: "create_account")
+        end
 
-        super.merge(prompt: prompt)
+        super
       end
 
       credentials do
