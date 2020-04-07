@@ -217,10 +217,7 @@ class Enrollment < ActiveRecord::Base
     errors[:fondement_juridique_title] << "Vous devez renseigner la nature du texte vous autorisant à traiter les données avant de continuer" unless fondement_juridique_title.present?
     errors[:fondement_juridique_url] << "Vous devez joindre l'URL ou le document du texte relatif au traitement avant de continuer" unless fondement_juridique_url.present? || documents.where(type: "Document::LegalBasis").present?
     unless user.email_verified
-      errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer.
-Merci de cliquer sur le lien d'activation que vous avez reçu par mail.
-Vous pouvez également demander un nouveau lien d'activation en cliquant sur le lien
-suivant #{ENV.fetch("OAUTH_HOST")}/users/send-email-verification?notification=email_verification_required"
+      errors[:base] << "L'accès à votre adresse email n'a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
     end
   end
 end

@@ -34,10 +34,7 @@ class Enrollment::ApiImpotParticulierStep2 < Enrollment
     errors[:recette_fonctionnelle] << "Vous devez attester avoir réaliser une recette fonctionnelle avant de continuer" unless additional_content&.fetch("recette_fonctionnelle", false)&.present?
 
     unless user.email_verified
-      errors[:base] << "Vous devez activer votre compte api.gouv.fr avant de continuer.
-      Merci de cliquer sur le lien d’activation que vous avez reçu par mail.
-      Vous pouvez également demander un nouveau lien d’activation en cliquant sur le lien
-      suivant #{ENV.fetch("OAUTH_HOST")}/users/send-email-verification?notification=email_verification_required"
+      errors[:base] << "L'accès à votre adresse email n'a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
     end
   end
 end
