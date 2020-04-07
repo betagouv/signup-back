@@ -63,7 +63,7 @@ class ApiEntrepriseBridge < BridgeService
         "#{api_host}/api/admin/users/",
         {
           email: email,
-          oauth_api_gouv_id: uid,
+          oauth_api_gouv_id: uid.to_i,
           context: siret,
           cgu_agreement_date: cgu_agreement_date,
         },
