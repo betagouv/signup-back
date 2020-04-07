@@ -6,6 +6,7 @@ class ApiEntrepriseBridge < BridgeService
   def call
     name = @enrollment.intitule
     email = @enrollment.user.email
+    uid = @enrollment.user.uid
     scopes = @enrollment[:scopes]
     contacts = @enrollment.contacts
     siret = @enrollment[:siret]
@@ -18,6 +19,7 @@ class ApiEntrepriseBridge < BridgeService
       @enrollment.id,
       name,
       email,
+      uid,
       scopes,
       contacts,
       siret,
@@ -33,6 +35,7 @@ class ApiEntrepriseBridge < BridgeService
     id,
     name,
     email,
+    uid,
     scopes,
     contacts,
     siret,
@@ -60,6 +63,7 @@ class ApiEntrepriseBridge < BridgeService
         "#{api_host}/api/admin/users/",
         {
           email: email,
+          oauth_api_gouv_id: uid,
           context: siret,
           cgu_agreement_date: cgu_agreement_date,
         },
