@@ -215,24 +215,22 @@ class EnrollmentsController < ApplicationController
           to: @enrollment.responsable_traitement.email,
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
-          template: "notify_application_validated",
           rgpd_role: "responsable de traitement",
           owner_email: @enrollment.user.email,
           nom_raison_sociale: @enrollment.nom_raison_sociale,
           intitule: @enrollment.intitule
-        ).notification_email.deliver_later
+        ).rgpd_contact_email.deliver_later
       end
       if event == "validate_application" && @enrollment.dpo.present?
         EnrollmentMailer.with(
           to: @enrollment.dpo.email,
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
-          template: "notify_application_validated",
           rgpd_role: "délégué à la protection des données",
           owner_email: @enrollment.user.email,
           nom_raison_sociale: @enrollment.nom_raison_sociale,
           intitule: @enrollment.intitule
-        ).notification_email.deliver_later
+        ).rgpd_contact_email.deliver_later
       end
 
       render json: @enrollment

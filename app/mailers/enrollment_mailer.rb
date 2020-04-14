@@ -32,28 +32,23 @@ class EnrollmentMailer < ActionMailer::Base
     },
   }
 
+  SUBJECTS = {
+    "send_application" => "Nous avons bien reçu votre demande d'accès",
+    "validate_application" => "Votre demande a été validée",
+    "review_application" => "Votre demande requiert des modifications",
+    "refuse_application" => "Votre demande a été refusée",
+    "notify_application_sent" => "Nouvelle demande sur signup.api.gouv.fr",
+    "create_application" => "Votre demande a été enregistrée",
+  }
+
   def notification_email
     @target_api_label = MAIL_PARAMS[params[:target_api]]["target_api"]
     @message = params[:message]
     @applicant_email = params[:applicant_email]
-    @rgpd_role = params[:rgpd_role]
-    @owner_email = params[:owner_email]
-    @nom_raison_sociale = params[:nom_raison_sociale]
-    @intitule = params[:intitule]
     @target_api_support_email = MAIL_PARAMS[params[:target_api]]["sender"]
 
     @url = "#{ENV.fetch("FRONT_HOST")}/#{params[:target_api].tr("_", "-")}/#{params[:enrollment_id]}"
     @front_host = ENV.fetch("FRONT_HOST")
-
-    subjects = {
-      "send_application" => "Nous avons bien reçu votre demande d'accès",
-      "validate_application" => "Votre demande a été validée",
-      "review_application" => "Votre demande requiert des modifications",
-      "refuse_application" => "Votre demande a été refusée",
-      "notify_application_sent" => "Nouvelle demande sur signup.api.gouv.fr",
-      "notify_application_validated" => "Vous avez été désigné #{@rgpd_role} pour l’organisation #{@nom_raison_sociale}",
-      "create_application" => "Votre demande a été enregistrée",
-    }
 
     @average_processing_time_in_days = nil
     if params[:template] == "send_application"
@@ -63,10 +58,34 @@ class EnrollmentMailer < ActionMailer::Base
     mail(
       # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
       to: params[:to],
-      subject: subjects[params[:template]],
+      subject: SUBJECTS[params[:template]],
       from: MAIL_PARAMS[params[:target_api]]["sender"],
       template_path: %W[enrollment_mailer/#{params[:target_api]} enrollment_mailer],
       template_name: params[:template],
+    )
+  end
+
+  def rgpd_contact_email
+    @target_api_label = MAIL_PARAMS[params[:target_api]]["target_api"]
+    @rgpd_role = params[:rgpd_role]
+    @owner_email = params[:owner_email]
+    @nom_raison_sociale = params[:nom_raison_sociale]
+    @intitule = params[:intitule]
+    @target_api_support_email = MAIL_PARAMS[params[:target_api]]["sender"]
+
+    @url = "#{ENV.fetch("FRONT_HOST")}/#{params[:target_api].tr("_", "-")}/#{params[:enrollment_id]}"
+    @front_host = ENV.fetch("FRONT_HOST")
+
+    # Mailjet header to monitor delivery of these emails through the mailjet dashboard
+    headers["X-MJ-MonitoringCategory"] = "rgpd_contact"
+
+    mail(
+      # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
+      to: params[:to],
+      subject: "Vous avez été désigné #{@rgpd_role} pour l’organisation #{@nom_raison_sociale}",
+      from: MAIL_PARAMS[params[:target_api]]["sender"],
+      template_path: "enrollment_mailer",
+      template_name: "rgpd_contact",
     )
   end
 
