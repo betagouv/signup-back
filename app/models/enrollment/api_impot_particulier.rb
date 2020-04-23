@@ -1,11 +1,6 @@
 class Enrollment::ApiImpotParticulier < Enrollment
   protected
 
-  def update_validation
-    errors[:previous_enrollment_id] << "Vous devez associer cette demande à une demande Franceconnect validée. Aucun changement n'a été sauvegardé." unless previous_enrollment_id.present?
-    super
-  end
-
   def sent_validation
     # Organisation
     errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
