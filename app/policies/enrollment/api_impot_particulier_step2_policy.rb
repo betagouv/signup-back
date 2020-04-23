@@ -3,24 +3,30 @@ class Enrollment::ApiImpotParticulierStep2Policy < EnrollmentPolicy
     res = []
 
     res.concat([
+      :cgu_approved,
       :target_api,
       :previous_enrollment_id,
-      :organization_id,
-      :siret,
+      :fondement_juridique_title,
+      :fondement_juridique_url,
+      :data_recipients,
+      :data_retention_period,
+      :data_retention_comment,
+      :dpo_label,
+      :dpo_email,
+      :dpo_phone_number,
+      :responsable_traitement_label,
+      :responsable_traitement_email,
+      :responsable_traitement_phone_number,
       documents_attributes: [
         :attachment,
         :type,
       ],
       additional_content: [
-        :ips_de_production,
         :autorite_homologation_nom,
         :autorite_homologation_fonction,
         :date_homologation,
         :date_fin_homologation,
-        :nombre_demandes_annuelle,
-        :pic_demandes_par_heure,
         :recette_fonctionnelle,
-        nombre_demandes_mensuelles: [],
       ],
     ])
 

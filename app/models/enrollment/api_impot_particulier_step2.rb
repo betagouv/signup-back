@@ -1,16 +1,30 @@
 class Enrollment::ApiImpotParticulierStep2 < Enrollment
+  before_save :set_info_from_previous_enrollment, if: :will_save_change_to_previous_enrollment_id?
+
   protected
+
+  def set_info_from_previous_enrollment
+    self.intitule = previous_enrollment.intitule
+    self.organization_id = previous_enrollment.organization_id
+    set_company_info
+  end
 
   def update_validation
     errors[:previous_enrollment_id] << "Vous devez associer cette demande à une demande API Impôt particulier validée. Aucun changement n'a été sauvegardé." unless previous_enrollment_id.present?
     # the following 2 errors should never occur #defensiveprogramming
     errors[:target_api] << "Une erreur inattendue est survenue: pas d’API cible. Aucun changement n'a été sauvegardé." unless target_api.present?
-    errors[:organization_id] << "Une erreur inattendue est survenue: pas d’organisation. Aucun changement n'a été sauvegardé." unless organization_id.present?
   end
 
   def sent_validation
-    # Form
-    errors[:siret] << "Vous devez renseigner un SIRET d’organisation valide avant de continuer" unless nom_raison_sociale.present?
+    # Recette fonctionnelle
+    errors[:recette_fonctionnelle] << "Vous devez attester avoir réaliser une recette fonctionnelle avant de continuer" unless additional_content&.fetch("recette_fonctionnelle", false)&.present?
+
+    # Données personnelles
+    rgpd_validation
+
+    # Cadre juridique
+    errors[:fondement_juridique_title] << "Vous devez renseigner la nature du texte vous autorisant à traiter les données avant de continuer" unless fondement_juridique_title.present?
+    errors[:fondement_juridique_url] << "Vous devez joindre l'URL ou le document du texte relatif au traitement avant de continuer" unless fondement_juridique_url.present? || documents.where(type: "Document::LegalBasis").present?
 
     # Homologation de securite
     errors[:autorite_homologation_nom] << "Vous devez renseigner le nom de l’autorité d’homologation avant de continuer" unless additional_content&.fetch("autorite_homologation_nom", false)&.present?
@@ -19,19 +33,8 @@ class Enrollment::ApiImpotParticulierStep2 < Enrollment
     errors[:date_fin_homologation] << "Vous devez renseigner la date de fin de l’homologation avant de continuer" unless additional_content&.fetch("date_fin_homologation", false)&.present?
     errors[:documents_attributes] << "Vous devez joindre le document de décision d’homologation avant de continuer" unless documents.where(type: "Document::DecisionHomologation").present?
 
-    # Entrant technique
-    errors[:ips_de_production] << "Vous devez renseigner les IP(s) de production avant de continuer" unless additional_content&.fetch("ips_de_production", false)&.present?
-
-    # Volumetrie
-    errors[:nombre_demandes_annuelle] << "Vous devez renseigner le nombre de demandes annuelle avant de continuer" unless additional_content&.fetch("nombre_demandes_annuelle", false)&.present?
-    errors[:pic_demandes_par_heure] << "Vous devez renseigner le nombre de demandes mensuel par heure avant de continuer" unless additional_content&.fetch("pic_demandes_par_heure", false)&.present?
-
-    if (additional_content&.fetch("nombre_demandes_mensuelles", [])&.include? "") || (additional_content&.fetch("nombre_demandes_mensuelles", [])&.length != 12)
-      errors[:nombre_demandes_mensuelles] << "Vous devez renseigner le nombre de demandes mensuel pour chaque mois avant de continuer"
-    end
-
-    # Recette fonctionnelle
-    errors[:recette_fonctionnelle] << "Vous devez attester avoir réaliser une recette fonctionnelle avant de continuer" unless additional_content&.fetch("recette_fonctionnelle", false)&.present?
+    # CGU
+    errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
 
     unless user.email_verified
       errors[:base] << "L'accès à votre adresse email n'a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"

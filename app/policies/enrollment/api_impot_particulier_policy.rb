@@ -1,8 +1,15 @@
 class Enrollment::ApiImpotParticulierPolicy < EnrollmentPolicy
   def permitted_attributes
-    res = super
+    res = []
 
     res.concat([
+      :cgu_approved,
+      :target_api,
+      :previous_enrollment_id,
+      :organization_id,
+      :intitule,
+      :description,
+      contacts: [:id, :email, :phone_number],
       scopes: [
         :dgfip_rfr,
         :dgfip_nbpart,
@@ -13,7 +20,7 @@ class Enrollment::ApiImpotParticulierPolicy < EnrollmentPolicy
       ],
       additional_content: [
         :rgpd_general_agreement,
-        :production_date,
+        :volumetrie_appels_par_minute,
       ],
     ])
 
