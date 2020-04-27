@@ -58,7 +58,12 @@ class StatsController < ApplicationController
     monthly_enrollment_count_query = <<-SQL
       SELECT
         date_trunc('month', created_at) AS month,
-        COUNT(*)
+        COUNT(*) filter (where status = 'pending') as pending,
+        COUNT(*) filter (where status = 'modification_pending') as modification_pending,
+        COUNT(*) filter (where status = 'sent') as sent,
+        COUNT(*) filter (where status = 'validated') as validated,
+        COUNT(*) filter (where status = 'refused') as refused,
+        COUNT(*) as total
       FROM enrollments
       WHERE #{filter_by_target_api_criteria}
       GROUP BY month
