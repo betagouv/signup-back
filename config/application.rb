@@ -34,6 +34,22 @@ module Signup
     config.i18n.default_locale = :fr
 
     config.public_file_server.enabled = false
+
+    # Use a real queuing backend for Active Job (and separate queues per environment)
+    # config.active_job.queue_adapter     = :resque
+    # config.active_job.queue_name_prefix = "signup_#{Rails.env}"
+    config.action_mailer.perform_caching = false
+
+    # Ignore bad email addresses and do not raise email delivery errors.
+    # Set this to true and configure the email server for immediate delivery to raise delivery errors.
+    config.action_mailer.raise_delivery_errors = false
+    config.action_mailer.default charset: "utf-8"
+
+    config.action_mailer.delivery_method = :mailjet
+    if ENV["DO_NOT_SEND_MAIL"].present?
+      config.action_mailer.perform_deliveries = false
+      config.action_mailer.delivery_method = :test
+    end
   end
 end
 

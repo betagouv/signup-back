@@ -211,7 +211,7 @@ class EnrollmentsController < ApplicationController
         ).notification_email.deliver_later
       end
       if event == "validate_application" && @enrollment.responsable_traitement.present?
-        EnrollmentMailer.with(
+        RgpdMailer.with(
           to: @enrollment.responsable_traitement.email,
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
@@ -222,7 +222,7 @@ class EnrollmentsController < ApplicationController
         ).rgpd_contact_email.deliver_later
       end
       if event == "validate_application" && @enrollment.dpo.present?
-        EnrollmentMailer.with(
+        RgpdMailer.with(
           to: @enrollment.dpo.email,
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
