@@ -13,6 +13,9 @@ class Enrollment::ApiImpotParticulier < Enrollment
 
     # Mise en œuvre
     contact_technique_validation
+    contact_technique = contacts&.find { |e| e["id"] == "technique" }
+    errors[:contacts] << "Vous devez renseigner un prénom pour le contact technique avant de continuer" if contact_technique&.fetch("given_name", "").to_s.strip.empty?
+    errors[:contacts] << "Vous devez renseigner un nom pour le contact technique avant de continuer" if contact_technique&.fetch("family_name", "").to_s.strip.empty?
 
     # Données
     errors[:rgpd_general_agreement] << "Vous devez attester respecter les principes RGPD avant de continuer" unless additional_content&.fetch("rgpd_general_agreement", false)

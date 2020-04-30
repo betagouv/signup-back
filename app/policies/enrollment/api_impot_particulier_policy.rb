@@ -9,19 +9,19 @@ class Enrollment::ApiImpotParticulierPolicy < EnrollmentPolicy
       :organization_id,
       :intitule,
       :description,
-      contacts: [:id, :email, :phone_number],
+      contacts: [:id, :given_name, :family_name, :email, :phone_number],
       scopes: [
         :dgfip_rfr,
         :dgfip_nbpart,
         :dgfip_aft,
         :dgfip_locaux_th,
         :dgfip_annee_n_moins_1,
-        :dgfip_annee_n_moins_2,
+        :dgfip_annee_n_moins_2
       ],
       additional_content: [
         :rgpd_general_agreement,
-        :volumetrie_appels_par_minute,
-      ],
+        :volumetrie_appels_par_minute
+      ]
     ])
 
     res
