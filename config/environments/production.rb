@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# source https://raw.githubusercontent.com/railsdiff/api/master/generated/v5.2.3/config/environments/production.rb
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -16,10 +17,9 @@ Rails.application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
 
-  # Attempt to read encrypted secrets from `config/secrets.yml.enc`.
-  # Requires an encryption key in `ENV["RAILS_MASTER_KEY"]` or
-  # `config/secrets.yml.key`.
-  config.read_encrypted_secrets = true
+  # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
+  # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
+  # config.require_master_key = true
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.

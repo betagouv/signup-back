@@ -15,7 +15,7 @@ gem "omniauth-oauth2"
 gem "pg"
 gem "puma", "~> 3.12"
 gem "pundit"
-gem "rails", "~> 5.2.3"
+gem "rails", "~> 5.2.4"
 gem "rails-i18n"
 gem "state_machines-activerecord"
 
