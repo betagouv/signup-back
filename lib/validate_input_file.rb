@@ -6,6 +6,7 @@ OUTPUT_FILE = "./email_to_validate.txt"
 email_to_validate_file = File.open(OUTPUT_FILE, "w")
 
 CSV.foreach(INPUT_FILE, headers: true, strip: true, liberal_parsing: true) do |row|
+  sleep 0.75
   response = HTTP.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{row["siret"]}")
   unless response.status.success?
     puts "\e[31m#{row["siret"]} not found!\e[0m"
