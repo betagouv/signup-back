@@ -1,0 +1,11 @@
+Votre demande a été validée.
+
+Veuillez contacter votre responsable technique pour l'inviter à récupérer votre token sur le lien suivant : <a href="https://particulier.api.gouv.fr/dashboard" alt="Dashboard API Particulier">https://particulier.api.gouv.fr/dashboard</a>
+Veilliez à ce que lors de son inscription sur l'outil, votre contact technique utilise le même email que celui renseigné dans votre demande.
+
+À noter que, par mesure de sécurité, nous filtrons les appels sur API Particulier en fonction de leur adresse IP. En conséquence, pour pouvoir utiliser notre API, veuillez nous transmettre la(les) adresse(s) IP qui effectuera(ont) les appels afin que nous l’ajoutions dans notre système. Dans le cas où votre prestataire est Agora+, les IPs nous ont déjà été transmises, vous n’avez donc rien de plus à nous transmettre.
+
+<% if @message %>
+
+<%= @message %>
+<% end %>
