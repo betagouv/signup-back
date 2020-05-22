@@ -216,6 +216,7 @@ class EnrollmentsController < ApplicationController
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
           rgpd_role: "responsable de traitement",
+          contact_label: @enrollment.responsable_traitement_label,
           owner_email: @enrollment.user.email,
           nom_raison_sociale: @enrollment.nom_raison_sociale,
           intitule: @enrollment.intitule
@@ -227,6 +228,7 @@ class EnrollmentsController < ApplicationController
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
           rgpd_role: "délégué à la protection des données",
+          contact_label: @enrollment.dpo_label,
           owner_email: @enrollment.user.email,
           nom_raison_sociale: @enrollment.nom_raison_sociale,
           intitule: @enrollment.intitule

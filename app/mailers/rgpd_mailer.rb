@@ -15,6 +15,7 @@ class RgpdMailer < ActionMailer::Base
         "Variables": {
           target_api_label: EnrollmentMailer::MAIL_PARAMS[params[:target_api]]["target_api"],
           rgpd_role: params[:rgpd_role],
+          contact_label: params[:contact_label],
           owner_email: params[:owner_email],
           nom_raison_sociale: params[:nom_raison_sociale],
           intitule: params[:intitule],
