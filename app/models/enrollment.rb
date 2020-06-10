@@ -180,10 +180,10 @@ class Enrollment < ActiveRecord::Base
     end
     siret = selected_organization["siret"]
 
-    response = HTTP.get("https://entreprise.data.gouv.fr/api/sirene/v1/siret/#{siret}")
+    response = HTTP.get("https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/#{siret}")
 
     if response.status.success?
-      nom_raison_sociale = response.parse["etablissement"]["nom_raison_sociale"]
+      nom_raison_sociale = response.parse["etablissement"]["unite_legale"]["denomination"]
       self.siret = siret
       self.nom_raison_sociale = nom_raison_sociale
     else
