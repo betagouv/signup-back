@@ -19,7 +19,7 @@ class RgpdMailer < ActionMailer::Base
       },
       templateId: 8,
       params: {
-        target_api_label: EnrollmentMailer::MAIL_rPARAMS[params[:target_api]]["target_api"],
+        target_api_label: EnrollmentMailer::MAIL_PARAMS[params[:target_api]]["target_api"],
         rgpd_role: params[:rgpd_role],
         contact_label: params[:contact_label],
         owner_email: params[:owner_email],
