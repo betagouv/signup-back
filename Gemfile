@@ -17,6 +17,7 @@ gem "puma", "~> 3.12"
 gem "pundit"
 gem "rails", "~> 5.2.4"
 gem "rails-i18n"
+gem "sib-api-v3-sdk"
 gem "state_machines-activerecord"
 
 group :development, :test do
