@@ -109,13 +109,13 @@ class StatsController < ApplicationController
     }
   end
 
-  def average_processing_time_in_days
+  def majority_percentile_processing_time_in_days
     target_api = params.permit(:target_api)[:target_api]
 
-    average_processing_time_in_days = GetAverageProcessingTimeInDays.call(target_api)
+    majority_percentile_processing_time_in_days = GetMajorityPercentileProcessingTimeInDays.call(target_api)
 
     render json: {
-      average_processing_time_in_days: average_processing_time_in_days,
+      majority_percentile_processing_time_in_days: majority_percentile_processing_time_in_days,
     }
   end
 end

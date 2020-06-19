@@ -48,9 +48,9 @@ class EnrollmentMailer < ActionMailer::Base
     @url = "#{ENV.fetch("FRONT_HOST")}/#{params[:target_api].tr("_", "-")}/#{params[:enrollment_id]}"
     @front_host = ENV.fetch("FRONT_HOST")
 
-    @average_processing_time_in_days = nil
+    @majority_percentile_processing_time_in_days = nil
     if params[:template] == "send_application"
-      @average_processing_time_in_days = GetAverageProcessingTimeInDays.call(params[:target_api])
+      @majority_percentile_processing_time_in_days = GetMajorityPercentileProcessingTimeInDays.call(params[:target_api])
     end
 
     mail(
