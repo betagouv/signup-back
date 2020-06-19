@@ -27,6 +27,7 @@ class GetAverageProcessingTimeInDays < ApplicationService
         INNER JOIN
           events_first_submit ON events_first_submit.enrollment_id = enrollments.id
         WHERE status IN ('validated', 'refused')
+        AND events_stop.created_at > CURRENT_DATE - INTERVAL '6 months'
         AND #{@filter_by_target_api_criteria}
       ) e;
     SQL

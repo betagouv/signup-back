@@ -34,24 +34,25 @@ class StatsController < ApplicationController
     # Temps moyen de traitement des demandes
     average_processing_time_in_days = GetAverageProcessingTimeInDays.call(target_api)
 
-    # Nombre moyen d'aller retour avant traitement
-    average_go_back_count_query = <<-SQL
-      SELECT avg(count) - 1
+    # Ratio d'aller retour avant traitement
+    go_back_ratio_query = <<-SQL
+      SELECT round((COUNT(go_back_count)*100)::numeric/COUNT(*), 0) as go_back_ratio
       FROM (
         SELECT
-          enrollments.id, COUNT(enrollments.id)
+          enrollments.id, NULLIF(COUNT(enrollments.id) - 1, 0) as go_back_count
         FROM enrollments
-        LEFT JOIN
+          LEFT JOIN
           events ON events.enrollment_id = enrollments.id
           AND events.name IN ('created', 'asked_for_modification')
         WHERE enrollments.status IN ('validated', 'refused')
         AND #{filter_by_target_api_criteria}
+        AND enrollments.updated_at > CURRENT_DATE - INTERVAL '6 months'
         GROUP BY enrollments.id
       ) e;
     SQL
-    average_go_back_count = ActiveRecord::Base
+    go_back_ratio = ActiveRecord::Base
       .connection
-      .execute(average_go_back_count_query)
+      .execute(go_back_ratio_query)
       .getvalue(0, 0)
 
     # Demandes d'habilitation déposées
@@ -102,7 +103,7 @@ class StatsController < ApplicationController
       enrollment_count: enrollment_count,
       validated_enrollment_count: validated_enrollment_count,
       average_processing_time_in_days: average_processing_time_in_days,
-      average_go_back_count: average_go_back_count,
+      go_back_ratio: go_back_ratio,
       monthly_enrollment_count: monthly_enrollment_count,
       enrollment_by_target_api: enrollment_by_target_api,
       enrollment_by_status: enrollment_by_status,
