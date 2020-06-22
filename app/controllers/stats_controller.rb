@@ -34,9 +34,9 @@ class StatsController < ApplicationController
     # Temps moyen de traitement des demandes
     average_processing_time_in_days = GetAverageProcessingTimeInDays.call(target_api)
 
-    # Ratio d'aller retour avant traitement
+    # Pourcentage de demandes nécessitant un aller retour
     go_back_ratio_query = <<-SQL
-      SELECT round((COUNT(go_back_count)*100)::numeric/COUNT(*), 0) as go_back_ratio
+      SELECT round((COUNT(go_back_count)*100)::numeric/NULLIF(COUNT(*), 0), 0) as go_back_ratio
       FROM (
         SELECT
           enrollments.id, NULLIF(COUNT(enrollments.id) - 1, 0) as go_back_count
