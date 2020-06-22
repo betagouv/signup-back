@@ -7,7 +7,9 @@ class Enrollment::ApiParticulierPolicy < EnrollmentPolicy
         :dgfip_avis_imposition,
         :dgfip_adresse,
         :cnaf_quotient_familial,
-        :cnaf_attestation_droits,
+        :cnaf_allocataires,
+        :cnaf_enfants,
+        :cnaf_adresse,
       ],
     ])
 
