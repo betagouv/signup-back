@@ -165,6 +165,10 @@ class Enrollment < ActiveRecord::Base
       additional_content["rgpd_general_agreement"] =
         additional_content["rgpd_general_agreement"].to_s == "true"
     end
+    if additional_content.key?("recette_fonctionnelle")
+      additional_content["recette_fonctionnelle"] =
+        additional_content["recette_fonctionnelle"].to_s == "true"
+    end
     if additional_content.key?("has_alternative_authentication_methods")
       additional_content["has_alternative_authentication_methods"] =
         additional_content["has_alternative_authentication_methods"].to_s == "true"
@@ -200,22 +204,48 @@ class Enrollment < ActiveRecord::Base
     errors[:organization_id] << "Une erreur inattendue est survenue: pas d'organisation. Aucun changement n'a été sauvegardé." unless organization_id.present?
   end
 
-  def sent_validation
-    contact = contacts&.find { |e| e["id"] == "technique" }
-    errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch("email", false)&.present?
-
+  def rgpd_validation
+    errors[:data_retention_period] << "Vous devez renseigner la conservation des données avant de continuer" unless data_retention_period.present?
+    errors[:data_recipients] << "Vous devez renseigner les destinataires des données avant de continuer" unless data_recipients.present?
     errors[:dpo_label] << "Vous devez renseigner un nom pour le délégué à la protection des données avant de continuer" unless dpo_label.present?
     errors[:dpo_email] << "Vous devez renseigner un email pour le délégué à la protection des données avant de continuer" unless dpo_email.present?
     errors[:dpo_phone_number] << "Vous devez renseigner un numéro de téléphone pour le délégué à la protection des données avant de continuer" unless dpo_phone_number.present?
     errors[:responsable_traitement_label] << "Vous devez renseigner un nom pour le responsable de traitement avant de continuer" unless responsable_traitement_label.present?
     errors[:responsable_traitement_email] << "Vous devez renseigner un email pour le responsable de traitement avant de continuer" unless responsable_traitement_email.present?
     errors[:responsable_traitement_phone_number] << "Vous devez renseigner un numéro de téléphone pour le responsable de traitement avant de continuer" unless responsable_traitement_phone_number.present?
+  end
 
-    errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
-    errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
+  def contact_technique_validation
+    email_regex = URI::MailTo::EMAIL_REGEXP
+    # loose homemade regexp to match large amount of phone number
+    phone_number_regex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/
+
+    contact_technique = contacts&.find { |e| e["id"] == "technique" }
+    errors[:contacts] << "Vous devez renseigner un email valide pour le contact technique avant de continuer" unless email_regex.match?(contact_technique&.fetch("email", false))
+    errors[:contacts] << "Vous devez renseigner un numéro de téléphone valide pour le contact technique avant de continuer" unless phone_number_regex.match?(contact_technique&.fetch("phone_number", false))
+  end
+
+  def contact_metier_validation
+    email_regex = URI::MailTo::EMAIL_REGEXP
+    # loose homemade regexp to match large amount of phone number
+    phone_number_regex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/
+
+    contact_metier = contacts&.find { |e| e["id"] == "metier" }
+    errors[:contacts] << "Vous devez renseigner un email valide le contact métier avant de continuer" unless email_regex.match?(contact_metier&.fetch("email", false))
+    errors[:contacts] << "Vous devez renseigner un numéro de téléphone valide pour le contact métier avant de continuer" unless phone_number_regex.match?(contact_metier&.fetch("phone_number", false))
+  end
+
+  def sent_validation
+    contact = contacts&.find { |e| e["id"] == "technique" }
+    errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch("email", false)&.present?
+
+    rgpd_validation
+
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
+    errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
     errors[:fondement_juridique_title] << "Vous devez renseigner la nature du texte vous autorisant à traiter les données avant de continuer" unless fondement_juridique_title.present?
     errors[:fondement_juridique_url] << "Vous devez joindre l'URL ou le document du texte relatif au traitement avant de continuer" unless fondement_juridique_url.present? || documents.where(type: "Document::LegalBasis").present?
+    errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
     unless user.email_verified
       errors[:base] << "L'accès à votre adresse email n'a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
     end
