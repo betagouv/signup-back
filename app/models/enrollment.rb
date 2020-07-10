@@ -147,7 +147,7 @@ class Enrollment < ActiveRecord::Base
     )
     self.documents.each do |document|
       copied_document = document.dup
-      copied_document.attachment= File.open(document.attachment.file.file)
+      copied_document.attachment = File.open(document.attachment.file.file)
       copied_enrollment.documents << copied_document
     end
 
@@ -188,6 +188,7 @@ class Enrollment < ActiveRecord::Base
 
     if response.status.success? && response.parse["etablissement"]["etat_administratif"] == "A"
       nom_raison_sociale = response.parse["etablissement"]["unite_legale"]["denomination"]
+      nom_raison_sociale ||= response.parse["etablissement"]["denomination_usuelle"]
       self.siret = siret
       self.nom_raison_sociale = nom_raison_sociale
     else
