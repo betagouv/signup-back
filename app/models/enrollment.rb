@@ -91,8 +91,8 @@ class Enrollment < ActiveRecord::Base
         ApiDroitsCnamBridge.call(enrollment)
       end
 
-      if enrollment.target_api == "api_impot_particulier" && ! ENV["DISABLE_API_IMPOT_PARTICULIER_BRIDGE"].present?
-        ApiImpotParticulierBridge.call(enrollment)
+      if enrollment.target_api == "api_impot_particulier_fc_sandbox" && ! ENV["DISABLE_API_IMPOT_PARTICULIER_BRIDGE"].present?
+        ApiImpotParticulierFcSandboxBridge.call(enrollment)
       end
     end
 

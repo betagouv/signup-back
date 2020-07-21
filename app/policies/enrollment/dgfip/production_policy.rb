@@ -1,4 +1,4 @@
-class Enrollment::ApiImpotParticulierStep2Policy < EnrollmentPolicy
+class Enrollment::Dgfip::ProductionPolicy < EnrollmentPolicy
   def permitted_attributes
     res = []
 
@@ -19,15 +19,15 @@ class Enrollment::ApiImpotParticulierStep2Policy < EnrollmentPolicy
       :responsable_traitement_phone_number,
       documents_attributes: [
         :attachment,
-        :type,
+        :type
       ],
       additional_content: [
         :autorite_homologation_nom,
         :autorite_homologation_fonction,
         :date_homologation,
         :date_fin_homologation,
-        :recette_fonctionnelle,
-      ],
+        :recette_fonctionnelle
+      ]
     ])
 
     res
