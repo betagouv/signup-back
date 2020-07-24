@@ -42,7 +42,7 @@ end
 #
 # INSERT INTO users_organizations ( user_id, organization_id ) VALUES('uid', (SELECT id FROM organizations WHERE siret = 'siret'));
 #
-# -- # IMPORT ORGANIZATION_ID IN SIGNUP
+# -- # IMPORT ORGANIZATION_ID IN DATA PASS
 #
 # COPY (
 #     select * from organizations

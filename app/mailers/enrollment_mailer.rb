@@ -1,4 +1,5 @@
 class EnrollmentMailer < ActionMailer::Base
+  # note that this list is also used for parameter control at enrollment creation
   MAIL_PARAMS = {
     "franceconnect" => {
       "sender" => "support.partenaires@franceconnect.gouv.fr",
@@ -8,13 +9,29 @@ class EnrollmentMailer < ActionMailer::Base
       "sender" => "contact@particulier.api.gouv.fr",
       "target_api" => "API Particulier"
     },
-    "api_impot_particulier" => {
+    "api_impot_particulier_sandbox" => {
       "sender" => "contact@api.gouv.fr",
-      "target_api" => "API Impôt particulier"
+      "target_api" => "API Impôt particulier (Bac à sable)"
     },
-    "api_impot_particulier_step2" => {
+    "api_impot_particulier_production" => {
       "sender" => "contact@api.gouv.fr",
-      "target_api" => "API Impôt particulier 2/2"
+      "target_api" => "API Impôt particulier (Production)"
+    },
+    "api_impot_particulier_fc_sandbox" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API Impôt particulier (Bac à sable)"
+    },
+    "api_impot_particulier_fc_production" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API Impôt particulier (Production)"
+    },
+    "api_r2p_sandbox" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API R2P (Bac à sable)"
+    },
+    "api_r2p_production" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API R2P (Production)"
     },
     "api_droits_cnam" => {
       "sender" => "contact@api.gouv.fr",
@@ -39,7 +56,7 @@ class EnrollmentMailer < ActionMailer::Base
     "validate_application" => "Votre demande a été validée",
     "review_application" => "Votre demande requiert des modifications",
     "refuse_application" => "Votre demande a été refusée",
-    "notify_application_sent" => "Nouvelle demande sur signup.api.gouv.fr",
+    "notify_application_sent" => "Nouvelle demande sur Data Pass",
     "create_application" => "Votre demande a été enregistrée"
   }
 
@@ -76,9 +93,9 @@ class EnrollmentMailer < ActionMailer::Base
 
     mail(
       to: "support.partenaires@franceconnect.gouv.fr",
-      subject: "[Signup] nouveaux scopes pour \"#{@nom_raison_sociale} - #{@previous_enrollment_id}\"",
+      subject: "[Data Pass] nouveaux scopes pour \"#{@nom_raison_sociale} - #{@previous_enrollment_id}\"",
       from: MAIL_PARAMS[params[:target_api]]["sender"],
-      cc: "signup@api.gouv.fr",
+      cc: "datapass@api.gouv.fr",
       template_path: "enrollment_mailer",
       template_name: "add_scopes_in_franceconnect",
     )
