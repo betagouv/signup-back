@@ -1,3 +1,3 @@
-# Backend de signup.api.gouv.fr
+# Backend de Data Pass
 
-Les instructions d'installation se trouvent ici : https://github.com/betagouv/signup
+Les instructions d'installation se trouvent ici : https://github.com/betagouv/datapass

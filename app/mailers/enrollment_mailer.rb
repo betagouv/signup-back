@@ -56,7 +56,7 @@ class EnrollmentMailer < ActionMailer::Base
     "validate_application" => "Votre demande a été validée",
     "review_application" => "Votre demande requiert des modifications",
     "refuse_application" => "Votre demande a été refusée",
-    "notify_application_sent" => "Nouvelle demande sur signup.api.gouv.fr",
+    "notify_application_sent" => "Nouvelle demande sur Data Pass",
     "create_application" => "Votre demande a été enregistrée"
   }
 
@@ -93,9 +93,9 @@ class EnrollmentMailer < ActionMailer::Base
 
     mail(
       to: "support.partenaires@franceconnect.gouv.fr",
-      subject: "[Signup] nouveaux scopes pour \"#{@nom_raison_sociale} - #{@previous_enrollment_id}\"",
+      subject: "[Data Pass] nouveaux scopes pour \"#{@nom_raison_sociale} - #{@previous_enrollment_id}\"",
       from: MAIL_PARAMS[params[:target_api]]["sender"],
-      cc: "signup@api.gouv.fr",
+      cc: "datapass@api.gouv.fr",
       template_path: "enrollment_mailer",
       template_name: "add_scopes_in_franceconnect",
     )

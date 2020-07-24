@@ -17,11 +17,11 @@ Rails.application.configure do
   # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
   config.public_file_server.headers = {
-    'Cache-Control' => "public, max-age=#{1.hour.seconds.to_i}"
+    "Cache-Control" => "public, max-age=#{1.hour.seconds.to_i}"
   }
 
   # Show full error reports and disable caching.
-  config.consider_all_requests_local       = true
+  config.consider_all_requests_local = true
   config.action_controller.perform_caching = false
 
   # Raise exceptions instead of rendering exception templates.
@@ -41,9 +41,9 @@ Rails.application.configure do
 
   OmniAuth.config.test_mode = true
   OmniAuth.config.mock_auth[:resource_provider] = OmniAuth::AuthHash.new(
-    credentials: { token: 'signup' },
-    info: { email: 'signup@signup.user', roles: ['domain', 'security'] },
-    provider: 'api_gouv',
-    uid: 'signup'
+    credentials: {token: "datapass"},
+    info: {email: "datapass@datapass.user", roles: ["domain", "security"]},
+    provider: "api_gouv",
+    uid: "datapass"
   )
 end

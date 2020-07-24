@@ -16,7 +16,7 @@ require "rails/test_unit/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module Signup
+module DataPass
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
@@ -37,7 +37,7 @@ module Signup
 
     # Use a real queuing backend for Active Job (and separate queues per environment)
     # config.active_job.queue_adapter     = :resque
-    # config.active_job.queue_name_prefix = "signup_#{Rails.env}"
+    # config.active_job.queue_name_prefix = "datapass_#{Rails.env}"
     config.action_mailer.perform_caching = false
 
     # Ignore bad email addresses and do not raise email delivery errors.

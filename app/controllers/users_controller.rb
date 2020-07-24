@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   end
 
   def join_organization
-    # we clear signup session here to trigger organization sync with api-auth
+    # we clear Data Pass session here to trigger organization sync with api-auth
     session.delete("access_token")
     session.delete("id_token")
     sign_out current_user
