@@ -23,8 +23,7 @@ class Enrollment::Dgfip::ProductionEnrollment < Enrollment
     rgpd_validation
 
     # Cadre juridique
-    errors[:fondement_juridique_title] << "Vous devez renseigner la nature du texte vous autorisant à traiter les données avant de continuer" unless fondement_juridique_title.present?
-    errors[:fondement_juridique_url] << "Vous devez joindre l'URL ou le document du texte relatif au traitement avant de continuer" unless fondement_juridique_url.present? || documents.where(type: "Document::LegalBasis").present?
+    cadre_juridique_validation
 
     # Homologation de securite
     errors[:autorite_homologation_nom] << "Vous devez renseigner le nom de l’autorité d’homologation avant de continuer" unless additional_content&.fetch("autorite_homologation_nom", false)&.present?
