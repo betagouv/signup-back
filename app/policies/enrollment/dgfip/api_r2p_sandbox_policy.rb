@@ -5,8 +5,7 @@ class Enrollment::ApiR2pSandboxPolicy < Enrollment::Dgfip::SandboxPolicy
     res.concat([
       scopes: [
         :dgfip_acces_spi,
-        :dgfip_acces_etat_civil,
-        :dgfip_acces_adresse
+        :dgfip_acces_etat_civil_et_adresse
       ]
     ])
 
