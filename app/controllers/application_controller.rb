@@ -48,7 +48,7 @@ class ApplicationController < ActionController::API
 
   rescue_from Pundit::NotAuthorizedError do |_|
     render status: :forbidden, json: {
-      message: ["Vous n'êtes pas autorisé à modifier cette ressource"],
+      message: "Vous n'êtes pas autorisé à modifier cette ressource",
     }
   end
 
