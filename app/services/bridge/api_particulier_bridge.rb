@@ -22,7 +22,7 @@ class ApiParticulierBridge < BridgeService
       data_pass_id: id,
       scopes: scopes,
     }
-    api_key = ENV.fetch("API_PARTICULIER_API_KEY")
+    api_key = ENV.fetch("PORTAIL_API_GOUV_FR_API_KEY")
 
     response = HTTP
       .headers("X-Gravitee-Api-Key" => api_key)
