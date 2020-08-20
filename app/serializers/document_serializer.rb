@@ -4,4 +4,8 @@ class DocumentSerializer < ActiveModel::Serializer
   attribute :type do
     object.type
   end
+
+  attribute :filename do
+    object.attachment.file.filename
+  end
 end
