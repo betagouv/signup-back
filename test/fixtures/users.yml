@@ -1,7 +1,37 @@
+# keep these email addresses synchronised with the corresponding addresses in api-auth/scripts/fixtures.sql
+
 user:
-  uid: 1 # keep this id synchronised with the corresponding uid in api-auth/scripts/fixtures.sql
   email: user@yopmail.com
 
+admin_api_particulier:
+  email: api-particulier@yopmail.com
+  roles:
+    - api_particulier
+
 admin_franceconnect:
-  uid: 3 # keep this id synchronised with the corresponding uid in api-auth/scripts/fixtures.sql
   email: franceconnect@yopmail.com
+  roles:
+    - franceconnect
+
+admin_api_entreprise:
+  email: api-entreprise@yopmail.com
+  roles:
+    - api_entreprise
+
+admin_api_droits_cnam:
+  email: api-droits-cnam@yopmail.com
+  roles:
+    - api_droits_cnam
+
+admin_api_impot_particulier:
+  email: api-impot-particulier@yopmail.com
+  roles:
+    - api_impot_particulier_fc_sandbox
+    - api_impot_particulier_fc_production
+    - api_impot_particulier_sandbox
+    - api_impot_particulier_production
+
+le_taxi:
+  email: le-taxi@yopmail.com
+  roles:
+    - le_taxi

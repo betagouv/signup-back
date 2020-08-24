@@ -15,7 +15,6 @@ class User < ActiveRecord::Base
     # the following data must be used as a cache (do not modify them, use fresh data form api-auth whenever you can)
     user.update(uid: external_user_info["sub"]) if external_user_info.key?("sub")
     user.update(email_verified: external_user_info["email_verified"]) if external_user_info.key?("email_verified")
-    user.update(roles: external_user_info["roles"]) if external_user_info.key?("roles")
     user.update(organizations: external_user_info["organizations"]) if external_user_info.key?("organizations")
 
     user
