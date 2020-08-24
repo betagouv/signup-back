@@ -57,3 +57,13 @@ enrollment_asked_for_modification:
   created_at: <%= 4.days.ago.to_s(:db) %>
   updated_at: <%= 1.hours.ago.to_s(:db) %>
   status: "modification_pending"
+
+<% 1.upto(1000) do |i| %>
+enrollment_<%= i %>:
+  <<: *DEFAULTS
+  intitule: "Enrollment <%= i %>"
+  nom_raison_sociale: "Enrollment <%= i %>"
+  created_at: <%= 1.days.ago.to_s(:db) %>
+  updated_at: <%= 1.hours.ago.to_s(:db) %>
+  status: <%= ["sent", "pending", "validated", "refused"].sample %>
+<% end %>
