@@ -195,13 +195,18 @@ class EnrollmentsController < ApplicationController
       end
     end
 
-    if @enrollment.send(event.to_sym, user_id: current_user.id, comment: params[:comment])
+    if @enrollment.send(
+      event.to_sym,
+      user_id: current_user.id,
+      comment: params[:comment]
+    )
       EnrollmentMailer.with(
         to: @enrollment.user.email,
         target_api: @enrollment.target_api,
         enrollment_id: @enrollment.id,
         template: event,
-        message: params[:comment]
+        message: params[:comment],
+        comment_full_edit_mode: params[:commentFullEditMode]
       ).notification_email.deliver_later
 
       if event == "send_application"
