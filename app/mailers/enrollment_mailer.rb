@@ -57,7 +57,8 @@ class EnrollmentMailer < ActionMailer::Base
     "review_application" => "Votre demande requiert des modifications",
     "refuse_application" => "Votre demande a été refusée",
     "notify_application_sent" => "Nouvelle demande sur Data Pass",
-    "create_application" => "Votre demande a été enregistrée"
+    "create_application" => "Votre demande a été enregistrée",
+    "notify" => "Vous avez un nouveau message concernant votre demande"
   }
 
   def notification_email
@@ -74,14 +75,25 @@ class EnrollmentMailer < ActionMailer::Base
       @majority_percentile_processing_time_in_days = GetMajorityPercentileProcessingTimeInDays.call(params[:target_api])
     end
 
-    mail(
-      # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
-      to: params[:to],
-      subject: SUBJECTS[params[:template]],
-      from: MAIL_PARAMS[params[:target_api]]["sender"],
-      template_path: %W[enrollment_mailer/#{params[:target_api]} enrollment_mailer],
-      template_name: params[:template],
-    )
+    if params.has_key?(:comment_full_edit_mode) && params[:comment_full_edit_mode]
+      mail(
+        # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
+        to: params[:to],
+        subject: SUBJECTS[params[:template]],
+        from: MAIL_PARAMS[params[:target_api]]["sender"],
+        content_type: "text/plain",
+        body: params[:message]
+      )
+    else
+      mail(
+        # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
+        to: params[:to],
+        subject: SUBJECTS[params[:template]],
+        from: MAIL_PARAMS[params[:target_api]]["sender"],
+        template_path: %W[enrollment_mailer/#{params[:target_api]} enrollment_mailer],
+        template_name: params[:template]
+      )
+    end
   end
 
   def add_scopes_in_franceconnect_email
