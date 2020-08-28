@@ -33,6 +33,9 @@ class Enrollment::Dgfip::ProductionEnrollment < Enrollment
     errors[:date_fin_homologation] << "Vous devez renseigner la date de fin de l’homologation au format yyyy-mm-jj avant de continuer" unless date_regex.match?(additional_content&.fetch("date_fin_homologation", false))
     errors[:documents_attributes] << "Vous devez joindre le document de décision d’homologation avant de continuer" unless documents.where(type: "Document::DecisionHomologation").present?
 
+    # Volumétrie
+    errors[:volumetrie_appels_par_minute] << "Vous devez renseigner la limitation d'appels par minute avant de continuer" unless additional_content&.fetch("volumetrie_appels_par_minute", false)&.present?
+
     # CGU
     errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
 

@@ -8,9 +8,6 @@ class Enrollment::Dgfip::SandboxEnrollment < Enrollment
     # Description
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
 
-    # Volumétrie
-    errors[:volumetrie_appels_par_minute] << "Vous devez renseigner la limitation d'appels par minute avant de continuer" unless additional_content&.fetch("volumetrie_appels_par_minute", false)&.present?
-
     # Mise en œuvre
     contact_technique_validation
     contact_technique = contacts&.find { |e| e["id"] == "technique" }

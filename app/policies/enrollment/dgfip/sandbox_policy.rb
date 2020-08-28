@@ -17,8 +17,7 @@ class Enrollment::Dgfip::SandboxPolicy < EnrollmentPolicy
         :type,
       ],
       additional_content: [
-        :rgpd_general_agreement,
-        :volumetrie_appels_par_minute
+        :rgpd_general_agreement
       ]
     ])
 

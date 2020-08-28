@@ -26,7 +26,8 @@ class Enrollment::Dgfip::ProductionPolicy < EnrollmentPolicy
         :autorite_homologation_fonction,
         :date_homologation,
         :date_fin_homologation,
-        :recette_fonctionnelle
+        :recette_fonctionnelle,
+        :volumetrie_appels_par_minute
       ]
     ])
 
