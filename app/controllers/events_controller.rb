@@ -7,7 +7,7 @@ class EventsController < ApplicationController
     target_api = params.fetch(:target_api, "")
 
     return render status: :bad_request, json: {} unless event.in?(%w[notified validated refused asked_for_modification])
-    return render status: :forbidden, json: {} unless current_user.is_admin?(target_api)
+    return render status: :forbidden, json: {} unless current_user.is_instructor?(target_api)
 
     comments_query = <<-SQL
       SELECT comment

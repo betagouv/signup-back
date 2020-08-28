@@ -12,7 +12,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def notify?
-    record.can_notify? && user.is_admin?(record.target_api)
+    record.can_notify? && user.is_instructor?(record.target_api)
   end
 
   def send_application?
@@ -20,15 +20,15 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def validate_application?
-    record.can_validate_application? && user.is_admin?(record.target_api)
+    record.can_validate_application? && user.is_instructor?(record.target_api)
   end
 
   def review_application?
-    record.can_review_application? && user.is_admin?(record.target_api)
+    record.can_review_application? && user.is_instructor?(record.target_api)
   end
 
   def refuse_application?
-    record.can_refuse_application? && user.is_admin?(record.target_api)
+    record.can_refuse_application? && user.is_instructor?(record.target_api)
   end
 
   def permitted_attributes
@@ -55,8 +55,8 @@ class EnrollmentPolicy < ApplicationPolicy
       contacts: [:id, :email, :phone_number],
       documents_attributes: [
         :attachment,
-        :type,
-      ],
+        :type
+      ]
     ])
 
     res
@@ -64,7 +64,8 @@ class EnrollmentPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.where("status <> 'pending' AND target_api IN (?)", user.roles)
+      target_apis = user.roles.map { |r| r.split(":").first }.uniq
+      scope.where("status <> 'pending' AND target_api IN (?)", target_apis)
         .or(scope.where(user_id: user.id))
         .or(scope.where(dpo_id: user.id).where(status: "validated"))
         .or(scope.where(responsable_traitement_id: user.id).where(status: "validated"))

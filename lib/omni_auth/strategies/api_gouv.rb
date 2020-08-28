@@ -11,9 +11,9 @@ module OmniAuth
         auth_scheme: :basic_auth,
         ssl: {
           verify: ENV["BACK_HOST"].include?("development") ? false : true,
-        },
+        }
       }
-      option :scope, "openid email profile roles organizations"
+      option :scope, "openid email profile organizations"
 
       uid { raw_info["sub"] }
 

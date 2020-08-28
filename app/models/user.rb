@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
 
   def self.reconcile(external_user_info)
     user = where(
-      email: external_user_info["email"],
+      email: external_user_info["email"]
     ).first_or_create!
 
     # the following data must be used as a cache (do not modify them, use fresh data form api-auth whenever you can)
@@ -20,7 +20,11 @@ class User < ActiveRecord::Base
     user
   end
 
-  def is_admin?(target_api)
-    roles.include? target_api
+  def is_instructor?(target_api)
+    roles.include? "#{target_api}:instructor"
+  end
+
+  def is_reporter?(target_api)
+    roles.include?("#{target_api}:reporter")
   end
 end
