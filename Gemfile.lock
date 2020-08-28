@@ -252,6 +252,8 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (0.3.0)
       parser (>= 2.7.1.4)
+    rubocop-performance (1.7.1)
+      rubocop (>= 0.82.0)
     ruby-progressbar (1.10.1)
     ruby-vips (2.0.17)
       ffi (~> 1.9)
@@ -275,6 +277,11 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    standard (0.5.2)
+      rubocop (~> 0.89.1)
+      rubocop-performance (~> 1.7.1)
+    standardrb (1.0.0)
+      standard
     state_machines (0.5.0)
     state_machines-activemodel (0.7.1)
       activemodel (>= 4.1)
@@ -328,6 +335,7 @@ DEPENDENCIES
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
+  standardrb
   state_machines-activerecord
   webmock
 
