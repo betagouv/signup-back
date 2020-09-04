@@ -48,6 +48,10 @@ class EnrollmentMailer < ActionMailer::Base
     "le_taxi" => {
       "sender" => "contact@api.gouv.fr",
       "target_api" => "le.Taxi"
+    },
+    "cartobio" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "CartoBio"
     }
   }.freeze
 

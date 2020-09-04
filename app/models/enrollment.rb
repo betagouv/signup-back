@@ -179,6 +179,30 @@ class Enrollment < ActiveRecord::Base
       additional_content["has_alternative_authentication_methods"] =
         additional_content["has_alternative_authentication_methods"].to_s == "true"
     end
+    if additional_content.key?("secret_statistique_agreement")
+      additional_content["secret_statistique_agreement"] =
+        additional_content["secret_statistique_agreement"].to_s == "true"
+    end
+
+    if additional_content.key?("partage_agreement")
+      additional_content["partage_agreement"] =
+        additional_content["partage_agreement"].to_s == "true"
+    end
+
+    if additional_content.key?("protection_agreement")
+      additional_content["protection_agreement"] =
+        additional_content["protection_agreement"].to_s == "true"
+    end
+
+    if additional_content.key?("exhaustivite_agreement")
+      additional_content["exhaustivite_agreement"] =
+        additional_content["exhaustivite_agreement"].to_s == "true"
+    end
+
+    if additional_content.key?("information_agreement")
+      additional_content["information_agreement"] =
+        additional_content["information_agreement"].to_s == "true"
+    end
   end
 
   def set_company_info

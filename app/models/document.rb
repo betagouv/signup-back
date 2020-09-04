@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Document < ActiveRecord::Base
-  mount_uploader :attachment, DocumentUploader
+  mount_uploader :attachment, PdfUploader
 
   belongs_to :attachable, polymorphic: true, optional: true
 
