@@ -24,7 +24,8 @@ class Enrollment::ApiEntreprisePolicy < EnrollmentPolicy
         :etablissements,
         :liasse_fiscale,
         :actes_bilans_inpi,
-      ],
+        :conventions_collectives
+      ]
     ])
 
     res
