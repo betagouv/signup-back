@@ -12,7 +12,6 @@ class Enrollment::Cartobio < Enrollment
     end
 
     # Modalités d’utilisation
-    errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
     errors[:secret_statistique_agreement] << "Vous devez valider le respect du secret statistique avant de continuer" unless additional_content&.fetch("secret_statistique_agreement", false)&.present?
     errors[:partage_agreement] << "Vous devez valider la restriction du partage des données avant de continuer" unless additional_content&.fetch("partage_agreement", false)&.present?
     errors[:protection_agreement] << "Vous devez valider la mise en œuvre des mesures limitant la divulgation des données avant de continuer" unless additional_content&.fetch("protection_agreement", false)&.present?
