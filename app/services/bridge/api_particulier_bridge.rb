@@ -25,7 +25,7 @@ class ApiParticulierBridge < BridgeService
     api_key = ENV.fetch("PORTAIL_API_GOUV_FR_API_KEY")
 
     response = HTTP
-      .headers("X-Gravitee-Api-Key" => api_key)
+      .headers("X-Api-Key" => api_key)
       .headers(accept: "application/json")
       .post(url_as_string, json: body)
 
