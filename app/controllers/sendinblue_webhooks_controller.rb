@@ -10,7 +10,7 @@ class SendinblueWebhooksController < ApplicationController
 
     # 2. get message metadata
     body = JSON.parse request.body.read
-    message_id = body[0]["message-id"]
+    message_id = body["message-id"]
     get_transactional_email_reponse = Http.get(
       "https://api.sendinblue.com/v3/smtp/emails?messageId=#{URI.encode(message_id)}",
       sendinblue_api_key,
