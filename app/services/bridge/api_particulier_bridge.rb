@@ -14,37 +14,19 @@ class ApiParticulierBridge < BridgeService
   private
 
   def create_enrollment_in_token_manager(id, name, email, scopes)
-    endpoint_label = "Portail api.gouv.fr"
-    url_as_string = "#{ENV.fetch("PORTAIL_API_GOUV_FR_HOST")}/api-particulier/subscribe"
-    body = {
-      name: name,
-      email: email,
-      data_pass_id: id,
-      scopes: scopes,
-    }
-    api_key = ENV.fetch("PORTAIL_API_GOUV_FR_API_KEY")
-
-    response = HTTP
-      .headers("X-Api-Key" => api_key)
-      .headers(accept: "application/json")
-      .post(url_as_string, json: body)
-
-    unless response.status.success?
-      raise ApplicationController::BadGateway.new(
-        endpoint_label,
-        url_as_string,
-        response.code,
-        response.parse,
-      )
-    end
+    response = Http.post(
+      "#{ENV.fetch("PORTAIL_API_GOUV_FR_HOST")}/api-particulier/subscribe",
+      {
+        name: name,
+        email: email,
+        data_pass_id: id,
+        scopes: scopes
+      },
+      ENV.fetch("PORTAIL_API_GOUV_FR_API_KEY"),
+      "Portail api.gouv.fr",
+      "X-Api-Key"
+    )
 
     response.parse["id"]
-  rescue HTTP::Error => e
-    raise ApplicationController::BadGateway.new(
-      endpoint_label,
-      url_as_string,
-      nil,
-      nil,
-    ), e.message
   end
 end

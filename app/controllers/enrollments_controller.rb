@@ -223,6 +223,7 @@ class EnrollmentsController < ApplicationController
           to: @enrollment.responsable_traitement.email,
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
+          # note that this string is used in a regexp in sendinblue_webhooks#rgpd_contact_error
           rgpd_role: "responsable de traitement",
           contact_label: @enrollment.responsable_traitement_label,
           owner_email: @enrollment.user.email,
@@ -235,6 +236,7 @@ class EnrollmentsController < ApplicationController
           to: @enrollment.dpo.email,
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
+          # note that this string is used in a regexp in sendinblue_webhooks#rgpd_contact_error
           rgpd_role: "délégué à la protection des données",
           contact_label: @enrollment.dpo_label,
           owner_email: @enrollment.user.email,

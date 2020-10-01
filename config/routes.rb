@@ -17,6 +17,9 @@ Rails.application.routes.draw do
     get "/events/most-used-comments", to: "events#most_used_comments"
     get "/users/me", to: "users#me"
     get "/users/join-organization", to: "users#join_organization"
+    post "/sendinblue-webhooks/rgpd-contact-error/:capability_url_id",
+      to: "sendinblue_webhooks#rgpd_contact_error",
+      constraints: {capability_url_id: /[A-Za-z0-9]{64}/}
 
     devise_scope :user do
       get "/users/sign_out", to: "users/sessions#destroy", as: :destroy_user_session
@@ -26,7 +29,7 @@ Rails.application.routes.draw do
   devise_scope :api do
     devise_for :users, controllers: {
       omniauth_callbacks: "users/sessions",
-      sessions: "devise/sessions",
+      sessions: "devise/sessions"
     }
   end
 
