@@ -1,4 +1,5 @@
 class SendinblueWebhooksController < ApplicationController
+  # You can configure webhook for this controller at https://app-smtp.sendinblue.com/webhook
   def rgpd_contact_error
     sendinblue_api_key = ENV["SENDINBLUE_API_KEY"]
     capability_url_id = ENV["RGPD_CONTACT_ERROR_HOOK_ID"]
@@ -25,12 +26,12 @@ class SendinblueWebhooksController < ApplicationController
         (transactional_email["transactionalEmails"][0]["tags"][0]["rgpd-contact-email"] != "rgpd-contact-email")
       # Note that there is no need to check that the event is an hard bounce or a soft bounce since this hook will be
       # called on this to events only.
-      raise ApplicationController::Accepted, "no rgpd alert send"
+      raise ApplicationController::Accepted, "no gdpr alert send"
     end
 
     email_uuid = transactional_email["transactionalEmails"][0]["uuid"]
     rgpd_contact_email = transactional_email["transactionalEmails"][0]["email"]
-    rgpd_role = transactional_email["transactionalEmails"][0]["subject"][/(responsable de traitement|délégué à la protection des données)/, 1]
+    rgpd_role = transactional_email["transactionalEmails"][0]["subject"][/(#{EnrollmentsController::RESPONSABLE_TRAITEMENT_LABEL}|#{EnrollmentsController::DPO_LABEL})/, 1]
 
     # 4. get email content
     get_email_content_response = Http.get(
@@ -57,7 +58,7 @@ class SendinblueWebhooksController < ApplicationController
     ).rgpd_contact_error.deliver_now
 
     render status: :ok, json: {
-      message: "rgpd alert sent!"
+      message: "gdpr alert sent!"
     }
   end
 end

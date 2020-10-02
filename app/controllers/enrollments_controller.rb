@@ -1,4 +1,7 @@
 class EnrollmentsController < ApplicationController
+  RESPONSABLE_TRAITEMENT_LABEL = "responsable de traitement"
+  DPO_LABEL = "délégué à la protection des données"
+
   before_action :authenticate_user!, except: [:public]
   before_action :set_enrollment, only: %i[show update trigger copy destroy]
 
@@ -17,7 +20,7 @@ class EnrollmentsController < ApplicationController
     end
 
     unless has_filter_by_status
-      #  if filter by status is set, it overrides archive and status params (ie. we do not apply archive and status params)
+      # if filter by status is set, it overrides archive and status params (ie. we do not apply archive and status params)
       @enrollments = @enrollments.where(status: %w[validated refused]) if params.fetch(:archived, false)
 
       @enrollments = @enrollments.where(status: params.fetch(:status, false)) if params.fetch(:status, false)
@@ -223,8 +226,7 @@ class EnrollmentsController < ApplicationController
           to: @enrollment.responsable_traitement.email,
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
-          # note that this string is used in a regexp in sendinblue_webhooks#rgpd_contact_error
-          rgpd_role: "responsable de traitement",
+          rgpd_role: RESPONSABLE_TRAITEMENT_LABEL,
           contact_label: @enrollment.responsable_traitement_label,
           owner_email: @enrollment.user.email,
           nom_raison_sociale: @enrollment.nom_raison_sociale,
@@ -236,8 +238,7 @@ class EnrollmentsController < ApplicationController
           to: @enrollment.dpo.email,
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
-          # note that this string is used in a regexp in sendinblue_webhooks#rgpd_contact_error
-          rgpd_role: "délégué à la protection des données",
+          rgpd_role: DPO_LABEL,
           contact_label: @enrollment.dpo_label,
           owner_email: @enrollment.user.email,
           nom_raison_sociale: @enrollment.nom_raison_sociale,

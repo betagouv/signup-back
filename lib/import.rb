@@ -87,7 +87,7 @@ CSV.foreach(INPUT_FILE, headers: true, strip: true, liberal_parsing: true) do |r
     to: resp_traitement_email,
     target_api: TARGET_API,
     enrollment_id: enrollment.id,
-    rgpd_role: "responsable de traitement",
+    rgpd_role: EnrollmentsController::RESPONSABLE_TRAITEMENT_LABEL,
     owner_email: USER_EMAIL,
     nom_raison_sociale: enrollment.nom_raison_sociale,
     intitule: enrollment.intitule
