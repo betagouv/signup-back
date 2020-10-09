@@ -219,6 +219,12 @@ class Enrollment < ActiveRecord::Base
     if response.status.success? && response.parse["etablissement"]["etat_administratif"] == "A"
       nom_raison_sociale = response.parse["etablissement"]["unite_legale"]["denomination"]
       nom_raison_sociale ||= response.parse["etablissement"]["denomination_usuelle"]
+      nom = response.parse["etablissement"]["unite_legale"]["nom"]
+      prenom_1 = response.parse["etablissement"]["unite_legale"]["prenom_1"]
+      prenom_2 = response.parse["etablissement"]["unite_legale"]["prenom_2"]
+      prenom_3 = response.parse["etablissement"]["unite_legale"]["prenom_3"]
+      prenom_4 = response.parse["etablissement"]["unite_legale"]["prenom_4"]
+      nom_raison_sociale ||= "#{nom + "*" unless nom.nil?}#{prenom_1 unless prenom_1.nil?}#{" " + prenom_2 unless prenom_2.nil?}#{" " + prenom_3 unless prenom_3.nil?}#{" " + prenom_4 unless prenom_4.nil?}"
       self.siret = siret
       self.nom_raison_sociale = nom_raison_sociale
     else
@@ -279,7 +285,7 @@ class Enrollment < ActiveRecord::Base
     cadre_juridique_validation
 
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
-    errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
+    errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale
     errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
     unless user.email_verified
       errors[:base] << "L'accès à votre adresse email n'a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
