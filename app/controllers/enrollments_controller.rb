@@ -8,8 +8,9 @@ class EnrollmentsController < ApplicationController
   # GET /enrollments
   def index
     @enrollments = policy_scope(Enrollment)
-
-    @enrollments = @enrollments.where(target_api: params.fetch(:target_api, false)) if params.fetch(:target_api, false)
+    if params.fetch(:target_api, false)
+      @enrollments = @enrollments.where(target_api: params.fetch(:target_api, false))
+    end
 
     has_filter_by_status = false
     begin
@@ -20,13 +21,12 @@ class EnrollmentsController < ApplicationController
     end
 
     unless has_filter_by_status
-      # if filter by status is set, it overrides archive and status params (ie. we do not apply archive and status params)
-      @enrollments = @enrollments.where(status: %w[validated refused]) if params.fetch(:archived, false)
-
-      @enrollments = @enrollments.where(status: params.fetch(:status, false)) if params.fetch(:status, false)
-
-      if !params.fetch(:archived, false) && !params.fetch(:status, false)
-        @enrollments = @enrollments.where.not(status: %w[validated refused])
+      # if filter by status is set, it overrides archive and status params
+      # (ie. we do not apply archive and status params)
+      @enrollments = if params.fetch(:archived, false) == "true"
+        @enrollments.where(status: %w[validated refused])
+      else
+        @enrollments.where.not(status: %w[validated refused])
       end
     end
 
@@ -163,7 +163,7 @@ class EnrollmentsController < ApplicationController
     event = params[:event]
     unless Enrollment.state_machine.events.map(&:name).include?(event.to_sym)
       return render status: :bad_request, json: {
-        message: ["event not permitted"],
+        message: ["event not permitted"]
       }
     end
     authorize @enrollment, "#{event}?".to_sym
