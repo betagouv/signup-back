@@ -65,7 +65,7 @@ class ApiEntrepriseBridge < BridgeService
           email: email,
           oauth_api_gouv_id: uid.to_i,
           context: siret,
-          cgu_agreement_date: cgu_agreement_date,
+          cgu_agreement_date: cgu_agreement_date
         },
         api_key,
         "dashboard API entreprise"
@@ -74,16 +74,35 @@ class ApiEntrepriseBridge < BridgeService
       user = create_user_response.parse
     end
 
+    if user["oauth_api_gouv_id"].nil?
+      # 3. if the user does exist but do not has an oauth_api_gouv_id
+      # we update the user so the reconciliation process (based on this id)
+      # could go through when logging in « dashboard entreprise ».
+      # Note that this can happen when the user already has a token in
+      # « dashboard entreprise » but obtained it before the existence
+      # of Data Pass.
+      update_user_response = Http.patch(
+        "#{api_host}/api/admin/users/#{user["id"]}",
+        {
+          oauth_api_gouv_id: uid.to_i
+        },
+        api_key,
+        "dashboard API entreprise"
+      )
+
+      user = update_user_response.parse
+    end
+
     user_id = user["id"]
 
-    # 3. create token
+    # 4. create token
     formatted_contacts = contacts
       .select { |contact| contact["id"].in?(%w[technique metier]) }
       .map { |contact|
         {
           "email" => contact["email"],
           "phone_number" => contact["phone_number"],
-          "contact_type" => contact["id"] == "technique" ? "tech" : "admin",
+          "contact_type" => contact["id"] == "technique" ? "tech" : "admin"
         }
       }
     formatted_scopes = scopes
@@ -91,7 +110,7 @@ class ApiEntrepriseBridge < BridgeService
       .keys
       .map { |scope|
         {
-          "code" => scope,
+          "code" => scope
         }
       }
 
@@ -101,7 +120,7 @@ class ApiEntrepriseBridge < BridgeService
         subject: name,
         roles: formatted_scopes,
         contacts: formatted_contacts,
-        authorization_request_id: id.to_s,
+        authorization_request_id: id.to_s
       },
       api_key,
       "dashboard API entreprise"
@@ -111,14 +130,14 @@ class ApiEntrepriseBridge < BridgeService
     jwt = JWT.decode(raw_jwt, nil, false)
     jwt_id = jwt[0]["jti"]
 
-    # 4. if this authorization request already has a linked_token_manager_id
+    # 5. if this authorization request already has a linked_token_manager_id
     # we archive the previous token. This happens when the authorization request
     # was copied from another authorization request.
     unless previous_linked_token_manager_id.nil?
       Http.patch(
         "#{api_host}/api/admin/jwt_api_entreprise/#{previous_linked_token_manager_id}",
         {
-          archived: true,
+          archived: true
         },
         api_key,
         "dashboard API entreprise"
