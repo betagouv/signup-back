@@ -50,7 +50,7 @@ class EnrollmentMailer < ActionMailer::Base
       "target_api" => "le.Taxi"
     },
     "cartobio" => {
-      "sender" => "contact@api.gouv.fr",
+      "sender" => "cartobio@beta.gouv.fr",
       "target_api" => "CartoBio"
     }
   }.freeze
