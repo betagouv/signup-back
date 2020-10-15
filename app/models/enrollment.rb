@@ -101,14 +101,14 @@ class Enrollment < ActiveRecord::Base
     end
   end
 
-  def instructors
+  def subscribers
     unless EnrollmentMailer::MAIL_PARAMS.key?(target_api)
       raise ApplicationController::UnprocessableEntity, "Une erreur inattendue est survenue: API cible invalide."
     end
     # Pure string conditions in a where query is dangerous!
     # see https://guides.rubyonrails.org/active_record_querying.html#pure-string-conditions
     # As long as the injected parameters is verified against a whitelist, we consider this safe.
-    User.where("'#{target_api}:instructor' = ANY(roles)")
+    User.where("'#{target_api}:subscriber' = ANY(roles)")
   end
 
   def dpo_email=(email)

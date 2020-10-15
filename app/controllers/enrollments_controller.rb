@@ -214,7 +214,7 @@ class EnrollmentsController < ApplicationController
 
       if event == "send_application"
         EnrollmentMailer.with(
-          to: @enrollment.instructors.map(&:email),
+          to: @enrollment.subscribers.map(&:email),
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
           template: "notify_application_sent",

@@ -1,5 +1,5 @@
 class EnrollmentMailer < ActionMailer::Base
-  # note that this list is also used for parameter control at enrollment creation and to notify admins
+  # note that this list is also used for parameter control at enrollment creation and to notify subscribers
   MAIL_PARAMS = {
     "franceconnect" => {
       "sender" => "support.partenaires@franceconnect.gouv.fr",
