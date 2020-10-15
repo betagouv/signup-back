@@ -3,7 +3,7 @@ class Enrollment::Dgfip::SandboxEnrollment < Enrollment
 
   def sent_validation
     # Organisation
-    errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
+    errors[:siret] << "Vous devez renseigner un SIRET d’organisation valide avant de continuer" unless nom_raison_sociale.present?
 
     # Description
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
@@ -18,10 +18,10 @@ class Enrollment::Dgfip::SandboxEnrollment < Enrollment
     errors[:rgpd_general_agreement] << "Vous devez attester respecter les principes RGPD avant de continuer" unless additional_content&.fetch("rgpd_general_agreement", false)
 
     # CGU
-    errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
+    errors[:cgu_approved] << "Vous devez valider les modalités d’utilisation avant de continuer" unless cgu_approved?
 
     unless user.email_verified
-      errors[:base] << "L'accès à votre adresse email n'a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
+      errors[:base] << "L’accès à votre adresse email n’a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
     end
   end
 end

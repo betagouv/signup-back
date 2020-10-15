@@ -1,12 +1,12 @@
 class UserEnrollmentListSerializer < ActiveModel::Serializer
   attributes :id,
-             :updated_at,
-             :description,
-             :nom_raison_sociale,
-             :target_api,
-             :status,
-             :siret,
-             :intitule
+    :updated_at,
+    :description,
+    :nom_raison_sociale,
+    :target_api,
+    :status,
+    :siret,
+    :intitule
 
   belongs_to :user
 
@@ -14,9 +14,9 @@ class UserEnrollmentListSerializer < ActiveModel::Serializer
 
   attribute :acl do
     Hash[
-      EnrollmentPolicy.acl_methods.map do |method|
-        [method.to_s.delete('?'), EnrollmentPolicy.new(current_user, object).send(method)]
-      end
+      EnrollmentPolicy.acl_methods.map { |method|
+        [method.to_s.delete("?"), EnrollmentPolicy.new(current_user, object).send(method)]
+      }
     ]
   end
 end

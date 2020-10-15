@@ -64,7 +64,7 @@ class Enrollment < ActiveRecord::Base
         send_application: "submitted",
         validate_application: "validated",
         review_application: "asked_for_modification",
-        refuse_application: "refused",
+        refuse_application: "refused"
       }
 
       enrollment.events.create!(
@@ -75,23 +75,23 @@ class Enrollment < ActiveRecord::Base
     end
 
     before_transition sent: :validated do |enrollment, _|
-      if enrollment.target_api == "api_particulier" && ! ENV["DISABLE_API_PARTICULIER_BRIDGE"].present?
+      if enrollment.target_api == "api_particulier" && !ENV["DISABLE_API_PARTICULIER_BRIDGE"].present?
         ApiParticulierBridge.call(enrollment)
       end
 
-      if enrollment.target_api == "franceconnect" && ! ENV["DISABLE_FRANCECONNECT_BRIDGE"].present?
+      if enrollment.target_api == "franceconnect" && !ENV["DISABLE_FRANCECONNECT_BRIDGE"].present?
         FranceconnectBridge.call(enrollment)
       end
 
-      if enrollment.target_api == "api_entreprise" && ! ENV["DISABLE_API_ENTREPRISE_BRIDGE"].present?
+      if enrollment.target_api == "api_entreprise" && !ENV["DISABLE_API_ENTREPRISE_BRIDGE"].present?
         ApiEntrepriseBridge.call(enrollment)
       end
 
-      if enrollment.target_api == "api_droits_cnam" && ! ENV["DISABLE_API_DROITS_CNAM_BRIDGE"].present?
+      if enrollment.target_api == "api_droits_cnam" && !ENV["DISABLE_API_DROITS_CNAM_BRIDGE"].present?
         ApiDroitsCnamBridge.call(enrollment)
       end
 
-      if enrollment.target_api == "api_impot_particulier_fc_sandbox" && ! ENV["DISABLE_API_IMPOT_PARTICULIER_BRIDGE"].present?
+      if enrollment.target_api == "api_impot_particulier_fc_sandbox" && !ENV["DISABLE_API_IMPOT_PARTICULIER_BRIDGE"].present?
         ApiImpotParticulierFcSandboxBridge.call(enrollment)
       end
     end

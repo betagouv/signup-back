@@ -27,4 +27,8 @@ class User < ActiveRecord::Base
   def is_reporter?(target_api)
     roles.include?("#{target_api}:reporter")
   end
+
+  def is_administrator?
+    roles.include?("administrator")
+  end
 end

@@ -10,9 +10,9 @@ class Enrollment::Dgfip::ProductionEnrollment < Enrollment
   end
 
   def update_validation
-    errors[:previous_enrollment_id] << "Vous devez associer cette demande à une demande API Impôt particulier validée. Aucun changement n'a été sauvegardé." unless previous_enrollment_id.present?
+    errors[:previous_enrollment_id] << "Vous devez associer cette demande à une demande API Impôt particulier validée. Aucun changement n’a été sauvegardé." unless previous_enrollment_id.present?
     # the following 2 errors should never occur #defensiveprogramming
-    errors[:target_api] << "Une erreur inattendue est survenue: pas d’API cible. Aucun changement n'a été sauvegardé." unless target_api.present?
+    errors[:target_api] << "Une erreur inattendue est survenue: pas d’API cible. Aucun changement n’a été sauvegardé." unless target_api.present?
   end
 
   def sent_validation
@@ -34,13 +34,13 @@ class Enrollment::Dgfip::ProductionEnrollment < Enrollment
     errors[:documents_attributes] << "Vous devez joindre le document de décision d’homologation avant de continuer" unless documents.where(type: "Document::DecisionHomologation").present?
 
     # Volumétrie
-    errors[:volumetrie_appels_par_minute] << "Vous devez renseigner la limitation d'appels par minute avant de continuer" unless additional_content&.fetch("volumetrie_appels_par_minute", false)&.present?
+    errors[:volumetrie_appels_par_minute] << "Vous devez renseigner la limitation d’appels par minute avant de continuer" unless additional_content&.fetch("volumetrie_appels_par_minute", false)&.present?
 
     # CGU
-    errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
+    errors[:cgu_approved] << "Vous devez valider les modalités d’utilisation avant de continuer" unless cgu_approved?
 
     unless user.email_verified
-      errors[:base] << "L'accès à votre adresse email n'a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
+      errors[:base] << "L’accès à votre adresse email n’a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
     end
   end
 end

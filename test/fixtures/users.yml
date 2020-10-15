@@ -2,27 +2,27 @@
 user:
   email: user@yopmail.com
 
-admin_api_particulier:
+api_particulier_instructor:
   email: api-particulier@yopmail.com
   roles:
     - api_particulier:instructor
 
-admin_franceconnect:
+franceconnect_instructor:
   email: franceconnect@yopmail.com
   roles:
     - franceconnect:instructor
 
-admin_api_entreprise:
+api_entreprise_instructor:
   email: api-entreprise@yopmail.com
   roles:
     - api_entreprise:instructor
 
-admin_api_droits_cnam:
+api_droits_cnam_instructor:
   email: api-droits-cnam@yopmail.com
   roles:
     - api_droits_cnam:instructor
 
-admin_api_impot_particulier:
+api_impot_particulier_instructor:
   email: api-impot-particulier@yopmail.com
   roles:
     - api_impot_particulier_fc_sandbox:instructor

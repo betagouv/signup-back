@@ -38,7 +38,7 @@ event_validated_2:
   name: "submitted"
 event_validated_3:
   enrollment_id: <%= ActiveRecord::FixtureSet.identify(:enrollment_validated) %>
-  user_id: <%= ActiveRecord::FixtureSet.identify(:admin_franceconnect) %>
+  user_id: <%= ActiveRecord::FixtureSet.identify(:franceconnect_instructor) %>
   created_at: <%= 1.hours.ago.to_s(:db) %>
   updated_at: <%= 1.hours.ago.to_s(:db) %>
   name: "validated"
@@ -57,7 +57,7 @@ event_refused_2:
   name: "submitted"
 event_refused_3:
   enrollment_id: <%= ActiveRecord::FixtureSet.identify(:enrollment_refused) %>
-  user_id: <%= ActiveRecord::FixtureSet.identify(:admin_franceconnect) %>
+  user_id: <%= ActiveRecord::FixtureSet.identify(:franceconnect_instructor) %>
   created_at: <%= 1.hours.ago.to_s(:db) %>
   updated_at: <%= 1.hours.ago.to_s(:db) %>
   name: "refused"
@@ -77,7 +77,7 @@ event_asked_for_modification_2:
   name: "submitted"
 event_asked_for_modification_3:
   enrollment_id: <%= ActiveRecord::FixtureSet.identify(:enrollment_asked_for_modification) %>
-  user_id: <%= ActiveRecord::FixtureSet.identify(:admin_franceconnect) %>
+  user_id: <%= ActiveRecord::FixtureSet.identify(:franceconnect_instructor) %>
   created_at: <%= 1.hours.ago.to_s(:db) %>
   updated_at: <%= 1.hours.ago.to_s(:db) %>
   name: "asked_for_modification"
