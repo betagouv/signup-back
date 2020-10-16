@@ -8,6 +8,8 @@ class Enrollment::ApiImpotParticulierSandboxPolicy < Enrollment::Dgfip::SandboxP
         :dgfip_nbpart,
         :dgfip_aft,
         :dgfip_locaux_th,
+        :dgfip_sitfam,
+        :dgfip_nbpac,
         :dgfip_eligibilite_lep,
         :dgfip_annee_n_moins_1,
         :dgfip_annee_n_moins_2,
