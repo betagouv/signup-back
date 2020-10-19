@@ -52,6 +52,10 @@ class EnrollmentMailer < ActionMailer::Base
     "cartobio" => {
       "sender" => "cartobio@beta.gouv.fr",
       "target_api" => "CartoBio"
+    },
+    "aidants_connect" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "Aidants Connect"
     }
   }.freeze
 
