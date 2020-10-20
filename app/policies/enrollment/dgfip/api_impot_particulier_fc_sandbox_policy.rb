@@ -11,7 +11,8 @@ class Enrollment::ApiImpotParticulierFcSandboxPolicy < Enrollment::Dgfip::Sandbo
         :dgfip_sitfam,
         :dgfip_nbpac,
         :dgfip_annee_n_moins_1,
-        :dgfip_annee_n_moins_2
+        :dgfip_annee_n_moins_2,
+        :dgfip_annee_n_moins_3
       ],
     ])
 

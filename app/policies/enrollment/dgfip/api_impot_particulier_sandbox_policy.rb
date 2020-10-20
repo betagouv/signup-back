@@ -13,6 +13,7 @@ class Enrollment::ApiImpotParticulierSandboxPolicy < Enrollment::Dgfip::SandboxP
         :dgfip_eligibilite_lep,
         :dgfip_annee_n_moins_1,
         :dgfip_annee_n_moins_2,
+        :dgfip_annee_n_moins_3,
         :dgfip_acces_spi,
         :dgfip_acces_etat_civil
       ]
