@@ -33,6 +33,14 @@ class EnrollmentMailer < ActionMailer::Base
       "sender" => "contact@api.gouv.fr",
       "target_api" => "API R2P (Production)"
     },
+    "api_ficoba_sandbox" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API FICOBA (Bac à sable)"
+    },
+    "api_ficoba_production" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API FICOBA (Production)"
+    },
     "api_droits_cnam" => {
       "sender" => "contact@api.gouv.fr",
       "target_api" => "API Droits CNAM"
