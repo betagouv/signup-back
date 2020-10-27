@@ -1,2 +1,2 @@
-class Enrollment::ApiR2pSandbox < Enrollment::Dgfip::SandboxEnrollment
+class Enrollment::ApiFicobaSandbox < Enrollment::Dgfip::SandboxEnrollment
 end
