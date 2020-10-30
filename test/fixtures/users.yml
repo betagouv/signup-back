@@ -6,31 +6,40 @@ api_particulier_instructor:
   email: api-particulier@yopmail.com
   roles:
     - api_particulier:instructor
+    - api_particulier:reporter
 
 franceconnect_instructor:
   email: franceconnect@yopmail.com
   roles:
     - franceconnect:instructor
+    - franceconnect:reporter
 
 api_entreprise_instructor:
   email: api-entreprise@yopmail.com
   roles:
     - api_entreprise:instructor
+    - api_entreprise:reporter
 
 api_droits_cnam_instructor:
   email: api-droits-cnam@yopmail.com
   roles:
     - api_droits_cnam:instructor
+    - api_droits_cnam:reporter
 
 api_impot_particulier_instructor:
   email: api-impot-particulier@yopmail.com
   roles:
     - api_impot_particulier_fc_sandbox:instructor
+    - api_impot_particulier_fc_sandbox:reporter
     - api_impot_particulier_fc_production:instructor
+    - api_impot_particulier_fc_production:reporter
     - api_impot_particulier_sandbox:instructor
+    - api_impot_particulier_sandbox:reporter
     - api_impot_particulier_production:instructor
+    - api_impot_particulier_production:reporter
 
 le_taxi:
   email: le-taxi@yopmail.com
   roles:
     - le_taxi:instructor
+    - le_taxi:reporter
