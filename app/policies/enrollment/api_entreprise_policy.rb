@@ -25,6 +25,14 @@ class Enrollment::ApiEntreprisePolicy < EnrollmentPolicy
         :liasse_fiscale,
         :actes_bilans_inpi,
         :conventions_collectives
+      ],
+      contacts: [
+        :id,
+        :family_name,
+        :given_name,
+        :email,
+        :phone_number,
+        :backup_email
       ]
     ])
 
