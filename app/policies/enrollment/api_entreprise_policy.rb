@@ -31,8 +31,7 @@ class Enrollment::ApiEntreprisePolicy < EnrollmentPolicy
         :family_name,
         :given_name,
         :email,
-        :phone_number,
-        :backup_email
+        :phone_number
       ]
     ])
 
