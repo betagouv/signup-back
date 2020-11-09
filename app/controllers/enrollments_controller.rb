@@ -268,6 +268,16 @@ class EnrollmentsController < ApplicationController
            root: "enrollments"
   end
 
+  # GET enrollments/1/next_enrollment
+  def next_enrollment
+    @enrollments = policy_scope(Enrollment)
+      .where(previous_enrollment_id: params[:id])
+    render json: @enrollments,
+            each_serializer: LightEnrollmentSerializer,
+            adapter: :json,
+            root: "enrollments"
+  end
+
   def destroy
     @enrollment.destroy
 

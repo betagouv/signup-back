@@ -38,6 +38,7 @@ class EnrollmentPolicy < ApplicationPolicy
       :cgu_approved,
       :target_api,
       :previous_enrollment_id,
+      :linked_enrollment_id,
       :organization_id,
       :intitule,
       :description,
