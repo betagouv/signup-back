@@ -268,8 +268,8 @@ class EnrollmentsController < ApplicationController
            root: "enrollments"
   end
 
-  # GET enrollments/1/next_enrollment
-  def next_enrollment
+  # GET enrollments/1/next_enrollments
+  def next_enrollments
     @enrollments = policy_scope(Enrollment)
       .where(previous_enrollment_id: params[:id])
     render json: @enrollments,

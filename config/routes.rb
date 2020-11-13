@@ -9,7 +9,7 @@ Rails.application.routes.draw do
         patch :trigger
         post :copy
         get :copies
-        get :next_enrollment
+        get :next_enrollments
       end
     end
 
