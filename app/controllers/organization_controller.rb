@@ -1,19 +1,15 @@
 class InseeProxyController < ApplicationController
   # GET /insee-proxy/naf/1
   def naf
-    response = HTTP
-      .headers(accept: "application/json")
-      .post(
-        "https://www.insee.fr/fr/metadonnees/nafr2/consultation",
-        json: {q: params[:id]}
-      )
+    response = File.read("./public/codes_naf.json")
+    parsed_response = JSON.parse(response)
 
-    parsed_response = response.parse
+    code = params.fetch(:id, "").gsub('.', '')
 
-    if parsed_response["documents"].nil? || parsed_response["documents"][0].nil?
-      render status: :not_found, json: {}
+    if(parsed_response[code].nil?)
+      render status: :ok, json: { libelle: "Code inconnu" }
     else
-      render status: :ok, json: parsed_response["documents"][0]
+      render status: :ok, json: { libelle: parsed_response[code] }
     end
   end
 end
