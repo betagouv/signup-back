@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_20_184847) do
+ActiveRecord::Schema.define(version: 2020_11_19_161708) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 2020_02_20_184847) do
     t.string "responsable_traitement_label"
     t.string "responsable_traitement_phone_number"
     t.bigint "copied_from_enrollment_id"
+    t.string "demarche"
     t.index ["copied_from_enrollment_id"], name: "index_enrollments_on_copied_from_enrollment_id"
     t.index ["dpo_id"], name: "index_enrollments_on_dpo_id"
     t.index ["responsable_traitement_id"], name: "index_enrollments_on_responsable_traitement_id"

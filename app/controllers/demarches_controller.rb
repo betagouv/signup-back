@@ -1,13 +1,9 @@
 class DemarchesController < ApplicationController
   # GET /demarches/target_api
   def index
-    response = HTTP
-      .headers(accept: "application/json")
-      .get(
-        "https://demarches-api-gouv.app.etalab.studio"
-      )
+    response = File.read("./public/demarches.json")
 
-    parsed_response = response.parse
+    parsed_response = JSON.parse(response)
 
     target_api = params.fetch(:target_api, "")
     if !EnrollmentMailer::MAIL_PARAMS.key?(target_api)
