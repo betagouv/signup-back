@@ -52,6 +52,7 @@ class EnrollmentPolicy < ApplicationPolicy
       :responsable_traitement_label,
       :responsable_traitement_email,
       :responsable_traitement_phone_number,
+      :demarche,
       contacts: [:id, :email, :phone_number],
       documents_attributes: [
         :attachment,
