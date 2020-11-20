@@ -1,5 +1,5 @@
-class InseeProxyController < ApplicationController
-  # GET /insee-proxy/naf/1
+class InseeController < ApplicationController
+  # GET /insee/naf/1
   def naf
     response = File.read("./public/codes_naf.json")
     parsed_response = JSON.parse(response)
@@ -7,9 +7,9 @@ class InseeProxyController < ApplicationController
     code = params.fetch(:id, "").gsub('.', '')
 
     if(parsed_response[code].nil?)
-      render status: :ok, json: { libelle: "Code inconnu" }
+      render status: :not_found, json: {}
     else
-      render status: :ok, json: { libelle: parsed_response[code] }
+      render status: :ok, json: { message: parsed_response[code] }
     end
   end
 end
