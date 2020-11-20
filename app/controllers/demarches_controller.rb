@@ -8,10 +8,10 @@ class DemarchesController < ApplicationController
     target_api = params.fetch(:target_api, "")
     if !EnrollmentMailer::MAIL_PARAMS.key?(target_api)
       render status: :not_found, json: {}
-    elsif parsed_response[target_api.tr("_", "-")].nil?
+    elsif parsed_response[target_api].nil?
       render status: :not_found, json: {}
     else
-      render status: :ok, json: parsed_response[target_api.tr("_", "-")]
+      render status: :ok, json: parsed_response[target_api]
     end
   end
 end
