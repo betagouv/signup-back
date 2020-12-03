@@ -164,44 +164,18 @@ class Enrollment < ActiveRecord::Base
 
   def clean_and_format_scopes
     # we need to convert boolean values as it is send as string because of the data-form serialisation
-    self.scopes = scopes.transform_values { |e| e.to_s == "true" }
+    self.scopes = scopes.transform_values { |value| value.to_s == "true" }
 
     # in a similar way, format additional boolean content
-    if additional_content.key?("rgpd_general_agreement")
-      additional_content["rgpd_general_agreement"] =
-        additional_content["rgpd_general_agreement"].to_s == "true"
-    end
-    if additional_content.key?("recette_fonctionnelle")
-      additional_content["recette_fonctionnelle"] =
-        additional_content["recette_fonctionnelle"].to_s == "true"
-    end
-    if additional_content.key?("has_alternative_authentication_methods")
-      additional_content["has_alternative_authentication_methods"] =
-        additional_content["has_alternative_authentication_methods"].to_s == "true"
-    end
-    if additional_content.key?("secret_statistique_agreement")
-      additional_content["secret_statistique_agreement"] =
-        additional_content["secret_statistique_agreement"].to_s == "true"
-    end
-
-    if additional_content.key?("partage_agreement")
-      additional_content["partage_agreement"] =
-        additional_content["partage_agreement"].to_s == "true"
-    end
-
-    if additional_content.key?("protection_agreement")
-      additional_content["protection_agreement"] =
-        additional_content["protection_agreement"].to_s == "true"
-    end
-
-    if additional_content.key?("exhaustivite_agreement")
-      additional_content["exhaustivite_agreement"] =
-        additional_content["exhaustivite_agreement"].to_s == "true"
-    end
-
-    if additional_content.key?("information_agreement")
-      additional_content["information_agreement"] =
-        additional_content["information_agreement"].to_s == "true"
+    self.additional_content = additional_content.transform_values do |value|
+      case value.to_s
+      when "true"
+        true
+      when "false"
+        false
+      else
+        value
+      end
     end
   end
 

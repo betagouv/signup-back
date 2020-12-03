@@ -17,7 +17,25 @@ class Enrollment::AidantsConnectPolicy < EnrollmentPolicy
       :responsable_traitement_label,
       :responsable_traitement_email,
       :responsable_traitement_phone_number,
-      contacts: [:id, :email, :phone_number]
+      documents_attributes: [
+        :attachment,
+        :type
+      ],
+      additional_content: [
+        :organization_address,
+        :associated_public_organisation,
+        :label_pass_numerique,
+        :label_france_services,
+        :label_fabrique_territoires,
+        :membre_reseau,
+        :nombre_aidants,
+        :utilisation_identifiants_usagers,
+        :demandes_par_semaines,
+        :teletravail_autorise,
+        :adresse_mail_professionnelle,
+        :telephone_portable_professionnel,
+        :ordinateur_professionnel
+      ]
     ])
 
     res
