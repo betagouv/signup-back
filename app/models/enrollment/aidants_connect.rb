@@ -2,9 +2,6 @@ class Enrollment::AidantsConnect < Enrollment
   protected
 
   def sent_validation
-    contact = contacts&.find { |e| e["id"] == "metier" }
-    errors[:contacts] << "Vous devez renseigner le responsable d’organisation avant de continuer" unless contact&.fetch("email", false)&.present?
-
     rgpd_validation
 
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
