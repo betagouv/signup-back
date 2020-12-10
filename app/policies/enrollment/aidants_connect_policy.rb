@@ -8,15 +8,13 @@ class Enrollment::AidantsConnectPolicy < EnrollmentPolicy
       :organization_id,
       :intitule,
       :description,
-      :data_recipients,
-      :data_retention_period,
-      :data_retention_comment,
-      :dpo_label,
-      :dpo_email,
-      :dpo_phone_number,
-      :responsable_traitement_label,
-      :responsable_traitement_email,
-      :responsable_traitement_phone_number,
+      contacts: [
+        :id,
+        :family_name,
+        :given_name,
+        :email,
+        :phone_number
+      ],
       documents_attributes: [
         :attachment,
         :type

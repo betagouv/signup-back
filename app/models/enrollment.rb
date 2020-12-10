@@ -226,24 +226,22 @@ class Enrollment < ActiveRecord::Base
     errors[:responsable_traitement_phone_number] << "Vous devez renseigner un numéro de téléphone pour le responsable de traitement avant de continuer" unless responsable_traitement_phone_number.present?
   end
 
-  def contact_technique_validation
+  def contact_validation(key, label)
     email_regex = URI::MailTo::EMAIL_REGEXP
     # loose homemade regexp to match large amount of phone number
     phone_number_regex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/
 
-    contact_technique = contacts&.find { |e| e["id"] == "technique" }
-    errors[:contacts] << "Vous devez renseigner un email valide pour le contact technique avant de continuer" unless email_regex.match?(contact_technique&.fetch("email", false))
-    errors[:contacts] << "Vous devez renseigner un numéro de téléphone valide pour le contact technique avant de continuer" unless phone_number_regex.match?(contact_technique&.fetch("phone_number", false))
+    contact = contacts&.find { |e| e["id"] == key }
+    errors[:contacts] << "Vous devez renseigner un email valide pour le #{label} avant de continuer" unless email_regex.match?(contact&.fetch("email", false))
+    errors[:contacts] << "Vous devez renseigner un numéro de téléphone valide pour le #{label} avant de continuer" unless phone_number_regex.match?(contact&.fetch("phone_number", false))
+  end
+
+  def contact_technique_validation
+    contact_validation("technique", "contact technique")
   end
 
   def contact_metier_validation
-    email_regex = URI::MailTo::EMAIL_REGEXP
-    # loose homemade regexp to match large amount of phone number
-    phone_number_regex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/
-
-    contact_metier = contacts&.find { |e| e["id"] == "metier" }
-    errors[:contacts] << "Vous devez renseigner un email valide le contact métier avant de continuer" unless email_regex.match?(contact_metier&.fetch("email", false))
-    errors[:contacts] << "Vous devez renseigner un numéro de téléphone valide pour le contact métier avant de continuer" unless phone_number_regex.match?(contact_metier&.fetch("phone_number", false))
+    contact_validation("metier", "contact métier")
   end
 
   def cadre_juridique_validation

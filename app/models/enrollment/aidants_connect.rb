@@ -2,7 +2,8 @@ class Enrollment::AidantsConnect < Enrollment
   protected
 
   def sent_validation
-    rgpd_validation
+    contact_validation("technique", "contact métier")
+    contact_validation("metier", "représentant légal")
 
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
     errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale
