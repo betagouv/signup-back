@@ -49,7 +49,6 @@ class EnrollmentsController < ApplicationController
       filter.each do |filter_item|
         filter_item.each do |filter_key, filter_value|
           next unless %w[id nom_raison_sociale target_api status user.email].include? filter_key
-          sanitized_filter_key = filter_key
 
           sanitized_filter_value = Enrollment.send(:sanitize_sql_like, filter_value)
           san_fil_val_without_accent = ActiveSupport::Inflector.transliterate(sanitized_filter_value)
@@ -59,6 +58,8 @@ class EnrollmentsController < ApplicationController
               "INNER JOIN users \"user\" ON \"user\".id = enrollments.user_id"
             )
             sanitized_filter_key = filter_key.split(".").map { |e| "\"#{e}\"" }.join(".")
+          else
+            sanitized_filter_key = "\"enrollments\".\"#{filter_key}\""
           end
 
           @enrollments = @enrollments.where(
