@@ -12,11 +12,13 @@ class Enrollment::FranceconnectPolicy < EnrollmentPolicy
         :gender,
         :preferred_username,
         :email,
-        :openid,
+        :openid
       ],
       additional_content: [
-        :has_alternative_authentication_methods,
-      ],
+        :eidas_1,
+        :eidas_2,
+        :has_alternative_authentication_methods
+      ]
     ])
 
     res
