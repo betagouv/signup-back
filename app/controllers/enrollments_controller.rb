@@ -3,7 +3,7 @@ class EnrollmentsController < ApplicationController
   DPO_LABEL = "délégué à la protection des données"
 
   before_action :authenticate_user!, except: [:public]
-  before_action :set_enrollment, only: %i[show update trigger copy destroy]
+  before_action :set_enrollment, only: %i[show update trigger copy destroy update_rgpd_contact]
 
   # GET /enrollments
   def index
@@ -250,6 +250,43 @@ class EnrollmentsController < ApplicationController
       render json: @enrollment
     else
       render status: :unprocessable_entity, json: @enrollment.errors
+    end
+  end
+
+  # PATCH /enrollment/1/update_rgpd_contact
+  def update_rgpd_contact
+    authorize @enrollment
+
+    if @enrollment.update(permitted_attributes(@enrollment))
+      @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
+      if params[:enrollment].has_key?(:responsable_traitement_email)
+        RgpdMailer.with(
+          to: @enrollment.responsable_traitement.email,
+          target_api: @enrollment.target_api,
+          enrollment_id: @enrollment.id,
+          rgpd_role: RESPONSABLE_TRAITEMENT_LABEL,
+          contact_label: @enrollment.responsable_traitement_label,
+          owner_email: @enrollment.user.email,
+          nom_raison_sociale: @enrollment.nom_raison_sociale,
+          intitule: @enrollment.intitule
+        ).rgpd_contact_email.deliver_later
+      end
+      if params[:enrollment].has_key?(:dpo_email)
+        RgpdMailer.with(
+          to: @enrollment.dpo.email,
+          target_api: @enrollment.target_api,
+          enrollment_id: @enrollment.id,
+          rgpd_role: DPO_LABEL,
+          contact_label: @enrollment.dpo_label,
+          owner_email: @enrollment.user.email,
+          nom_raison_sociale: @enrollment.nom_raison_sociale,
+          intitule: @enrollment.intitule
+        ).rgpd_contact_email.deliver_later
+      end
+
+      render json: @enrollment
+    else
+      render json: @enrollment.errors, status: :unprocessable_entity
     end
   end
 
