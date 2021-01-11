@@ -80,7 +80,7 @@ class ApiEntrepriseBridge < BridgeService
       # could go through when logging in « dashboard entreprise ».
       # Note that this can happen when the user already has a token in
       # « dashboard entreprise » but obtained it before the existence
-      # of Data Pass.
+      # of DataPass.
       update_user_response = Http.patch(
         "#{api_host}/api/admin/users/#{user["id"]}",
         {

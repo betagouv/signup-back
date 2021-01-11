@@ -26,7 +26,7 @@ class FranceconnectBridge < BridgeService
       "Espace Partenaire FranceConnect",
     )
 
-    # The id returned here is the Data Pass id. It is not a generated id from "espace partenaires".
+    # The id returned here is the DataPass id. It is not a generated id from "espace partenaires".
     response.parse["_id"]
   end
 end

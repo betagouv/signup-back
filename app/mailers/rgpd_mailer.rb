@@ -52,11 +52,11 @@ class RgpdMailer < ActionMailer::Base
       }],
       subject: "Votre demande d'habilitation à #{target_api_label}",
       sender: {
-        name: "L'équipe Data Pass",
+        name: "L'équipe DataPass",
         email: "datapass@api.gouv.fr"
       },
       replyTo: {
-        name: "L'équipe Data Pass",
+        name: "L'équipe DataPass",
         email: "datapass@api.gouv.fr"
       },
       templateId: 13,
