@@ -94,6 +94,10 @@ class Enrollment < ActiveRecord::Base
       if enrollment.target_api == "api_impot_particulier_fc_sandbox" && !ENV["DISABLE_API_IMPOT_PARTICULIER_BRIDGE"].present?
         ApiImpotParticulierFcSandboxBridge.call(enrollment)
       end
+
+      if enrollment.target_api == "francerelance_fc" && !ENV["DISABLE_FRANCECONNECT_BRIDGE"].present?
+        FranceconnectBridge.call(enrollment)
+      end
     end
 
     event :loop_without_job do
