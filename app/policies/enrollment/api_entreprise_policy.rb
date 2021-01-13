@@ -25,7 +25,8 @@ class Enrollment::ApiEntreprisePolicy < EnrollmentPolicy
         :liasse_fiscale,
         :actes_inpi,
         :bilans_inpi,
-        :conventions_collectives
+        :conventions_collectives,
+        :effectifs_acoss
       ],
       contacts: [
         :id,
