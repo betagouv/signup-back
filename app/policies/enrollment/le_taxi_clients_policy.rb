@@ -1,4 +1,4 @@
-class Enrollment::LeTaxiPolicy < EnrollmentPolicy
+class Enrollment::LeTaxiClientsPolicy < EnrollmentPolicy
   def permitted_attributes
     res = []
 
@@ -18,11 +18,7 @@ class Enrollment::LeTaxiPolicy < EnrollmentPolicy
       :responsable_traitement_label,
       :responsable_traitement_email,
       :responsable_traitement_phone_number,
-      contacts: [:id, :email, :phone_number],
-      scopes: [
-        :operator,
-        :search_engine,
-      ],
+      contacts: [:id, :email, :phone_number]
     ])
 
     res
