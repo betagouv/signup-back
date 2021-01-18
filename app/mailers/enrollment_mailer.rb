@@ -53,7 +53,11 @@ class EnrollmentMailer < ActionMailer::Base
       "sender" => "contact@covoiturage.beta.gouv.fr",
       "target_api" => "Registre de preuve de covoiturage"
     },
-    "le_taxi" => {
+    "le_taxi_clients" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "le.Taxi"
+    },
+    "le_taxi_chauffeurs" => {
       "sender" => "contact@api.gouv.fr",
       "target_api" => "le.Taxi"
     },

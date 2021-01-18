@@ -1,7 +1,7 @@
-class Enrollment::LeTaxi < Enrollment
+class Enrollment::LeTaxiChauffeurs < Enrollment
   def sent_validation
-    contact = contacts&.find { |e| e["id"] == "technique" }
-    errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch("email", false)&.present?
+    contact = contacts&.find { |e| e["id"] == "metier" }
+    errors[:contacts] << "Vous devez renseigner un chargé de suivit avant de continuer" unless contact&.fetch("email", false)&.present?
 
     rgpd_validation
 
