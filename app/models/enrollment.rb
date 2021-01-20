@@ -253,6 +253,17 @@ class Enrollment < ActiveRecord::Base
     errors[:fondement_juridique_url] << "Vous devez joindre l'URL ou le document du texte relatif au traitement avant de continuer" unless fondement_juridique_url.present? || documents.where(type: "Document::LegalBasis").present?
   end
 
+  def subvention_info_validation
+    errors[:date_integration] << "Vous devez renseigner une date d'intégration prévisionelle avant de continuer." unless additional_content&.fetch("date_integration", false)&.present?
+    errors[:types_de_depenses] << "Vous devez renseigner le types de dépenses financées avant de continuer." unless additional_content&.fetch("types_de_depenses", false)&.present?
+
+    contact_validation("comptable", "contact comptable")
+
+    errors[:nom_beneficiaire] << "Vous devez renseigner un nom de bénéficiaire avant de continuer." unless additional_content&.fetch("nom_beneficiaire", false)&.present?
+    errors[:iban] << "Vous devez renseigner un numero iban avant de continuer." unless additional_content&.fetch("iban", false)&.present?
+    errors[:bic] << "Vous devez renseigner un code bic avant de continuer." unless additional_content&.fetch("bic", false)&.present?
+  end
+
   def sent_validation
     contact = contacts&.find { |e| e["id"] == "technique" }
     errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch("email", false)&.present?

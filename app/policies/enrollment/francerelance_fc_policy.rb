@@ -25,7 +25,10 @@ class Enrollment::FrancerelanceFcPolicy < EnrollmentPolicy
         :has_alternative_authentication_methods,
         :utilisation_franceconnect_autre_projet,
         :date_integration,
-        :type_de_depenses
+        :types_de_depenses,
+        :nom_beneficiaire,
+        :iban,
+        :bic
       ]
     ])
 

@@ -30,6 +30,10 @@ class EnrollmentsController < ApplicationController
       end
     end
 
+    if params.fetch(:francerelanceApi, false) == "true"
+      @enrollments = @enrollments.where(target_api: %w[api_particulier api_entreprise preuve_covoiturage api_impot_particulier_sandbox api_impot_particulier_production api_impot_particulier_fc_sandbox api_impot_particulier_fc_production api_r2p_sandbox api_r2p_production api_ficoba_sandbox api_ficoba_production api_droits_cnam le_taxi_clients le_taxi_chauffeurs cartobio aidants_connect])
+    end
+
     begin
       sorted_by = JSON.parse(params.fetch(:sortedBy, "[]"))
       sorted_by.each do |sort_item|
