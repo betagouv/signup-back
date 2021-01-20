@@ -30,6 +30,7 @@ class EnrollmentsController < ApplicationController
       end
     end
 
+    # TODO refactor this to accept multiple value on filter keys instead
     if params.fetch(:francerelanceApi, false) == "true"
       @enrollments = @enrollments.where(target_api: %w[api_particulier api_entreprise preuve_covoiturage api_impot_particulier_sandbox api_impot_particulier_production api_impot_particulier_fc_sandbox api_impot_particulier_fc_production api_r2p_sandbox api_r2p_production api_ficoba_sandbox api_ficoba_production api_droits_cnam le_taxi_clients le_taxi_chauffeurs cartobio aidants_connect])
     end
@@ -295,6 +296,7 @@ class EnrollmentsController < ApplicationController
   end
 
   # POST /enrollment/1/copy
+  # TODO put explicit policy on this instead of relying on in depth mechanisms
   def copy
     copied_enrollment = @enrollment.copy current_user
     render json: copied_enrollment
