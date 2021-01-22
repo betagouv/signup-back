@@ -12,24 +12,6 @@ class EnrollmentsController < ApplicationController
       @enrollments = @enrollments.where(target_api: params.fetch(:target_api, false))
     end
 
-    has_filter_by_status = false
-    begin
-      filter = JSON.parse(params.fetch(:filter, "[]"))
-      has_filter_by_status = filter.any? { |f| f.key? "status" }
-    rescue JSON::ParserError
-      # silently fail, if the filter is not formatted properly we assume there is no filter by status
-    end
-
-    unless has_filter_by_status
-      # if filter by status is set, it overrides archive and status params
-      # (ie. we do not apply archive and status params)
-      @enrollments = if params.fetch(:archived, false) == "true"
-        @enrollments.where(status: %w[validated refused])
-      else
-        @enrollments.where.not(status: %w[validated refused])
-      end
-    end
-
     begin
       sorted_by = JSON.parse(params.fetch(:sortedBy, "[]"))
       sorted_by.each do |sort_item|
