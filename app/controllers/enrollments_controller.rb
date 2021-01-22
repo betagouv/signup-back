@@ -49,9 +49,10 @@ class EnrollmentsController < ApplicationController
       filter.each do |filter_item|
         filter_item.each do |filter_key, filter_value|
           next unless %w[id siret nom_raison_sociale target_api status user.email].include? filter_key
-
-          sanitized_filter_value = Enrollment.send(:sanitize_sql_like, filter_value)
-          san_fil_val_without_accent = ActiveSupport::Inflector.transliterate(sanitized_filter_value)
+          filter_value = [filter_value] unless filter_value.is_a?(Array)
+          sanitized_filter_value = filter_value.map { |f| Regexp.escape(f) }
+          san_fil_val_without_accent = sanitized_filter_value.map { |f| ActiveSupport::Inflector.transliterate(f) }.join("|")
+          next if san_fil_val_without_accent == ""
 
           if filter_key.start_with? "user."
             @enrollments = @enrollments.joins(
@@ -62,9 +63,11 @@ class EnrollmentsController < ApplicationController
             sanitized_filter_key = "\"enrollments\".\"#{filter_key}\""
           end
 
+          is_fuzzy = %w[id siret nom_raison_sociale user.email].include? filter_key
+
           @enrollments = @enrollments.where(
-            "LOWER(#{sanitized_filter_key}::varchar(255)) LIKE ?",
-            "%#{san_fil_val_without_accent.downcase}%"
+            "#{sanitized_filter_key}::varchar(255) ~* ?",
+            is_fuzzy ? ".*(#{san_fil_val_without_accent}).*" : "^(#{san_fil_val_without_accent})$"
           )
         end
       end
