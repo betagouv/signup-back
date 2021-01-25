@@ -25,7 +25,8 @@ class Enrollment::FrancerelanceFcPolicy < EnrollmentPolicy
         :has_alternative_authentication_methods,
         :utilisation_franceconnect_autre_projet,
         :date_integration,
-        :type_de_depenses
+        :type_de_depenses,
+        :code_ic
       ]
     ])
 
