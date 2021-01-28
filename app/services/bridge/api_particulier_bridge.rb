@@ -5,7 +5,9 @@ class ApiParticulierBridge < BridgeService
 
   def call
     name = "#{@enrollment.nom_raison_sociale} - #{@enrollment.id}"
-    email = @enrollment.contacts.find { |contact| contact["id"] == "technique" }["email"]
+    technical_contact_email = @enrollment.contacts.find { |contact| contact["id"] == "technique" }["email"]
+    functionnal_contact_email = @enrollment.contacts.find { |contact| contact["id"] == "metier" }["email"]
+    author_email = @enrollment.user[:email]
     scopes = @enrollment[:scopes].reject { |_, v| !v }.keys
     linked_token_manager_id = create_enrollment_in_token_manager(@enrollment.id, name, email, scopes)
     @enrollment.update({linked_token_manager_id: linked_token_manager_id})
@@ -18,7 +20,9 @@ class ApiParticulierBridge < BridgeService
       "#{ENV.fetch("PORTAIL_API_GOUV_FR_HOST")}/api-particulier/subscribe",
       {
         name: name,
-        email: email,
+        technical_contact_email: technical_contact_email,
+        functionnal_contact_email: functionnal_contact_email,
+        author_email: author_email,
         data_pass_id: id,
         scopes: scopes
       },
