@@ -20,19 +20,19 @@ class Enrollment::AidantsConnectPolicy < EnrollmentPolicy
         :type
       ],
       additional_content: [
+        :organization_type,
         :organization_address,
         :associated_public_organisation,
         :label_pass_numerique,
         :label_france_services,
         :label_fabrique_territoires,
-        :membre_reseau,
+        :recrutement_conseiller_numerique,
         :nombre_aidants,
         :utilisation_identifiants_usagers,
         :demandes_par_semaines,
-        :teletravail_autorise,
         :adresse_mail_professionnelle,
-        :telephone_portable_professionnel,
-        :ordinateur_professionnel
+        :participation_reseau,
+        :nom_reseau
       ]
     ])
 
