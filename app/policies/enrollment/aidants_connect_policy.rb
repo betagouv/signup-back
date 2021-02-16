@@ -22,17 +22,18 @@ class Enrollment::AidantsConnectPolicy < EnrollmentPolicy
       additional_content: [
         :organization_type,
         :organization_address,
+        :organization_postal_code,
+        :organization_website,
+        :participation_reseau,
+        :nom_reseau,
         :associated_public_organisation,
         :label_pass_numerique,
         :label_france_services,
         :label_fabrique_territoires,
         :recrutement_conseiller_numerique,
-        :nombre_aidants,
         :utilisation_identifiants_usagers,
         :demandes_par_semaines,
-        :adresse_mail_professionnelle,
-        :participation_reseau,
-        :nom_reseau
+        :adresse_mail_professionnelle
       ]
     ])
 
