@@ -29,8 +29,8 @@ class Enrollment::Dgfip::ProductionEnrollment < Enrollment
     errors[:autorite_homologation_nom] << "Vous devez renseigner le nom de l’autorité d’homologation avant de continuer" unless additional_content&.fetch("autorite_homologation_nom", false)&.present?
     errors[:autorite_homologation_fonction] << "Vous devez renseigner la fonction de l’autorité d’homologation avant de continuer" unless additional_content&.fetch("autorite_homologation_fonction", false)&.present?
     date_regex = /^\d{4}-\d{2}-\d{2}$/
-    errors[:date_homologation] << "Vous devez renseigner la date de début de l’homologation au format AAAA-MM-JJ avant de continuer" unless date_regex.match?(additional_content&.fetch("date_homologation", false))
-    errors[:date_fin_homologation] << "Vous devez renseigner la date de fin de l’homologation au format AAAA-MM-JJ avant de continuer" unless date_regex.match?(additional_content&.fetch("date_fin_homologation", false))
+    errors[:date_homologation] << "Vous devez renseigner la date de début de l’homologation au format AAAA-MM-JJ avant de continuer" unless date_regex.match?(additional_content&.fetch("date_homologation", ""))
+    errors[:date_fin_homologation] << "Vous devez renseigner la date de fin de l’homologation au format AAAA-MM-JJ avant de continuer" unless date_regex.match?(additional_content&.fetch("date_fin_homologation", ""))
     errors[:documents_attributes] << "Vous devez joindre le document de décision d’homologation avant de continuer" unless documents.where(type: "Document::DecisionHomologation").present?
 
     # Volumétrie

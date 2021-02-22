@@ -236,8 +236,8 @@ class Enrollment < ActiveRecord::Base
     phone_number_regex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/
 
     contact = contacts&.find { |e| e["id"] == key }
-    errors[:contacts] << "Vous devez renseigner un email valide pour le #{label} avant de continuer" unless email_regex.match?(contact&.fetch("email", false))
-    errors[:contacts] << "Vous devez renseigner un numéro de téléphone valide pour le #{label} avant de continuer" unless phone_number_regex.match?(contact&.fetch("phone_number", false))
+    errors[:contacts] << "Vous devez renseigner un email valide pour le #{label} avant de continuer" unless email_regex.match?(contact&.fetch("email", ""))
+    errors[:contacts] << "Vous devez renseigner un numéro de téléphone valide pour le #{label} avant de continuer" unless phone_number_regex.match?(contact&.fetch("phone_number", ""))
   end
 
   def contact_technique_validation
