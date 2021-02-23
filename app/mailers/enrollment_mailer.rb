@@ -72,6 +72,10 @@ class EnrollmentMailer < ActionMailer::Base
     "francerelance_fc" => {
       "sender" => "support.partenaires@franceconnect.gouv.fr",
       "target_api" => "FranceRelance - Guichet FranceConnect"
+    },
+    "api_service_national" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API Service National"
     }
   }.freeze
 
