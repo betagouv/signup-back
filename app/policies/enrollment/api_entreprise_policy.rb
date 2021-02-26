@@ -27,7 +27,8 @@ class Enrollment::ApiEntreprisePolicy < EnrollmentPolicy
         :bilans_inpi,
         :conventions_collectives,
         :effectifs_acoss,
-        :entreprises_artisanales
+        :entreprises_artisanales,
+        :eori_douanes
       ],
       contacts: [
         :id,
