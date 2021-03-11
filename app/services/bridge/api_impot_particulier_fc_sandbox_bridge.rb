@@ -57,25 +57,25 @@ class ApiImpotParticulierFcSandboxBridge < BridgeService
             # TODO non renseigné
             denominationService: nil
           },
-          dateCreation: @enrollment.created_at,
-          dateSoumission: @enrollment.submitted_at,
-          dateValidation: @enrollment.validated_at
+          dateCreation: @enrollment.created_at.to_date,
+          dateSoumission: @enrollment.submitted_at.to_date,
+          dateValidation: @enrollment.validated_at.to_date
         },
         casUsage: {
           libelle: @enrollment.intitule,
           detail: @enrollment.description
         },
-        "datas": [
+        "apiSouscrites": [
           # TODO besoin de la liste exhaustive des labels, des ressourceCode et des restrictions
           {
-            "nom": "Impôt_Particulier",
+            "code": "Impôt_Particulier",
             "ressources": [
               {
-                "ressourceCode": "RessourceIR",
+                "code": "RessourceIR",
                 "restrictions": %w[rfr nbpart AnneeN1 AnneeN]
               },
               {
-                "ressourceCode": "RessourceTHPrincipale",
+                "code": "RessourceTHPrincipale",
                 "restrictions": %w[donneeLocal adresseFisc AnneeN1 AnneeN]
               }
             ],
