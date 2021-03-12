@@ -76,6 +76,10 @@ class EnrollmentMailer < ActionMailer::Base
     "api_service_national" => {
       "sender" => "contact@api.gouv.fr",
       "target_api" => "API Service National"
+    },
+    "api_statut_etudiant" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API Statut étudiant"
     }
   }.freeze
 
