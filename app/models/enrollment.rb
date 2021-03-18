@@ -98,6 +98,10 @@ class Enrollment < ActiveRecord::Base
       if enrollment.target_api == "francerelance_fc" && !ENV["DISABLE_FRANCECONNECT_BRIDGE"].present?
         FranceconnectBridge.call(enrollment)
       end
+
+      if enrollment.target_api == "aidants_connect" && !ENV["DISABLE_AIDANTS_CONNECT_BRIDGE"].present?
+        AidantsConnectBridge.call(enrollment)
+      end
     end
 
     event :loop_without_job do

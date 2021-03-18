@@ -20,10 +20,10 @@ class FranceconnectBridge < BridgeService
         name: name,
         authorized_emails: [email],
         signup_id: id,
-        scopes: scopes,
+        scopes: scopes
       },
       ENV.fetch("FRANCECONNECT_PARTICULIER_API_KEY"),
-      "Espace Partenaire FranceConnect",
+      "Espace Partenaire FranceConnect"
     )
 
     # The id returned here is the DataPass id. It is not a generated id from "espace partenaires".
