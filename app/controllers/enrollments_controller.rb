@@ -165,6 +165,7 @@ class EnrollmentsController < ApplicationController
     # Note that the functional usefulness of this feature is still to prove, plus, there is
     # to much code for this, and dangerous one, like putting an accesstoken in a clientside
     # sessions. We may prefer to force email validation when the user register.
+    # Note 2, this might be useful to check that the users still belongs to the organization instead.
     if event == "send_application" && !@enrollment.user.email_verified
       # This is a defensive programming test because we must not update an user illegitimately
       if current_user.email == @enrollment.user.email
