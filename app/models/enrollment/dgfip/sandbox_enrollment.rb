@@ -19,9 +19,5 @@ class Enrollment::Dgfip::SandboxEnrollment < Enrollment
 
     # CGU
     errors[:cgu_approved] << "Vous devez valider les modalités d’utilisation avant de continuer" unless cgu_approved?
-
-    unless user.email_verified
-      errors[:base] << "L’accès à votre adresse email n’a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
-    end
   end
 end

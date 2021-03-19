@@ -106,7 +106,7 @@ class EnrollmentsController < ApplicationController
   def create
     target_api = params.fetch(:enrollment, {})["target_api"]
     unless EnrollmentMailer::MAIL_PARAMS.key?(target_api)
-      raise ApplicationController::UnprocessableEntity, "Une erreur inattendue est survenue: API cible invalide. Aucun changement n'a été sauvegardé."
+      raise ApplicationController::UnprocessableEntity, "Une erreur inattendue est survenue: API cible invalide. Aucun changement n’a été sauvegardé."
     end
     enrollment_class = "Enrollment::#{target_api.underscore.classify}".constantize
     @enrollment = enrollment_class.new
@@ -154,23 +154,28 @@ class EnrollmentsController < ApplicationController
     end
     authorize @enrollment, "#{event}?".to_sym
 
-    # We update userinfo when "event" is "send_application"
-    # This is convenient when a user submit a new enrollment while is email is not validated:
-    # 1. the user submits the enrollment
-    # 2. he gets the error "you must validate your email before submitting"
-    # 3. he clicks on the validation link
-    # 4. since his profile is reloaded here, he can now submit his enrollment
-    #   without logging in and out again
-    #
-    # Note that the functional usefulness of this feature is still to prove, plus, there is
-    # to much code for this, and dangerous one, like putting an accesstoken in a clientside
-    # sessions. We may prefer to force email validation when the user register.
-    # Note 2, this might be useful to check that the users still belongs to the organization instead.
-    if event == "send_application" && !@enrollment.user.email_verified
+    # We update userinfo when "event" is "send_application".
+    # This is useful to prevent user that has been removed from organization, or has been deactivated
+    # since first login, to submit authorization request illegitimately
+    # Note that this feature need the access token to be stored in a clientside
+    # sessions. This might be considered as a security weakness.
+    if event == "send_application"
       # This is a defensive programming test because we must not update an user illegitimately
       if current_user.email == @enrollment.user.email
         begin
-          @enrollment.user.email_verified = RefreshUser.call(session[:access_token]).email_verified
+          refreshed_user = RefreshUser.call(session[:access_token])
+          @enrollment.user.email_verified = refreshed_user.email_verified
+          @enrollment.user.organizations = refreshed_user.organizations
+
+          unless refreshed_user.email_verified
+            raise ApplicationController::Forbidden, "L’accès à votre adresse email n’a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
+          end
+          selected_organization = refreshed_user.organizations.find { |o| o["id"] == @enrollment.organization_id }
+          if selected_organization.nil?
+            raise ApplicationController::Forbidden, "Vous ne pouvez pas déposer une demande pour une organisation à laquelle vous n’appartenez pas. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/join-organization?siret_hint=#{@enrollment.siret} puis de cliquer sur 'Rejoindre l’organisation'"
+          end
+        rescue ApplicationController::Forbidden => e
+          raise
         rescue => e
           # If there is an error, we assume that the access token as expired
           # we force the logout so the token can be refreshed.

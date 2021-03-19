@@ -17,9 +17,5 @@ class Enrollment::Cartobio < Enrollment
     errors[:protection_agreement] << "Vous devez valider la mise en œuvre des mesures limitant la divulgation des données avant de continuer" unless additional_content&.fetch("protection_agreement", false)&.present?
     errors[:exhaustivite_agreement] << "Vous devez valider avoir pris connaissance de la non exhaustivité des données avant de continuer" unless additional_content&.fetch("exhaustivite_agreement", false)&.present?
     errors[:information_agreement] << "Vous devez valider l'information systématique à l'équipe CartoBio avant de continuer" unless additional_content&.fetch("information_agreement", false)&.present?
-
-    unless user.email_verified
-      errors[:base] << "L'accès à votre adresse email n'a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
-    end
   end
 end

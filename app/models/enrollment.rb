@@ -157,7 +157,7 @@ class Enrollment < ActiveRecord::Base
     copied_enrollment.events.create(
       name: "copied",
       user_id: current_user.id,
-      comment: "Demande d'origine : ##{self.id}"
+      comment: "Demande d’origine : ##{self.id}"
     )
     self.documents.each do |document|
       copied_document = document.dup
@@ -192,7 +192,7 @@ class Enrollment < ActiveRecord::Base
     # this might not be the proper place to do this kind of authorization check
     selected_organization = user.organizations.find { |o| o["id"] == organization_id }
     if selected_organization.nil?
-      raise ApplicationController::Forbidden, "Vous ne pouvez pas déposer une demande pour une organisation à laquelle vous n'appartenez pas"
+      raise ApplicationController::Forbidden, "Vous ne pouvez pas déposer une demande pour une organisation à laquelle vous n’appartenez pas"
     end
     siret = selected_organization["siret"]
 
@@ -217,10 +217,10 @@ class Enrollment < ActiveRecord::Base
   end
 
   def update_validation
-    errors[:intitule] << "Vous devez renseigner l'intitulé de la démarche avant de continuer. Aucun changement n'a été sauvegardé." unless intitule.present?
+    errors[:intitule] << "Vous devez renseigner l’intitulé de la démarche avant de continuer. Aucun changement n’a été sauvegardé." unless intitule.present?
     # the following 2 errors should never occur #defensiveprogramming
-    errors[:target_api] << "Une erreur inattendue est survenue: pas d'API cible. Aucun changement n'a été sauvegardé." unless target_api.present?
-    errors[:organization_id] << "Une erreur inattendue est survenue: pas d'organisation. Aucun changement n'a été sauvegardé." unless organization_id.present?
+    errors[:target_api] << "Une erreur inattendue est survenue: pas d’API cible. Aucun changement n’a été sauvegardé." unless target_api.present?
+    errors[:organization_id] << "Une erreur inattendue est survenue: pas d’organisation. Aucun changement n’a été sauvegardé." unless organization_id.present?
   end
 
   def rgpd_validation
@@ -254,7 +254,7 @@ class Enrollment < ActiveRecord::Base
 
   def cadre_juridique_validation
     errors[:fondement_juridique_title] << "Vous devez renseigner la nature du texte vous autorisant à traiter les données avant de continuer" unless fondement_juridique_title.present?
-    errors[:fondement_juridique_url] << "Vous devez joindre l'URL ou le document du texte relatif au traitement avant de continuer" unless fondement_juridique_url.present? || documents.where(type: "Document::LegalBasis").present?
+    errors[:fondement_juridique_url] << "Vous devez joindre l’URL ou le document du texte relatif au traitement avant de continuer" unless fondement_juridique_url.present? || documents.where(type: "Document::LegalBasis").present?
   end
 
   def sent_validation
@@ -265,10 +265,7 @@ class Enrollment < ActiveRecord::Base
     cadre_juridique_validation
 
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
-    errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale
-    errors[:cgu_approved] << "Vous devez valider les modalités d'utilisation avant de continuer" unless cgu_approved?
-    unless user.email_verified
-      errors[:base] << "L'accès à votre adresse email n'a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
-    end
+    errors[:siret] << "Vous devez renseigner un SIRET d’organisation valide avant de continuer" unless nom_raison_sociale
+    errors[:cgu_approved] << "Vous devez valider les modalités d’utilisation avant de continuer" unless cgu_approved?
   end
 end
