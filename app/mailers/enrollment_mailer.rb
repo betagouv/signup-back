@@ -66,7 +66,7 @@ class EnrollmentMailer < ActionMailer::Base
       "target_api" => "CartoBio"
     },
     "aidants_connect" => {
-      "sender" => "contact@api.gouv.fr",
+      "sender" => "contact@aidantsconnect.beta.gouv.fr",
       "target_api" => "Aidants Connect"
     },
     "francerelance_fc" => {
