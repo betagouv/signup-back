@@ -28,7 +28,8 @@ class Enrollment::ApiEntreprisePolicy < EnrollmentPolicy
         :conventions_collectives,
         :effectifs_acoss,
         :entreprises_artisanales,
-        :eori_douanes
+        :eori_douanes,
+        :certificat_agence_bio
       ],
       contacts: [
         :id,
