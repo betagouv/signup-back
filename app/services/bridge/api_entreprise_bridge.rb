@@ -63,7 +63,7 @@ class ApiEntrepriseBridge < BridgeService
         "#{api_host}/api/admin/users/",
         {
           email: email,
-          oauth_api_gouv_id: uid.to_i,
+          oauth_api_gouv_id: uid,
           context: siret,
           cgu_agreement_date: cgu_agreement_date
         },
@@ -84,7 +84,7 @@ class ApiEntrepriseBridge < BridgeService
       update_user_response = Http.patch(
         "#{api_host}/api/admin/users/#{user["id"]}",
         {
-          oauth_api_gouv_id: uid.to_i
+          oauth_api_gouv_id: uid
         },
         api_key,
         "dashboard API entreprise"
