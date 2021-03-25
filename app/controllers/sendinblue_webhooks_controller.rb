@@ -42,8 +42,14 @@ class SendinblueWebhooksController < ApplicationController
     )
     email_content = get_email_content_response.parse
 
-    enrollment_id = email_content["body"][/https:\/\/datapass(-[a-z]+)?.api.gouv.fr\/[a-z-]+\/([0-9]+)/, 2]
+    environment = email_content["body"][/https:\/\/datapass(-[a-z]+)?.api.gouv.fr\/[a-z-]+\/([0-9]+)/, 1]
+    unless environment.nil?
+      # environment.nil? is production environment
+      # we do not send rgpd mail for other env because the sendinblue hook is only configured on the production environment
+      raise ApplicationController::Accepted, "no gdpr alert send, wrong environment"
+    end
 
+    enrollment_id = email_content["body"][/https:\/\/datapass(-[a-z]+)?.api.gouv.fr\/[a-z-]+\/([0-9]+)/, 2]
     enrollment = Enrollment.find(enrollment_id.to_i)
     instructor_email = enrollment.events.where(name: "validated")[0].user["email"]
 
