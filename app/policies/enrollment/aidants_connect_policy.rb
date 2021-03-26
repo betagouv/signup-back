@@ -13,7 +13,8 @@ class Enrollment::AidantsConnectPolicy < EnrollmentPolicy
         :family_name,
         :given_name,
         :email,
-        :phone_number
+        :phone_number,
+        :job
       ],
       documents_attributes: [
         :attachment,
@@ -33,7 +34,8 @@ class Enrollment::AidantsConnectPolicy < EnrollmentPolicy
         :recrutement_conseiller_numerique,
         :utilisation_identifiants_usagers,
         :demandes_par_semaines,
-        :adresse_mail_professionnelle
+        :adresse_mail_professionnelle,
+        :has_professional_contact_only
       ]
     ])
 

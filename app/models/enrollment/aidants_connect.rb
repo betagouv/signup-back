@@ -2,7 +2,6 @@ class Enrollment::AidantsConnect < Enrollment
   protected
 
   def sent_validation
-    contact_validation("technique", "contact métier")
     contact_validation("metier", "représentant légal")
 
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
@@ -26,5 +25,8 @@ class Enrollment::AidantsConnect < Enrollment
     end
 
     errors[:cgu_approved] << "Vous devez valider les modalités d’utilisation avant de continuer" unless cgu_approved?
+    unless additional_content&.fetch("has_professional_contact_only", false)&.present?
+      errors[:secret_statistique_agreement] << "Vous devez valider que la liste des aidants à habiliter contient exclusivement des aidants professionnels avant de continuer"
+    end
   end
 end
