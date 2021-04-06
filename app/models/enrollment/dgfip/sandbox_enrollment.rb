@@ -14,9 +14,6 @@ class Enrollment::Dgfip::SandboxEnrollment < Enrollment
     errors[:contacts] << "Vous devez renseigner un prénom pour le contact technique avant de continuer" if contact_technique&.fetch("given_name", "").to_s.strip.empty?
     errors[:contacts] << "Vous devez renseigner un nom pour le contact technique avant de continuer" if contact_technique&.fetch("family_name", "").to_s.strip.empty?
 
-    # Données
-    errors[:rgpd_general_agreement] << "Vous devez attester respecter les principes RGPD avant de continuer" unless additional_content&.fetch("rgpd_general_agreement", false)
-
     # CGU
     errors[:cgu_approved] << "Vous devez valider les modalités d’utilisation avant de continuer" unless cgu_approved?
   end
