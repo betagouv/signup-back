@@ -80,6 +80,14 @@ class EnrollmentMailer < ActionMailer::Base
     "api_statut_etudiant" => {
       "sender" => "contact@api.gouv.fr",
       "target_api" => "API Statut étudiant"
+    },
+    "api_hermes_sandbox" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API Hermes (Bac à sable)"
+    },
+    "api_hermes_production" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "API Hermes (Production)"
     }
   }.freeze
 
