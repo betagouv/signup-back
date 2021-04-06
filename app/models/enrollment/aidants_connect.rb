@@ -3,6 +3,9 @@ class Enrollment::AidantsConnect < Enrollment
 
   def sent_validation
     contact_validation("metier", "représentant légal")
+    contact = contacts&.find { |e| e["id"] == "metier" }
+    errors[:contacts] << "Vous devez renseigner un intitulé de poste valide pour le représentant légal avant de continuer" unless contact&.fetch("job", false)&.present?
+
 
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
     errors[:siret] << "Vous devez renseigner un SIRET d’organisation valide avant de continuer" unless nom_raison_sociale
