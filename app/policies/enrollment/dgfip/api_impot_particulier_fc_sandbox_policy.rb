@@ -19,6 +19,7 @@ class Enrollment::ApiImpotParticulierFcSandboxPolicy < Enrollment::Dgfip::Sandbo
         :dgfip_locaux_th_Aff,
         :dgfip_sitfam,
         :dgfip_nbpart,
+        :dgfip_pac_nbPac,
         :dgfip_pac,
         :dgfip_pariso,
         :dgfip_rfr,
