@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_19_161708) do
+ActiveRecord::Schema.define(version: 2021_04_07_155557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +82,10 @@ ActiveRecord::Schema.define(version: 2020_11_19_161708) do
     t.string "uid"
     t.boolean "email_verified", default: false
     t.jsonb "organizations", default: [], array: true
+    t.string "family_name"
+    t.string "given_name"
+    t.string "phone_number"
+    t.string "job"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
