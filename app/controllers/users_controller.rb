@@ -27,6 +27,21 @@ class UsersController < ApplicationController
     end
   end
 
+  def create
+    @user = User.new
+    @user.email = params[:email]
+    @user.update_attributes(permitted_attributes(@user))
+    authorize @user
+
+    if @user.save
+      render json: @user,
+             serializer: AdminUserSerializer
+    else
+      render json: @user.errors,
+             status: :unprocessable_entity
+    end
+  end
+
   def me
     user = current_user.attributes
     render json: user.as_json

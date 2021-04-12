@@ -3,6 +3,14 @@ class UserPolicy < ApplicationPolicy
     user.is_administrator?
   end
 
+  def create?
+    user.is_administrator?
+  end
+
+  def permitted_attributes_for_create
+    [:email]
+  end
+
   def permitted_attributes
     [
       roles: []
