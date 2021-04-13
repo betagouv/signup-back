@@ -5,7 +5,7 @@ class EnrollmentSerializer < ActiveModel::Serializer
     :data_retention_period, :data_retention_comment, :dpo_label, :dpo_email, :dpo_phone_number,
     :responsable_traitement_label, :responsable_traitement_email, :responsable_traitement_phone_number, :demarche
 
-  belongs_to :user
+  belongs_to :user, serializer: FullUserSerializer
 
   has_many :documents
   has_many :events
