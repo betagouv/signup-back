@@ -43,8 +43,9 @@ class UsersController < ApplicationController
   end
 
   def me
-    user = current_user.attributes
-    render json: user.as_json
+    user = User.new current_user.attributes
+    render json: user,
+           serializer: FullUserSerializer
   end
 
   def join_organization
