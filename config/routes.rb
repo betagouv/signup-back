@@ -10,6 +10,7 @@ Rails.application.routes.draw do
         post :copy
         get :copies
         get :next_enrollments
+        patch :update_owner
         patch :update_rgpd_contact
       end
     end

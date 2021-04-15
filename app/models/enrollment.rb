@@ -143,6 +143,14 @@ class Enrollment < ActiveRecord::Base
     responsable_traitement.try(:email)
   end
 
+  def user_email=(email)
+    self.user = if email.empty?
+      nil
+    else
+      User.reconcile({"email" => email.strip})
+    end
+  end
+
   def submitted_at
     events.where(name: "submitted").order("created_at").last["created_at"]
   end

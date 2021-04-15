@@ -31,8 +31,16 @@ class EnrollmentPolicy < ApplicationPolicy
     record.can_refuse_application? && user.is_instructor?(record.target_api)
   end
 
+  def update_owner?
+    record.validated? && user.is_administrator?
+  end
+
   def update_rgpd_contact?
     record.validated? && user.is_administrator?
+  end
+
+  def permitted_attributes_for_update_owner
+    [:user_email]
   end
 
   def permitted_attributes_for_update_rgpd_contact

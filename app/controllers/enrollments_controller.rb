@@ -3,7 +3,7 @@ class EnrollmentsController < ApplicationController
   DPO_LABEL = "délégué à la protection des données"
 
   before_action :authenticate_user!, except: [:public]
-  before_action :set_enrollment, only: %i[show update trigger copy destroy update_rgpd_contact]
+  before_action :set_enrollment, only: %i[show update trigger copy destroy update_owner update_rgpd_contact]
 
   # GET /enrollments
   def index
@@ -241,6 +241,18 @@ class EnrollmentsController < ApplicationController
       render json: @enrollment
     else
       render status: :unprocessable_entity, json: @enrollment.errors
+    end
+  end
+
+  # PATCH /enrollment/1/update_owner
+  def update_owner
+    authorize @enrollment
+
+    if @enrollment.update(permitted_attributes(@enrollment))
+      @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
+      render json: @enrollment
+    else
+      render json: @enrollment.errors, status: :unprocessable_entity
     end
   end
 
