@@ -25,7 +25,7 @@ class ApplicationController < ActionController::API
 
   rescue_from AccessDenied do |e|
     render status: :unauthorized, json: {
-      message: "Vous n'êtes pas autorisé à accéder à cette API",
+      message: "Vous n’êtes pas autorisé à accéder à cette API",
       detail: e.message
     }
   end
@@ -38,7 +38,7 @@ class ApplicationController < ActionController::API
 
   rescue_from BadGateway do |e|
     render status: :bad_gateway, json: {
-      message: "Impossible d'envoyer les données à \"#{e.endpoint_label}\".\n\nMerci de communiquer les détails techniques de l'erreur à contact@api.gouv.fr :\n- url: #{e.url}\n- http code: #{e.http_code}\n- http body: #{e.http_body.to_json}\n- message: #{e.message}"
+      message: "Impossible d’envoyer les données à \"#{e.endpoint_label}\".\n\nMerci de communiquer les détails techniques de l’erreur à contact@api.gouv.fr :\n- url: #{e.url}\n- http code: #{e.http_code}\n- http body: #{e.http_body.to_json}\n- message: #{e.message}"
     }
   end
 
@@ -56,7 +56,7 @@ class ApplicationController < ActionController::API
 
   rescue_from Pundit::NotAuthorizedError do |_|
     render status: :forbidden, json: {
-      message: "Vous n'êtes pas autorisé à modifier cette ressource"
+      message: "Vous n’êtes pas autorisé à modifier cette ressource"
     }
   end
 

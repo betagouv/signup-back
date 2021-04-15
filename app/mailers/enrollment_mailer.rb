@@ -92,7 +92,7 @@ class EnrollmentMailer < ActionMailer::Base
   }.freeze
 
   SUBJECTS = {
-    "send_application" => "Nous avons bien reçu votre demande d'accès",
+    "send_application" => "Nous avons bien reçu votre demande d’accès",
     "validate_application" => "Votre demande a été validée",
     "review_application" => "Votre demande requiert des modifications",
     "refuse_application" => "Votre demande a été refusée",

@@ -13,7 +13,7 @@ class StatsController < ApplicationController
       "target_api = '#{ActiveRecord::Base.connection.quote_string(target_api)}'" :
       "1 = 1" # equivalent to no filter
 
-    # Demandes d'habilitation déposées
+    # Demandes d’habilitation déposées
     enrollment_count_query = <<-SQL
       SELECT COUNT(*) FROM enrollments WHERE #{filter_by_target_api_criteria};
     SQL
@@ -22,7 +22,7 @@ class StatsController < ApplicationController
       .execute(enrollment_count_query)
       .getvalue(0, 0)
 
-    # Demandes d'habilitation validées
+    # Demandes d’habilitation validées
     validated_enrollment_count_query = <<-SQL
       SELECT COUNT(*) FROM enrollments WHERE status = 'validated' AND #{filter_by_target_api_criteria};
     SQL
@@ -55,7 +55,7 @@ class StatsController < ApplicationController
       .execute(go_back_ratio_query)
       .getvalue(0, 0)
 
-    # Demandes d'habilitation déposées
+    # Demandes d’habilitation déposées
     monthly_enrollment_count_query = <<-SQL
       SELECT
         date_trunc('month', created_at) AS month,

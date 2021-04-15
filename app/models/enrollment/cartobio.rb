@@ -4,7 +4,7 @@ class Enrollment::Cartobio < Enrollment
     errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch("email", false)&.present?
 
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
-    errors[:siret] << "Vous devez renseigner un SIRET d'organisation valide avant de continuer" unless nom_raison_sociale.present?
+    errors[:siret] << "Vous devez renseigner un SIRET d’organisation valide avant de continuer" unless nom_raison_sociale.present?
 
     # Données
     unless additional_content&.fetch("location_scopes", false)&.present? || documents.where(type: "Document::GeoShape").present?
@@ -16,6 +16,6 @@ class Enrollment::Cartobio < Enrollment
     errors[:partage_agreement] << "Vous devez valider la restriction du partage des données avant de continuer" unless additional_content&.fetch("partage_agreement", false)&.present?
     errors[:protection_agreement] << "Vous devez valider la mise en œuvre des mesures limitant la divulgation des données avant de continuer" unless additional_content&.fetch("protection_agreement", false)&.present?
     errors[:exhaustivite_agreement] << "Vous devez valider avoir pris connaissance de la non exhaustivité des données avant de continuer" unless additional_content&.fetch("exhaustivite_agreement", false)&.present?
-    errors[:information_agreement] << "Vous devez valider l'information systématique à l'équipe CartoBio avant de continuer" unless additional_content&.fetch("information_agreement", false)&.present?
+    errors[:information_agreement] << "Vous devez valider l’information systématique à l’équipe CartoBio avant de continuer" unless additional_content&.fetch("information_agreement", false)&.present?
   end
 end
