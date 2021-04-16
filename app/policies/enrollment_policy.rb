@@ -44,7 +44,14 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def permitted_attributes_for_update_rgpd_contact
-    [:responsable_traitement_email, :dpo_email]
+    [
+      :responsable_traitement_label,
+      :responsable_traitement_email,
+      :responsable_traitement_phone_number,
+      :dpo_label,
+      :dpo_email,
+      :dpo_phone_number
+    ]
   end
 
   def permitted_attributes
