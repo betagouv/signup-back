@@ -88,6 +88,10 @@ class EnrollmentMailer < ActionMailer::Base
     "api_hermes_production" => {
       "sender" => "contact@api.gouv.fr",
       "target_api" => "API Hermes (Production)"
+    },
+    "hubee" => {
+      "sender" => "contact@api.gouv.fr",
+      "target_api" => "Hubee"
     }
   }.freeze
 

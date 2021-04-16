@@ -242,7 +242,7 @@ class Enrollment < ActiveRecord::Base
     errors[:responsable_traitement_phone_number] << "Vous devez renseigner un numéro de téléphone pour le responsable de traitement avant de continuer" unless responsable_traitement_phone_number.present?
   end
 
-  def contact_validation(key, label)
+  def contact_validation(key, label, validate_full_profile = false)
     email_regex = URI::MailTo::EMAIL_REGEXP
     # loose homemade regexp to match large amount of phone number
     phone_number_regex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/
@@ -250,14 +250,20 @@ class Enrollment < ActiveRecord::Base
     contact = contacts&.find { |e| e["id"] == key }
     errors[:contacts] << "Vous devez renseigner un email valide pour le #{label} avant de continuer" unless email_regex.match?(contact&.fetch("email", ""))
     errors[:contacts] << "Vous devez renseigner un numéro de téléphone valide pour le #{label} avant de continuer" unless phone_number_regex.match?(contact&.fetch("phone_number", ""))
+
+    if validate_full_profile
+      errors[:contacts] << "Vous devez renseigner un intitulé de poste valide pour le #{label} avant de continuer" unless contact&.fetch("job", false)&.present?
+      errors[:contacts] << "Vous devez renseigner un nom valide pour le #{label} avant de continuer" unless contact&.fetch("given_name", false)&.present?
+      errors[:contacts] << "Vous devez renseigner un prénom valide pour le #{label} avant de continuer" unless contact&.fetch("family_name", false)&.present?
+    end
   end
 
   def contact_technique_validation
-    contact_validation("technique", "contact technique")
+    contact_validation("technique", "contact technique", false)
   end
 
   def contact_metier_validation
-    contact_validation("metier", "contact métier")
+    contact_validation("metier", "contact métier", false)
   end
 
   def cadre_juridique_validation
