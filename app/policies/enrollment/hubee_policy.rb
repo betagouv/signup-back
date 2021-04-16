@@ -13,7 +13,7 @@ class Enrollment::HubeePolicy < EnrollmentPolicy
       :cgu_approved,
       documents_attributes: [
         :attachment,
-        :type,
+        :type
       ],
       contacts: [:id, :given_name, :family_name, :email, :phone_number, :job],
       additional_content: [
