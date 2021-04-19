@@ -5,6 +5,7 @@ class Enrollment::Dgfip::SandboxPolicy < EnrollmentPolicy
     res.concat([
       :cgu_approved,
       :target_api,
+      :demarche,
       :previous_enrollment_id,
       :organization_id,
       :intitule,
