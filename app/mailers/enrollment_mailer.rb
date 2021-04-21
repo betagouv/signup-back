@@ -96,12 +96,12 @@ class EnrollmentMailer < ActionMailer::Base
   }.freeze
 
   SUBJECTS = {
-    "send_application" => "Nous avons bien reçu votre demande d’accès",
+    "send_application" => "📬 Votre demande d’accès a bien été reçue",
     "validate_application" => "Votre demande a été validée",
-    "review_application" => "Votre demande requiert des modifications",
+    "review_application" => "✒️ Votre demande requiert des modifications",
     "refuse_application" => "Votre demande a été refusée",
     "notify_application_sent" => "Nouvelle demande sur DataPass",
-    "create_application" => "Votre demande a été enregistrée",
+    "create_application" => "💾 Le brouillon de votre demande a été enregistré",
     "notify" => "Vous avez un nouveau message concernant votre demande"
   }
 

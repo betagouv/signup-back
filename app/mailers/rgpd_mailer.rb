@@ -8,7 +8,7 @@ class RgpdMailer < ActionMailer::Base
       to: [{
         email: params[:to]
       }],
-      subject: "Vous avez été désigné #{params[:rgpd_role]} pour l’organisation #{params[:nom_raison_sociale]}",
+      subject: "Vous avez été désigné(e) #{params[:rgpd_role]} pour l’organisation #{params[:nom_raison_sociale]}",
       sender: {
         name: "L’équipe d’api.gouv.fr",
         email: "contact@api.gouv.fr"
