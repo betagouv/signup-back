@@ -36,7 +36,8 @@ Rails.application.routes.draw do
       to: "sendinblue_webhooks#rgpd_contact_error",
       constraints: {capability_url_id: /[A-Za-z0-9]{64}/}
 
-    get "/insee/naf/:id", to: "insee#naf", id: /\d{2}\.\d{2}[A-Z]/
+    get "/insee/code_naf/:id", to: "insee#code_naf", id: /\d{2}\.\d{2}[A-Z]/
+    get "/insee/categorie_juridique/:id", to: "insee#categorie_juridique", id: /[0-9]{1,4}/
   end
 
   devise_scope :api do
