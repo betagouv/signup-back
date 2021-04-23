@@ -14,7 +14,7 @@ Enrollment.where(status: %w[validated refused]).find_each do |enrollment|
   sleep 0.75
   puts "#{enrollment.id} - #{enrollment.nom_raison_sociale} - #{enrollment.target_api} - #{enrollment.status}"
   response = HTTP.get("https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/#{enrollment.siret}")
-  if response.status.success? && response.parse["etablissement"]["etat_administratif"] == "A"
+  if enrollment.siret && response.status.success? && response.parse["etablissement"]["etat_administratif"] == "A"
     activite_principale = response.parse["etablissement"]["activite_principale"]
     activite_principale ||= response.parse["etablissement"]["unite_legale"]["activite_principale"]
     activite_principale_label = codes_naf[activite_principale.delete(".")]
