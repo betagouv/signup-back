@@ -9,7 +9,12 @@ class Enrollment::AidantsConnect < Enrollment
 
     errors[:organization_type] << "Vous devez renseigner le type de la structure avant de continuer" unless additional_content&.fetch("organization_type", false)&.present?
     errors[:organization_address] << "Vous devez renseigner l’adresse de la structure avant de continuer" unless additional_content&.fetch("organization_address", false)&.present?
-    errors[:organization_postal_code] << "Vous devez renseigner le code postal de la structure avant de continuer" unless additional_content&.fetch("organization_postal_code", false)&.present?
+    if additional_content&.fetch("organization_postal_code", false)&.present?
+      postal_code_regex = /^\d{5}$/
+      errors[:organization_postal_code] << "Vous devez renseigner un code postal valide avant de continuer" unless postal_code_regex.match?(additional_content&.fetch("organization_postal_code", ""))
+    else
+      errors[:organization_postal_code] << "Vous devez renseigner le code postal de la structure avant de continuer"
+    end
     unless [true, false].include? additional_content&.fetch("participation_reseau", "")
       errors[:participation_reseau] << "Merci de préciser si vous participez à un réseau régional ou local"
     end
