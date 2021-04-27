@@ -15,6 +15,7 @@ class Enrollment::AidantsConnect < Enrollment
     else
       errors[:organization_postal_code] << "Vous devez renseigner le code postal de la structure avant de continuer"
     end
+    errors[:organization_city] << "Vous devez renseigner la ville de la structure avant de continuer" unless additional_content&.fetch("organization_city", false)&.present?
     unless [true, false].include? additional_content&.fetch("participation_reseau", "")
       errors[:participation_reseau] << "Merci de préciser si vous participez à un réseau régional ou local"
     end

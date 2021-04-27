@@ -24,6 +24,7 @@ class Enrollment::AidantsConnectPolicy < EnrollmentPolicy
         :organization_type,
         :organization_address,
         :organization_postal_code,
+        :organization_city,
         :organization_website,
         :participation_reseau,
         :nom_reseau,
