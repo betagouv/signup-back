@@ -22,3 +22,10 @@ rails db:schema:load
 ```sh
 bundle exec rspec spec/
 ```
+
+Vous pouvez utiliser [guard](https://github.com/guard/guard) pour lancer les
+tests en continue:
+
+```sh
+bundle exec guard
+```

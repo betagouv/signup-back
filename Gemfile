@@ -29,6 +29,7 @@ group :development, :test do
   gem "webmock"
   gem 'dotenv-rails'
   gem 'byebug'
+  gem 'guard-rspec', require: false
 end
 
 group :development do
