@@ -18,7 +18,7 @@ RSpec.describe User, type: :model do
     end
 
     context 'when user already exists' do
-      let!(:user) { create(:user, email: external_user_info['email'], job: 'Administrator') }
+      let!(:user) { create(:user, email: external_user_info['email']) }
 
       it { is_expected.to eq(user) }
 
@@ -35,10 +35,18 @@ RSpec.describe User, type: :model do
         expect(user.reload.given_name).to eq(external_user_info['given_name'])
       end
 
-      it 'does not change other attributes' do
-        expect {
-          reconcile
-        }.not_to change { user.reload.job }
+      context 'when user has an attribute set not present in payload' do
+        before do
+          user.update!(
+            job: 'Administrateur',
+          )
+        end
+
+        it 'does not change this attribute' do
+          expect {
+            reconcile
+          }.not_to change { user.reload.job }
+        end
       end
     end
 
