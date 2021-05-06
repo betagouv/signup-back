@@ -80,7 +80,8 @@ class StatsController < ApplicationController
       SELECT target_api AS name, COUNT(target_api)
       FROM enrollments
       WHERE #{filter_by_target_api_criteria}
-      GROUP BY target_api;
+      GROUP BY target_api
+      ORDER BY COUNT(target_api) desc;
     SQL
     enrollment_by_target_api = ActiveRecord::Base
       .connection

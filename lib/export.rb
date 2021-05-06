@@ -18,8 +18,7 @@ Enrollment.where(status: %w[validated refused]).find_each do |enrollment|
     activite_principale = response.parse["etablissement"]["activite_principale"]
     activite_principale ||= response.parse["etablissement"]["unite_legale"]["activite_principale"]
     activite_principale_label = codes_naf[activite_principale.delete(".")]
-    categorie_juridique = response.parse["etablissement"]["categorie_juridique"]
-    categorie_juridique ||= response.parse["etablissement"]["unite_legale"]["categorie_juridique"]
+    categorie_juridique = response.parse["etablissement"]["unite_legale"]["categorie_juridique"]
     categorie_juridique_label = categories_juridiques[categorie_juridique]
   else
     puts "\e[31m#{enrollment.siret} not found!\e[0m"
