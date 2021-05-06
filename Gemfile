@@ -23,12 +23,13 @@ gem "sib-api-v3-sdk"
 gem "state_machines-activerecord"
 
 group :development, :test do
-  gem "database_cleaner"
-  gem "factory_girl_rails"
+  gem "factory_bot_rails"
   gem "rspec-rails"
   gem "simplecov"
   gem "webmock"
   gem 'dotenv-rails'
+  gem 'byebug'
+  gem 'guard-rspec', require: false
 end
 
 group :development do

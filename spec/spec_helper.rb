@@ -17,13 +17,12 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'webmock/rspec'
-require 'pundit/rspec'
 require 'simplecov'
+
 SimpleCov.start
 
 RSpec.configure do |config|
-  # FactoryBot inclusion of methods (create, build etc.)
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

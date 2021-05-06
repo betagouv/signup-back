@@ -1,146 +1,93 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe User, type: :model do
-  describe 'with an user' do
-    let(:user) { create(:user) }
+  it 'has valid factory' do
+    expect(build(:user)).to be_valid
+    expect(build(:user, :with_all_infos)).to be_valid
+  end
 
-    %w[service_provider france_connect dgfip api_particulier].each do |provider|
-      describe "with a #{provider} provider" do
-        subject { create(:user, provider: provider) }
+  describe '.reconcile' do
+    subject(:reconcile) { User.reconcile(external_user_info) }
 
-        it "is a #{provider}" do
-          expect(subject.send("#{provider}?")).to be_truthy
-        end
-
-        other_providers = %w[service_provider france_connect dgfip api_particulier]
-        other_providers.delete(provider)
-        other_providers.each do |other_provider|
-          it "is not a #{other_provider}" do
-            expect(subject.send("#{other_provider}?")).to be_falsey
-          end
-        end
-      end
+    let(:external_user_info) do
+      {
+        'email'       => generate(:email),
+        'sub'         => '1234567890',
+        'given_name'  => 'Jean',
+      }
     end
 
-    describe 'with an enrollment' do
-      let(:enrollment) { create(:enrollment) }
+    context 'when user already exists' do
+      let!(:user) { create(:user, email: external_user_info['email']) }
 
-      it 'user can be applicant to an enrollment' do
-        user.add_role(:applicant, enrollment)
+      it { is_expected.to eq(user) }
 
-        expect(user.has_role?(:applicant, enrollment)).to be_truthy
+      it 'does not create a new user' do
+        expect {
+          reconcile
+        }.not_to change(User, :count)
       end
-    end
 
-    describe '#self.reconcile' do
-      subject { described_class }
+      it 'updates attributes present in payload' do
+        reconcile
 
-      describe 'There is a service_provider user in database' do
-        let(:in_database_data) do
-          OmniAuth::AuthHash.new(
-            credentials: { token: 'service_provider' },
-            'account_type' => 'service_provider',
-            'uid' => 'service_provider',
-            provider: 'service_provider'
-          )
-        end
-        let(:not_in_database_data) do
-          OmniAuth::AuthHash.new(
-            credentials: { token: 'service_provider' },
-            'account_type' => 'service_provider',
-            'uid' => '666',
-            'email' => 'not_in_database@service_provider.user'
-          )
-        end
-        let(:user) do
-          create(
-            :user,
-            provider: 'service_provider',
-            uid: 'service_provider'
-          )
-        end
+        expect(user.reload.uid).to eq(external_user_info['sub'])
+        expect(user.reload.given_name).to eq(external_user_info['given_name'])
+      end
+
+      context 'when user has an attribute set not present in payload' do
         before do
-          user
+          user.update!(
+            job: 'Administrateur',
+          )
         end
 
-        it 'returns the user given valid data' do
-          current_user = subject.reconcile(in_database_data)
-
-          expect(current_user).to eq(user)
-        end
-
-        it 'creates an user if not exists' do
-          expect do
-            subject.reconcile(not_in_database_data)
-          end.to change(User, :count).by(1)
-        end
-
-        it 'the created user match given data' do
-          current_user = subject.reconcile(not_in_database_data)
-
-          expect(current_user.email).to eq(not_in_database_data['email'])
-          expect(current_user.uid).to eq(not_in_database_data['uid'])
-          expect(current_user.provider).to eq(not_in_database_data['account_type'])
+        it 'does not change this attribute' do
+          expect {
+            reconcile
+          }.not_to change { user.reload.job }
         end
       end
     end
 
-    describe '#self.from_france_connect_omniauth' do
-      subject { described_class }
+    context 'when user does not exist' do
+      it { is_expected.to be_a(User) }
 
-      describe 'There is a france_connect user in database' do
-        let(:user) do
-          create(
-            :user,
-            provider: 'france_connect',
-            uid: 'france_connect',
-            'email' => 'test@france_connect.user'
-          )
-        end
-        before do
-          user
-        end
-        let(:in_database_data) do
-          OmniAuth::AuthHash.new(
-            credentials: { token: 'france_connect' },
-            info: {
-              'uid' => 'france_connect',
-              'email' => 'test@france_connect.user'
-            },
-            provider: 'france_connect'
-          )
-        end
-        let(:not_in_database_data) do
-          OmniAuth::AuthHash.new(
-            credentials: { token: 'france_connect' },
-            info: {
-              'uid' => 'france_connect_not_in_database',
-              'email' => 'not_in_database@france_connect.user'
-            },
-            provider: 'france_connect'
-          )
-        end
+      it 'creates a new user' do
+        expect {
+          reconcile
+        }.to change(User, :count).by(1)
+      end
 
-        it 'returns the user given valid data' do
-          current_user = subject.from_france_connect_omniauth(in_database_data)
+      it 'assign to new user attributes present in payload' do
+        user = reconcile
 
-          expect(current_user).to eq(user)
-        end
+        expect(user.reload.uid).to eq(external_user_info['sub'])
+        expect(user.reload.given_name).to eq(external_user_info['given_name'])
+      end
+    end
 
-        it 'creates an user if not exists' do
-          expect do
-            subject.from_france_connect_omniauth(not_in_database_data)
-          end.to change(User, :count).by(1)
-        end
+    describe 'with a full payload' do
+      let(:external_user_info) do
+        {
+          'email'           => generate(:email),
+          'sub'             => '1234567890',
+          'email_verified'  => true,
+          'family_name'     => 'Dupont',
+          'given_name'      => 'Jean',
+          'phone_number'    => '0636656565',
+          'job'             => 'Administrator',
+          'organizations'   => %w[DINUM],
+        }
+      end
 
-        it 'the created user match given data' do
-          current_user = subject.from_france_connect_omniauth(not_in_database_data)
+      it 'updates all fields' do
+        user = reconcile
 
-          expect(current_user.email).to eq(not_in_database_data.info['email'])
-          expect(current_user.uid).to eq(not_in_database_data.info['uid'])
-          expect(current_user.provider).to eq(not_in_database_data['provider'])
+        expect(user.uid).to eq(external_user_info['sub'])
+
+        external_user_info.except('sub').each do |key, value|
+          expect(user.public_send(key)).to eq(value), "##{key} is not valid"
         end
       end
     end

@@ -16,3 +16,16 @@ bundle install
 psql -f db/setup.local.sql
 rails db:schema:load
 ```
+
+## Tests
+
+```sh
+bundle exec rspec spec/
+```
+
+Vous pouvez utiliser [guard](https://github.com/guard/guard) pour lancer les
+tests en continue:
+
+```sh
+bundle exec guard
+```
