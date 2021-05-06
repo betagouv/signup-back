@@ -16,3 +16,9 @@ bundle install
 psql -f db/setup.local.sql
 rails db:schema:load
 ```
+
+## Tests
+
+```sh
+bundle exec rspec spec/
+```
