@@ -4,15 +4,27 @@ FactoryBot.define do
   factory :user do
     email
 
-    trait :with_all_infos do
+    trait :dpo do
+      with_personal_information
+    end
+
+    trait :responsable_traitement do
+      with_personal_information
+    end
+
+    trait :with_personal_information do
       given_name { 'Jean' }
       family_name { 'Dupont' }
       phone_number { '0636656565' }
       job { 'Administrateur' }
+    end
+
+    trait :with_all_infos do
+      with_personal_information
 
       organizations do
-        %w[
-          DINUM
+        [
+          build(:organization, :dinum)
         ]
       end
 
