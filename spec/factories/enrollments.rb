@@ -125,6 +125,10 @@ FactoryBot.define do
     end
 
     trait :franceconnect do
+      initialize_with do
+        Enrollment::Franceconnect.new(attributes)
+      end
+
       target_api { "franceconnect" }
       intitule { "Connexion aux démarches de la ville de Clamart" }
       description { "Permettre aux citoyens de se connecter sur le portail des démarches administratives" }
@@ -148,7 +152,7 @@ FactoryBot.define do
           {
             id: "technique",
             email: "user-technique@clamart.fr",
-            phone_number: "0636656565"
+            phone_number: "0626656565"
           }
         ]
       end
