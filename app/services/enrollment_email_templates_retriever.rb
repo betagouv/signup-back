@@ -1,6 +1,6 @@
 class EnrollmentEmailTemplatesRetriever
   attr_reader :enrollment,
-              :instructor
+    :instructor
 
   def initialize(enrollment, instructor)
     @enrollment = enrollment
@@ -18,7 +18,7 @@ class EnrollmentEmailTemplatesRetriever
   def build_template(email_kind)
     EnrollmentEmailTemplate.new(
       action_name: email_kind,
-      plain_text_content: render_template(email_kind),
+      plain_text_content: render_template(email_kind)
     )
   end
 
@@ -33,19 +33,19 @@ class EnrollmentEmailTemplatesRetriever
   def render_specific_template_without_layout(email_kind)
     renderer.render(
       file: "enrollment_mailer/#{enrollment.target_api}/#{email_kind}",
-      layout: false,
+      layout: false
     )
   end
 
   def render_default_template_with_layout(email_kind)
     renderer.render(
       file: "enrollment_mailer/#{email_kind}",
-      layout: 'layouts/enrollment_mailer',
+      layout: "layouts/enrollment_mailer"
     )
   end
 
   def custom_template_exists?(email_kind)
-    File.exists?(
+    File.exist?(
       Rails.root.join(
         "app/views/enrollment_mailer/#{enrollment.target_api}/#{email_kind}.text.erb"
       )
@@ -53,26 +53,26 @@ class EnrollmentEmailTemplatesRetriever
   end
 
   def renderer
-    @renderer ||= ActionView::Base.new('app/views', variables)
+    @renderer ||= ActionView::Base.new("app/views", variables)
   end
 
   def variables
     @variables ||= {
-      url:              enrollment_url,
+      url: enrollment_url,
       target_api_label: target_api_label,
-      front_url:        front_url,
-      user:             user,
-      enrollment:       enrollment,
-      instructor:       instructor,
+      front_url: front_url,
+      user: user,
+      enrollment: enrollment,
+      instructor: instructor
     }
   end
 
   def enrollment_url
-    "#{front_url}/#{enrollment.target_api.tr('_', '-')}/#{enrollment.id}"
+    "#{front_url}/#{enrollment.target_api.tr("_", "-")}/#{enrollment.id}"
   end
 
   def target_api_label
-    target_api_data['target_api']
+    target_api_data["target_api"]
   end
 
   def front_url

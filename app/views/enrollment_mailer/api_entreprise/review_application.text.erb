@@ -1,13 +1,12 @@
-Bonjour <%= "#{@user.first_name} #{@user.last_name}" %>,
+Bonjour <%= "#{@user.given_name} #{@user.family_name}" %>,
 
 Votre demande d’habilitation n°<%= @enrollment.id %> a été traitée par notre service juridique, il nous manque cependant certaines informations pour rendre un avis.
 
 Votre demande requiert les modifications suivantes :
 
-• XXXXXX
-• XXXXXX
+• <cursor>
 
 📝 Pour compléter votre demande, suivez le lien suivant ➡️ <%= @enrollment_url %>
 
 À bientôt 👋,
-<%= @instructor.first_name %> pour API Entreprise
+<%= @instructor.given_name %> pour API Entreprise
