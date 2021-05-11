@@ -13,7 +13,7 @@ class SendinblueWebhooksController < ApplicationController
     body = JSON.parse request.body.read
     message_id = body["message-id"]
     get_transactional_email_reponse = Http.get(
-      "https://api.sendinblue.com/v3/smtp/emails?messageId=#{URI.encode(message_id)}",
+      "https://api.sendinblue.com/v3/smtp/emails?messageId=#{ERB::Util.url_encode(message_id)}",
       sendinblue_api_key,
       "Sendinblue API v3",
       "api-key"
