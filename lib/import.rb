@@ -36,7 +36,6 @@ CSV.foreach(INPUT_FILE, headers: true, strip: true, liberal_parsing: true) do |r
   post_logout_uris = row["post_logout_uris"]
   ips = row["ips"]
   logo = row["logo"]
-  signup_id = row["signup_id"]
   client_id = row["client_id"]
   client_secret = row["client_secret"]
   organization_id = row["organization_id"].to_i
