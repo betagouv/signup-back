@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-RSpec.describe EnrollmentsController, 'review', type: :controller do
+RSpec.describe EnrollmentsController, "review", type: :controller do
   subject(:review_application) do
     patch :trigger, params: {
       id: enrollment.id,
-      event: 'review_application',
+      event: "review_application",
       comment: comment,
-      commentFullEditMode: comment_full_edit_mode,
+      commentFullEditMode: comment_full_edit_mode
     }.compact
   end
 
-  let(:instructor) { create(:user, roles: ['franceconnect:instructor', 'franceconnect:reporter']) }
+  let(:instructor) { create(:user, roles: ["franceconnect:instructor", "franceconnect:reporter"]) }
   let(:enrollment) { create(:enrollment, :sent, :franceconnect) }
 
-  let(:comment) { 'Votre application n\'est pas valide' }
+  let(:comment) { "Votre application n'est pas valide" }
 
   before do
     login(instructor)
@@ -25,18 +25,18 @@ RSpec.describe EnrollmentsController, 'review', type: :controller do
     ActiveJob::Base.queue_adapter = :test
   end
 
-  describe 'when admin sends only a comment' do
+  describe "when admin sends only a comment" do
     let(:comment_full_edit_mode) { nil }
 
     let(:template_sample) do
-      File.open(Rails.root.join('app/views/layouts/enrollment_mailer.text.erb')) { |f| f.readline }.chomp
+      File.open(Rails.root.join("app/views/layouts/enrollment_mailer.text.erb")) { |f| f.readline }.chomp
     end
 
-    let(:template_footer_sample) { 'FranceConnect' }
+    let(:template_footer_sample) { "FranceConnect" }
 
     it { expect(response).to have_http_status(:ok) }
 
-    it 'sends an email to enrollment\'s user with a valid template, with comment and with target api label' do
+    it "sends an email to enrollment's user with a valid template, with comment and with target api label" do
       expect {
         review_application
       }.to change { ActionMailer::Base.deliveries.count }.by(1)
@@ -49,12 +49,12 @@ RSpec.describe EnrollmentsController, 'review', type: :controller do
     end
   end
 
-  context 'when admin sends a comment in full edit mode' do
+  context "when admin sends a comment in full edit mode" do
     let(:comment_full_edit_mode) { true }
 
     it { expect(response).to have_http_status(:ok) }
 
-    it 'sends an email to enrollment\'s user with comment only as body' do
+    it "sends an email to enrollment's user with comment only as body" do
       expect {
         review_application
       }.to change { ActionMailer::Base.deliveries.count }.by(1)

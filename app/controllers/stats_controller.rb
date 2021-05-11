@@ -107,7 +107,7 @@ class StatsController < ApplicationController
       go_back_ratio: go_back_ratio,
       monthly_enrollment_count: monthly_enrollment_count,
       enrollment_by_target_api: enrollment_by_target_api,
-      enrollment_by_status: enrollment_by_status,
+      enrollment_by_status: enrollment_by_status
     }
   end
 
@@ -117,7 +117,7 @@ class StatsController < ApplicationController
     majority_percentile_processing_time_in_days = GetMajorityPercentileProcessingTimeInDays.call(target_api)
 
     render json: {
-      majority_percentile_processing_time_in_days: majority_percentile_processing_time_in_days,
+      majority_percentile_processing_time_in_days: majority_percentile_processing_time_in_days
     }
   end
 end

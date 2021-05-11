@@ -5,9 +5,9 @@ module EntrepriseDataPayloadHelpers
     stub_request(:get, "https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/#{siret}").to_return(
       status: 200,
       headers: {
-        'Content-Type' => 'application/json',
+        "Content-Type" => "application/json"
       },
-      body: entreprise_data_etablissement_payload(siret).to_json,
+      body: entreprise_data_etablissement_payload(siret).to_json
     )
   end
 
@@ -16,16 +16,16 @@ module EntrepriseDataPayloadHelpers
       etablissement: {
         siren: siret.first(9),
         siret: siret,
-        etat_administratif: 'A',
+        etat_administratif: "A",
         denomination_usuelle: nil,
         unite_legale: {
-          denomination: 'COMMUNE DE CLAMART',
+          denomination: "COMMUNE DE CLAMART",
           nom: nil,
           prenom_1: nil,
           prenom_2: nil,
           prenom_3: nil,
-          prenom_4: nil,
-        },
+          prenom_4: nil
+        }
       }
     }
   end

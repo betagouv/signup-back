@@ -1,10 +1,13 @@
 class ApplicationController < ActionController::API
   class AccessDenied < StandardError
   end
+
   class Forbidden < StandardError
   end
+
   class UnprocessableEntity < StandardError
   end
+
   class Accepted < StandardError
   end
 

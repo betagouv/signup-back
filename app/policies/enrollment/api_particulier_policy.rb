@@ -9,8 +9,8 @@ class Enrollment::ApiParticulierPolicy < EnrollmentPolicy
         :cnaf_quotient_familial,
         :cnaf_allocataires,
         :cnaf_enfants,
-        :cnaf_adresse,
-      ],
+        :cnaf_adresse
+      ]
     ])
 
     res

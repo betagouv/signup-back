@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :enrollment do
-    status { 'pending' }
+    status { "pending" }
 
     transient do
       organization_kind { :clamart }
@@ -9,9 +9,9 @@ FactoryBot.define do
     after(:build) do |enrollment, evaluator|
       organization = build(:organization, evaluator.organization_kind)
 
-      enrollment.siret = organization['siret']
+      enrollment.siret = organization["siret"]
       enrollment.user = build(:user, organizations: [organization])
-      enrollment.organization_id = organization['id']
+      enrollment.organization_id = organization["id"]
     end
 
     before(:create) do |enrollment|
@@ -21,7 +21,7 @@ FactoryBot.define do
     trait :sent do
       after(:create) do |enrollment|
         enrollment.update!(
-          status: 'sent',
+          status: "sent"
         )
       end
 
@@ -52,16 +52,16 @@ FactoryBot.define do
 
     trait :with_data_retention do
       data_retention_period { 24 }
-      data_recipients { 'Agents' }
+      data_recipients { "Agents" }
       data_retention_comment { nil }
     end
 
     trait :franceconnect do
-      target_api { 'franceconnect' }
-      intitule { 'Connexion aux démarches de la ville de Clamart' }
-      description { 'Permettre aux citoyens de se connecter sur le portail des démarches administratives' }
-      fondement_juridique_title { 'Arrêté du 8 novembre 2018' }
-      fondement_juridique_url { 'https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000000886460' }
+      target_api { "franceconnect" }
+      intitule { "Connexion aux démarches de la ville de Clamart" }
+      description { "Permettre aux citoyens de se connecter sur le portail des démarches administratives" }
+      fondement_juridique_title { "Arrêté du 8 novembre 2018" }
+      fondement_juridique_url { "https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000000886460" }
 
       scopes do
         {
@@ -71,15 +71,15 @@ FactoryBot.define do
           birthdate: true,
           given_name: true,
           family_name: true,
-          birthcountry: true,
+          birthcountry: true
         }
       end
 
       contacts do
         [
           {
-            id: 'technique',
-            email: 'user-technique@clamart.fr',
+            id: "technique",
+            email: "user-technique@clamart.fr"
           }
         ]
       end

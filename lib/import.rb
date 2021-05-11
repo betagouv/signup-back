@@ -1,5 +1,5 @@
 require "csv"
-require "./config/environment.rb"
+require "./config/environment"
 
 INPUT_FILE = "./input.csv"
 OUTPUT_FILE = "./output.csv"
@@ -41,12 +41,11 @@ CSV.foreach(INPUT_FILE, headers: true, strip: true, liberal_parsing: true) do |r
   client_secret = row["client_secret"]
   organization_id = row["organization_id"].to_i
 
-
   enrollment_class = "Enrollment::#{TARGET_API.underscore.classify}".constantize
   enrollment = enrollment_class.new
 
   enrollment.assign_attributes(
-    scopes: Hash[scopes.split(",").map { |v| [v, true] }],
+    scopes: scopes.split(",").map { |v| [v, true] }.to_h,
     contacts: [{id: "technique", email: resp_technique_email, phone_number: "0#{resp_technique_telephone}"}],
     siret: siret,
     status: "validated",
@@ -64,7 +63,7 @@ CSV.foreach(INPUT_FILE, headers: true, strip: true, liberal_parsing: true) do |r
     dpo_label: "#{dpd_nom} #{dpd_prenom}",
     dpo_phone_number: "0#{dpd_telephone}",
     responsable_traitement_label: "#{resp_traitement_nom} #{resp_traitement_prenom}",
-    responsable_traitement_phone_number: "0#{resp_traitement_telephone}",
+    responsable_traitement_phone_number: "0#{resp_traitement_telephone}"
   )
   user = User.find_by_email(USER_EMAIL)
   selected_organization = user.organizations.find { |o| o["id"] == organization_id }
@@ -119,7 +118,7 @@ CSV.foreach(INPUT_FILE, headers: true, strip: true, liberal_parsing: true) do |r
     logo, # logo
     enrollment.id, # signup_id
     client_id, # client_id
-    client_secret, # client_secret
+    client_secret # client_secret
   ]
 end
 

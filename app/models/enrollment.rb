@@ -156,7 +156,7 @@ class Enrollment < ActiveRecord::Base
   end
 
   def copy(current_user)
-    copied_enrollment = self.dup
+    copied_enrollment = dup
     copied_enrollment.status = :pending
     copied_enrollment.user = current_user
     copied_enrollment.linked_token_manager_id = nil
@@ -165,9 +165,9 @@ class Enrollment < ActiveRecord::Base
     copied_enrollment.events.create(
       name: "copied",
       user_id: current_user.id,
-      comment: "Demande d’origine : ##{self.id}"
+      comment: "Demande d’origine : ##{id}"
     )
-    self.documents.each do |document|
+    documents.each do |document|
       copied_document = document.dup
       copied_document.attachment = File.open(document.attachment.file.file)
       copied_enrollment.documents << copied_document

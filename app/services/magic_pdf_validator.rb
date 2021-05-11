@@ -61,14 +61,14 @@ class MagicPdfValidator
   def read_starting_signature!
     @file.rewind
     starting_bytes = @file.readpartial(starting_signature_bytes)
-    @starting_signature = starting_bytes.unpack("H*").first
+    @starting_signature = starting_bytes.unpack1("H*")
   end
 
   def read_trailing_signature!
     @file.rewind
     @file.seek(max_trailing_signature_bytes * -1, IO::SEEK_END)
     trailing_bytes = @file.read
-    @trailing_signature = trailing_bytes.unpack("H*").first
+    @trailing_signature = trailing_bytes.unpack1("H*")
   end
 
   def starting_signature_valid?

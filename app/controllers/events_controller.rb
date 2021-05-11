@@ -25,5 +25,4 @@ class EventsController < ApplicationController
 
     render json: comments
   end
-
 end

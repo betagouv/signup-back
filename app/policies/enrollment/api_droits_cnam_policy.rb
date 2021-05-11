@@ -9,8 +9,8 @@ class Enrollment::ApiDroitsCnamPolicy < EnrollmentPolicy
         :cnam_caisse,
         :cnam_exonerations,
         :cnam_medecin_traitant,
-        :cnam_presence_medecin_traitant,
-      ],
+        :cnam_presence_medecin_traitant
+      ]
     ])
 
     res

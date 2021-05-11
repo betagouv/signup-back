@@ -9,19 +9,19 @@ class User < ActiveRecord::Base
 
   def self.reconcile(external_user_info)
     user = where(
-      email: external_user_info['email'],
+      email: external_user_info["email"]
     ).first_or_create!
 
     # the following data must be used as a cache (do not modify them, use fresh data form api-auth whenever you can)
     user.uid = external_user_info["sub"] if external_user_info.key?("sub")
     user.assign_attributes(
       external_user_info.slice(
-        'email_verified',
-        'family_name',
-        'given_name',
-        'phone_number',
-        'job',
-        'organizations',
+        "email_verified",
+        "family_name",
+        "given_name",
+        "phone_number",
+        "job",
+        "organizations"
       )
     )
     user.save
