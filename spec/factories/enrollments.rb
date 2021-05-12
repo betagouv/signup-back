@@ -99,6 +99,24 @@ FactoryBot.define do
       end
     end
 
+    trait :api_particulier do
+      target_api { "api_particulier" }
+      intitule { "Délivrance des titres de transport de la ville de Clamart" }
+
+      contacts do
+        [
+          {
+            id: "technique",
+            email: "user-technique@clamart.fr"
+          },
+          {
+            id: "metier",
+            email: "user-metier@clamart.fr"
+          }
+        ]
+      end
+    end
+
     trait :franceconnect do
       target_api { "franceconnect" }
       intitule { "Connexion aux démarches de la ville de Clamart" }
