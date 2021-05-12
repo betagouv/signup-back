@@ -7,7 +7,7 @@ module Users
     def api_gouv
       session[:id_token] = request.env["omniauth.auth"]["credentials"].id_token
       session[:access_token] = request.env["omniauth.auth"]["credentials"].token
-      user = User.reconcile(request.env["omniauth.auth"]["info"])
+      user = User.reconcile(request.env["omniauth.auth"]["info"].to_h)
       sign_in_and_redirect user
     end
 
