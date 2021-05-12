@@ -9,9 +9,9 @@ class RenameRolesToEvents < ActiveRecord::Migration[5.1]
 end
 
 # manual requests were made after this migration:
-# DELETE FROM events
-# WHERE name = 'technical_inputs_sender' OR name = 'application_deployer';
-# 
+#  DELETE FROM events
+#  WHERE name = 'technical_inputs_sender' OR name = 'application_deployer';
+#
 # UPDATE events
 # SET name = CASE name
 #   WHEN 'application_sender' THEN 'submitted'

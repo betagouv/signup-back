@@ -153,7 +153,7 @@ class EnrollmentMailer < ActionMailer::Base
       from: MAIL_PARAMS[params[:target_api]]["sender"],
       cc: "datapass@api.gouv.fr",
       template_path: "enrollment_mailer",
-      template_name: "add_scopes_in_franceconnect",
+      template_name: "add_scopes_in_franceconnect"
     )
   end
 end

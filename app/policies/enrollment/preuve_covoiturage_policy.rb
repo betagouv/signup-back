@@ -5,8 +5,8 @@ class Enrollment::PreuveCovoituragePolicy < EnrollmentPolicy
     res.concat([
       scopes: [
         :operator,
-        :territory,
-      ],
+        :territory
+      ]
     ])
 
     res

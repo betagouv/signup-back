@@ -37,7 +37,7 @@ class ChangeEnrollmentSchema < ActiveRecord::Migration[5.1]
     add_column :enrollments, :delegue_protection_donnees, :string
     add_column :enrollments, :certificat_pub_production, :string
     add_column :enrollments, :autorite_certification, :string
-    add_column :enrollments, :ip_production, 'text[]'
+    add_column :enrollments, :ip_production, "text[]"
     add_column :enrollments, :mise_en_production, :boolean
     add_column :enrollments, :validation_de_convention, :boolean
   end

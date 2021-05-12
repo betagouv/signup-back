@@ -4,11 +4,9 @@ class LightEnrollmentSerializer < ActiveModel::Serializer
   belongs_to :user
 
   attribute :acl do
-    Hash[
-      EnrollmentPolicy.acl_methods.map do |method|
-        [method.to_s.delete('?'), EnrollmentPolicy.new(current_user, object).send(method)]
-      end
-    ]
+    EnrollmentPolicy.acl_methods.map do |method|
+      [method.to_s.delete("?"), EnrollmentPolicy.new(current_user, object).send(method)]
+    end.to_h
   end
 
   attribute :is_renewal do

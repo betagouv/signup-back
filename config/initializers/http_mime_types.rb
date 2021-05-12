@@ -9,6 +9,6 @@ module HTTP
     end
 
     register_adapter "text/html", HTML
-    register_alias   "text/html", :html
+    register_alias "text/html", :html
   end
 end

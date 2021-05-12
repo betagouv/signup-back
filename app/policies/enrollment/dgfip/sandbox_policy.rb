@@ -15,7 +15,7 @@ class Enrollment::Dgfip::SandboxPolicy < EnrollmentPolicy
       contacts: [:id, :given_name, :family_name, :email, :phone_number],
       documents_attributes: [
         :attachment,
-        :type,
+        :type
       ],
       additional_content: [
         :rgpd_general_agreement

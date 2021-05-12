@@ -174,7 +174,7 @@ class EnrollmentsController < ApplicationController
           if selected_organization.nil?
             raise ApplicationController::Forbidden, "Vous ne pouvez pas déposer une demande pour une organisation à laquelle vous n’appartenez pas. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/join-organization?siret_hint=#{@enrollment.siret} puis de cliquer sur 'Rejoindre l’organisation'"
           end
-        rescue ApplicationController::Forbidden => e
+        rescue ApplicationController::Forbidden => _e
           raise
         rescue => e
           # If there is an error, we assume that the access token as expired

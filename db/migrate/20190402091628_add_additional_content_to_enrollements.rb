@@ -27,13 +27,13 @@ end
 
 # manual requests were made after this migration:
 #
-# UPDATE enrollments SET donnees = donnees - 'dgfip_data_years';
-# UPDATE enrollments SET donnees = donnees - 'rgpd_general_agreement';
+#  UPDATE enrollments SET donnees = donnees - 'dgfip_data_years';
+#  UPDATE enrollments SET donnees = donnees - 'rgpd_general_agreement';
 # UPDATE enrollments
 # SET additional_content = additional_content
 #     || jsonb_build_object('has_alternative_authentication_methods', donnees->'has_alternative_authentication_methods')
 # WHERE fournisseur_de_donnees = 'franceconnect';
 # UPDATE enrollments SET donnees = donnees - 'has_alternative_authentication_methods';
 #
-# SELECT jsonb_object_keys(donnees) AS key, count(*) FROM enrollments GROUP BY key;
-# SELECT jsonb_object_keys(additional_content) AS key, count(*) FROM enrollments GROUP BY key;
+#  SELECT jsonb_object_keys(donnees) AS key, count(*) FROM enrollments GROUP BY key;
+#  SELECT jsonb_object_keys(additional_content) AS key, count(*) FROM enrollments GROUP BY key;

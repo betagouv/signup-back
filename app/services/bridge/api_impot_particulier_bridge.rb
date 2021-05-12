@@ -9,7 +9,7 @@ class ApiImpotParticulierFcSandboxBridge < BridgeService
       nom_raison_sociale: @enrollment.nom_raison_sociale,
       enrollment_id: @enrollment.id,
       previous_enrollment_id: @enrollment.previous_enrollment_id,
-      scopes: @enrollment[:scopes].reject { |k, v| !v }.keys,
+      scopes: @enrollment[:scopes].reject { |k, v| !v }.keys
     ).add_scopes_in_franceconnect_email.deliver_later
   end
 end
