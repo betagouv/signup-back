@@ -114,6 +114,10 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    guard-standardrb (0.2.0)
+      guard (>= 2.0.0)
+      guard-compat (~> 1.0)
+      standardrb
     hashdiff (1.0.1)
     hashie (4.1.0)
     http (4.4.1)
@@ -360,6 +364,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   guard-rspec
+  guard-standardrb
   http
   kaminari
   listen (>= 3.0.5, < 3.2)

@@ -30,6 +30,7 @@ group :development, :test do
   gem "dotenv-rails"
   gem "byebug"
   gem "guard-rspec", require: false
+  gem "guard-standardrb"
 end
 
 group :development do
