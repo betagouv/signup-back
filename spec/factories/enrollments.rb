@@ -1,6 +1,10 @@
 FactoryBot.define do
   factory :enrollment do
     status { "pending" }
+    intitule { "Intitulé" }
+
+    trait :pending
+    trait :modification_pending
 
     transient do
       organization_kind { :clamart }
@@ -10,7 +14,14 @@ FactoryBot.define do
       organization = build(:organization, evaluator.organization_kind)
 
       enrollment.siret = organization["siret"]
-      enrollment.user = build(:user, organizations: [organization])
+
+      if enrollment.user
+        enrollment.user.organizations ||= []
+        enrollment.user.organizations << organization
+      else
+        enrollment.user = build(:user, organizations: [organization])
+      end
+
       enrollment.organization_id = organization["id"]
     end
 
@@ -54,6 +65,38 @@ FactoryBot.define do
       data_retention_period { 24 }
       data_recipients { "Agents" }
       data_retention_comment { nil }
+    end
+
+    trait :validated do
+      status { "validated" }
+
+      with_dpo
+      with_responsable_traitement
+      with_data_retention
+
+      cgu_approved { true }
+    end
+
+    trait :public do
+      validated
+    end
+
+    trait :api_entreprise do
+      target_api { "api_entreprise" }
+      intitule { "Marché publics de la ville de Clamart" }
+
+      contacts do
+        [
+          {
+            id: "technique",
+            email: "user-technique@clamart.fr"
+          },
+          {
+            id: "metier",
+            email: "user-metier@clamart.fr"
+          }
+        ]
+      end
     end
 
     trait :franceconnect do
