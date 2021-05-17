@@ -7,7 +7,7 @@ class EnrollmentPolicy < ApplicationPolicy
     (record.pending? || record.modification_pending?) && user == record.user
   end
 
-  def delete?
+  def destroy?
     (record.pending? || record.modification_pending?) && user == record.user
   end
 

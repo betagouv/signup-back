@@ -320,6 +320,8 @@ class EnrollmentsController < ApplicationController
   end
 
   def destroy
+    authorize @enrollment
+
     @enrollment.destroy
 
     render status: :ok
