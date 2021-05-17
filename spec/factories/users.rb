@@ -4,6 +4,14 @@ FactoryBot.define do
   factory :user do
     email
 
+    trait :administrator do
+      roles do
+        %w[
+          administrator
+        ]
+      end
+    end
+
     trait :dpo do
       with_personal_information
     end
@@ -21,16 +29,11 @@ FactoryBot.define do
 
     trait :with_all_infos do
       with_personal_information
+      administrator
 
       organizations do
         [
           build(:organization, :dinum)
-        ]
-      end
-
-      roles do
-        %w[
-          administrator
         ]
       end
     end
