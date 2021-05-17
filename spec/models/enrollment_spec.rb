@@ -1,6 +1,12 @@
 RSpec.describe Enrollment, type: :model do
   it "has valid factories" do
-    expect(build(:enrollment, :franceconnect)).to be_valid
-    expect(build(:enrollment, :franceconnect, :sent)).to be_valid
+    %i[
+      franceconnect
+      api_entreprise
+    ].each do |target_api_trait|
+      expect(build(:enrollment, target_api_trait)).to be_valid
+      expect(build(:enrollment, target_api_trait, :sent)).to be_valid
+      expect(build(:enrollment, target_api_trait, :validated)).to be_valid
+    end
   end
 end
