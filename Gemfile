@@ -15,7 +15,7 @@ gem "kaminari"
 gem "mailjet"
 gem "omniauth-oauth2"
 gem "pg"
-gem "puma", "~> 3.12"
+gem "puma", "~> 5.3"
 gem "pundit"
 gem "rails", "~> 5.2.5"
 gem "rails-i18n"
@@ -34,7 +34,7 @@ group :development, :test do
 end
 
 group :development do
-  gem "listen", ">= 3.0.5", "< 3.2"
+  gem "listen", ">= 3.0.5", "< 3.6"
   gem "rubocop"
   gem "standardrb"
   gem "spring"
