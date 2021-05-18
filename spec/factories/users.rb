@@ -4,6 +4,16 @@ FactoryBot.define do
   factory :user do
     email
 
+    transient do
+      organization_kind { nil }
+    end
+
+    after(:build) do |user, evaluator|
+      if evaluator.organization_kind
+        user.organizations << build(:organization, evaluator.organization_kind)
+      end
+    end
+
     trait :administrator do
       roles do
         %w[
