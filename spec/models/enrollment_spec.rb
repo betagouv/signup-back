@@ -3,6 +3,7 @@ RSpec.describe Enrollment, type: :model do
     %i[
       franceconnect
       api_entreprise
+      api_particulier
     ].each do |target_api_trait|
       expect(build(:enrollment, target_api_trait)).to be_valid
       expect(build(:enrollment, target_api_trait, :sent)).to be_valid
