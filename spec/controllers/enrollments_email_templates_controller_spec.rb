@@ -12,13 +12,13 @@ RSpec.describe EnrollmentsEmailTemplatesController, type: :controller do
     end
 
     context "with an unauthorized user" do
-      let(:instructor) { create(:user, roles: ["dinum:instructor", "dinum:reporter"]) }
+      let(:instructor) { create(:user, roles: ["dinum:instructor"]) }
 
-      it { expect(get_enrollments_email_templates).to have_http_status(:not_found) }
+      it { expect(get_enrollments_email_templates).to have_http_status(:forbidden) }
     end
 
     context "with an authorized user" do
-      let(:instructor) { create(:user, roles: ["franceconnect:instructor", "franceconnect:reporter"]) }
+      let(:instructor) { create(:user, roles: ["franceconnect:instructor"]) }
       let(:enrollment_email_templates) { build_list(:enrollment_email_template, 2) }
 
       before do

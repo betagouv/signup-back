@@ -39,6 +39,10 @@ class EnrollmentPolicy < ApplicationPolicy
     record.validated? && user.is_administrator?
   end
 
+  def get_email_templates?
+    user.is_instructor?(record.target_api)
+  end
+
   def permitted_attributes_for_update_owner
     [:user_email]
   end
