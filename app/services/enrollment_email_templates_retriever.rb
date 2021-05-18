@@ -72,7 +72,7 @@ class EnrollmentEmailTemplatesRetriever
   end
 
   def target_api_label
-    target_api_data["target_api"]
+    target_api_data["label"]
   end
 
   def front_url
@@ -93,6 +93,6 @@ class EnrollmentEmailTemplatesRetriever
   end
 
   def target_api_data
-    EnrollmentMailer::MAIL_PARAMS[enrollment.target_api]
+    ProvidersConfiguration.instance.config_for(enrollment.target_api)
   end
 end

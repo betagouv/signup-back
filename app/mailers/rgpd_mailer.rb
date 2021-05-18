@@ -4,6 +4,9 @@ class RgpdMailer < ActionMailer::Base
   end
 
   def rgpd_contact_email
+    provider_config = providers_config.config_for(params[:target_api])
+    target_api_label = provider_config["label"]
+
     email = SibApiV3Sdk::SendSmtpEmail.new({
       to: [{
         email: params[:to]
@@ -19,7 +22,7 @@ class RgpdMailer < ActionMailer::Base
       },
       templateId: 8,
       params: {
-        target_api_label: EnrollmentMailer::MAIL_PARAMS[params[:target_api]]["target_api"],
+        target_api_label: target_api_label,
         rgpd_role: params[:rgpd_role],
         contact_label: params[:contact_label],
         owner_email: params[:owner_email],
@@ -39,7 +42,8 @@ class RgpdMailer < ActionMailer::Base
   end
 
   def rgpd_contact_error
-    target_api_label = EnrollmentMailer::MAIL_PARAMS[params[:target_api]]["target_api"]
+    provider_config = providers_config.config_for(params[:target_api])
+    target_api_label = provider_config["label"]
 
     email = SibApiV3Sdk::SendSmtpEmail.new({
       to: [{
@@ -77,5 +81,11 @@ class RgpdMailer < ActionMailer::Base
     rescue SibApiV3Sdk::ApiError => e
       Rails.logger.error "Exception when calling SMTPApi->send_transac_email: #{e.inspect} #{e.response_body.inspect}"
     end
+  end
+
+  private
+
+  def providers_config
+    ProvidersConfiguration.instance
   end
 end

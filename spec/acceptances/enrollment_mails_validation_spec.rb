@@ -3,7 +3,7 @@ RSpec.describe "Enrollments mails validation", type: :acceptance do
 
   describe "for each target api" do
     it "does have valid templates for review, refuse and validate" do
-      EnrollmentMailer::MAIL_PARAMS.each do |target_api, _|
+      ProvidersConfiguration.instance.send(:config_backend).each do |target_api, _|
         expect {
           EnrollmentEmailTemplatesRetriever.new(
             build(:enrollment, target_api: target_api),

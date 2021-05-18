@@ -114,7 +114,7 @@ class Enrollment < ActiveRecord::Base
   end
 
   def subscribers
-    unless EnrollmentMailer::MAIL_PARAMS.key?(target_api)
+    unless ProvidersConfiguration.instance.exists?(target_api)
       raise ApplicationController::UnprocessableEntity, "Une erreur inattendue est survenue: API cible invalide."
     end
     # Pure string conditions in a where query is dangerous!

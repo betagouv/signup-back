@@ -11,7 +11,7 @@ RSpec.describe EnrollmentEmailTemplatesRetriever, type: :service do
       before do
         allow_any_instance_of(described_class).to receive(:target_api_data).and_return(
           {
-            "target_api" => "DINUM rockstars"
+            "label" => "DINUM rockstars"
           }
         )
       end
