@@ -1,4 +1,5 @@
 # Backend de DataPass
+[![Rails tests](https://github.com/betagouv/signup-back/actions/workflows/ci.yml/badge.svg)](https://github.com/betagouv/signup-back/actions/workflows/ci.yml)
 
 Les instructions d’installation globale (via VMs / vagrant) se trouvent ici : https://github.com/betagouv/datapass
 
