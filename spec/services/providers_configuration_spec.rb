@@ -23,6 +23,12 @@ RSpec.describe ProvidersConfiguration, type: :service do
 
       it { is_expected.to be == false }
     end
+
+    context "with shared key" do
+      let(:key) { :shared }
+
+      it { is_expected.to be == false }
+    end
   end
 
   describe "#config_for" do

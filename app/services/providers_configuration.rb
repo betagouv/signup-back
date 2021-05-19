@@ -4,7 +4,8 @@ class ProvidersConfiguration
   include Singleton
 
   def exists?(key)
-    config_backend.key?(key.to_s)
+    key.to_s != "shared" &&
+      config_backend.key?(key.to_s)
   end
 
   def config_for(key)
