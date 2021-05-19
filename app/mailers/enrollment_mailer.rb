@@ -1,14 +1,4 @@
 class EnrollmentMailer < ActionMailer::Base
-  SUBJECTS = {
-    "send_application" => "Nous avons bien reçu votre demande d’accès",
-    "validate_application" => "Votre demande a été validée",
-    "review_application" => "Votre demande requiert des modifications",
-    "refuse_application" => "Votre demande a été refusée",
-    "notify_application_sent" => "Nouvelle demande sur DataPass",
-    "create_application" => "Votre demande a été enregistrée",
-    "notify" => "Vous avez un nouveau message concernant votre demande"
-  }
-
   def notification_email
     provider_config = providers_config.config_for(params[:target_api])
 
@@ -20,6 +10,8 @@ class EnrollmentMailer < ActionMailer::Base
     @url = "#{ENV.fetch("FRONT_HOST")}/#{params[:target_api].tr("_", "-")}/#{params[:enrollment_id]}"
     @front_host = ENV.fetch("FRONT_HOST")
 
+    subject = provider_config["mailer"][params[:template]]["subject"]
+
     @majority_percentile_processing_time_in_days = nil
     if params[:template] == "send_application"
       @majority_percentile_processing_time_in_days = GetMajorityPercentileProcessingTimeInDays.call(params[:target_api])
@@ -29,7 +21,7 @@ class EnrollmentMailer < ActionMailer::Base
       mail(
         # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
         to: params[:to],
-        subject: SUBJECTS[params[:template]],
+        subject: subject,
         from: @target_api_support_email,
         content_type: "text/plain",
         body: params[:message]
@@ -38,7 +30,7 @@ class EnrollmentMailer < ActionMailer::Base
       mail(
         # The list of emails can be an array of email addresses or a single string with the addresses separated by commas.
         to: params[:to],
-        subject: SUBJECTS[params[:template]],
+        subject: subject,
         from: @target_api_support_email,
         template_path: %W[enrollment_mailer/#{params[:target_api]} enrollment_mailer],
         template_name: params[:template]
