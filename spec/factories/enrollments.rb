@@ -4,7 +4,10 @@ FactoryBot.define do
     intitule { "Intitulé" }
 
     trait :pending
-    trait :modification_pending
+
+    trait :modification_pending do
+      status { "modification_pending" }
+    end
 
     transient do
       organization_kind { :clamart }
@@ -29,18 +32,22 @@ FactoryBot.define do
       stub_entreprise_data_etablissement_call(enrollment.siret)
     end
 
-    trait :sent do
-      after(:create) do |enrollment|
-        enrollment.update!(
-          status: "sent"
-        )
-      end
-
+    trait :complete do
       with_dpo
       with_responsable_traitement
       with_data_retention
 
       cgu_approved { true }
+    end
+
+    trait :sent do
+      complete
+
+      after(:create) do |enrollment|
+        enrollment.update!(
+          status: "sent"
+        )
+      end
     end
 
     trait :with_dpo do
@@ -140,7 +147,8 @@ FactoryBot.define do
         [
           {
             id: "technique",
-            email: "user-technique@clamart.fr"
+            email: "user-technique@clamart.fr",
+            phone_number: "0636656565"
           }
         ]
       end
