@@ -1,8 +1,8 @@
-RSpec.describe "Enrollments mails validation", type: :acceptance do
+RSpec.describe "Enrollments emails validation", type: :acceptance do
   let(:instructor) { create(:user) }
 
   describe "for each target api" do
-    it "does have valid templates for review, refuse and validate" do
+    it "does have valid templates for review, refuse, notify and validate" do
       ProvidersConfiguration.instance.send(:config_backend).each do |target_api, _|
         next if target_api == "shared"
 
