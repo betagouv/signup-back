@@ -200,8 +200,7 @@ class EnrollmentsController < ApplicationController
         target_api: @enrollment.target_api,
         enrollment_id: @enrollment.id,
         template: event,
-        message: params[:comment],
-        comment_full_edit_mode: params[:commentFullEditMode]
+        message: params[:comment]
       ).notification_email.deliver_later
 
       if event == "send_application"

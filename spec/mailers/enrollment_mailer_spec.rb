@@ -23,9 +23,8 @@ RSpec.describe EnrollmentMailer, type: :mailer do
         expect(mail.from).to eq(["support.partenaires@franceconnect.gouv.fr"])
       end
 
-      it "renders valid body with message and label" do
-        expect(mail.body.encoded).to include(message)
-        expect(mail.body.encoded).to include("FranceConnect")
+      it "renders valid body with message only" do
+        expect(mail.body.encoded).to eq(message)
       end
     end
   end
