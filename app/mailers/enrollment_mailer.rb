@@ -1,6 +1,6 @@
 class EnrollmentMailer < ActionMailer::Base
   def notification_email
-    @target_api_label = provider_config["label"]
+    @target_api_label = data_provider_config["label"]
     @message = params[:message]
     @applicant_email = params[:applicant_email]
 
@@ -26,8 +26,8 @@ class EnrollmentMailer < ActionMailer::Base
   end
 
   def add_scopes_in_franceconnect_email
-    @target_api_label = provider_config["label"]
-    from = provider_config["support_email"]
+    @target_api_label = data_provider_config["label"]
+    from = data_provider_config["support_email"]
     @nom_raison_sociale = params[:nom_raison_sociale]
     @previous_enrollment_id = params[:previous_enrollment_id]
     @scopes = params[:scopes]
@@ -46,12 +46,12 @@ class EnrollmentMailer < ActionMailer::Base
   private
 
   def render_mail(attributes)
-    subject = provider_config["mailer"][params[:template]]["subject"]
+    subject = data_provider_config["mailer"][params[:template]]["subject"]
 
     mail({
       to: params[:to],
       subject: subject,
-      from: provider_config["support_email"]
+      from: data_provider_config["support_email"]
     }.merge(attributes))
   end
 
@@ -64,7 +64,7 @@ class EnrollmentMailer < ActionMailer::Base
     ].include?(params[:template])
   end
 
-  def provider_config
-    @provider_config ||= ProvidersConfiguration.instance.config_for(params[:target_api])
+  def data_provider_config
+    @data_provider_config ||= DataProvidersConfiguration.instance.config_for(params[:target_api])
   end
 end

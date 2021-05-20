@@ -1,6 +1,6 @@
 require "singleton"
 
-class ProvidersConfiguration
+class DataProvidersConfiguration
   include Singleton
 
   def exists?(key)
@@ -23,6 +23,6 @@ class ProvidersConfiguration
   end
 
   def config_backend_file
-    Rails.root.join("config/providers.yml")
+    Rails.root.join("config/data_providers.yml")
   end
 end

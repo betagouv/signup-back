@@ -96,6 +96,6 @@ class EnrollmentEmailTemplatesRetriever
   end
 
   def target_api_data
-    ProvidersConfiguration.instance.config_for(enrollment.target_api)
+    DataProvidersConfiguration.instance.config_for(enrollment.target_api)
   end
 end

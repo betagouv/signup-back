@@ -1,6 +1,6 @@
 RSpec.describe "Providers config", type: :acceptance do
   let(:config_file) do
-    Rails.root.join("config/providers.yml")
+    Rails.root.join("config/data_providers.yml")
   end
 
   it "is a valid YAML file" do

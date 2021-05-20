@@ -1,4 +1,4 @@
-RSpec.describe ProvidersConfiguration, type: :service do
+RSpec.describe DataProvidersConfiguration, type: :service do
   let(:instance) { described_class.instance }
 
   describe "#exists?" do

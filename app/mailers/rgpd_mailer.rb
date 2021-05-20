@@ -4,8 +4,8 @@ class RgpdMailer < ActionMailer::Base
   end
 
   def rgpd_contact_email
-    provider_config = providers_config.config_for(params[:target_api])
-    target_api_label = provider_config["label"]
+    data_provider_config = data_providers_config.config_for(params[:target_api])
+    target_api_label = data_provider_config["label"]
 
     email = SibApiV3Sdk::SendSmtpEmail.new({
       to: [{
@@ -42,8 +42,8 @@ class RgpdMailer < ActionMailer::Base
   end
 
   def rgpd_contact_error
-    provider_config = providers_config.config_for(params[:target_api])
-    target_api_label = provider_config["label"]
+    data_provider_config = data_providers_config.config_for(params[:target_api])
+    target_api_label = data_provider_config["label"]
 
     email = SibApiV3Sdk::SendSmtpEmail.new({
       to: [{
@@ -85,7 +85,7 @@ class RgpdMailer < ActionMailer::Base
 
   private
 
-  def providers_config
-    ProvidersConfiguration.instance
+  def data_providers_config
+    DataProvidersConfiguration.instance
   end
 end
