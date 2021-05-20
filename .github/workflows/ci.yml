@@ -75,8 +75,12 @@ jobs:
           bundler exec rails db:create RAILS_ENV=test
           bundler exec rails db:schema:load RAILS_ENV=test
 
-      - name: Run tests
-        run: bundler exec rspec
+      - name: Run tests & publish coverage
+        uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: c520d0a599739b0fb177eb2ecfeaa72792c262af475dfa0a7bcea092fdcd3301
+        with:
+          coverageCommand: bundle exec rspec
 
       - name: Run Standardrb linter
         uses: amoeba/standardrb-action@v2
