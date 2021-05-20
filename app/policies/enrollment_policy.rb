@@ -39,6 +39,10 @@ class EnrollmentPolicy < ApplicationPolicy
     record.validated? && user.is_administrator?
   end
 
+  def copy?
+    record.validated? && (user == record.user || user.is_administrator?)
+  end
+
   def permitted_attributes_for_update_owner
     [:user_email]
   end
