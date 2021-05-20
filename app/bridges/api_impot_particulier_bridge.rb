@@ -1,8 +1,4 @@
-class ApiImpotParticulierFcSandboxBridge < BridgeService
-  def initialize(enrollment)
-    @enrollment = enrollment
-  end
-
+class ApiImpotParticulierFcSandboxBridge < ApplicationBridge
   def call
     EnrollmentMailer.with(
       target_api: "api_impot_particulier_fc_sandbox",

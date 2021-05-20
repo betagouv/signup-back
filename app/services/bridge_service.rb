@@ -1,2 +1,0 @@
-class BridgeService < ApplicationService
-end

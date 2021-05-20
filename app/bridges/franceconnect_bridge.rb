@@ -1,8 +1,4 @@
-class FranceconnectBridge < BridgeService
-  def initialize(enrollment)
-    @enrollment = enrollment
-  end
-
+class FranceconnectBridge < ApplicationBridge
   def call
     name = "#{@enrollment.nom_raison_sociale} - #{@enrollment.id}"
     email = @enrollment.contacts.find { |contact| contact["id"] == "technique" }["email"]
