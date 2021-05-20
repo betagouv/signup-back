@@ -1,8 +1,8 @@
 module Http
-  def self.get(url_as_string, api_key, endpoint_label, auth_header = nil)
+  def self.get(url_as_string, api_key, endpoint_label, auth_header = nil, auth_method = "Bearer")
     response = if auth_header.nil?
       HTTP
-        .auth("Bearer #{api_key}")
+        .auth("#{auth_method} #{api_key}")
         .headers(accept: "application/json")
         .get(url_as_string)
     else
@@ -31,10 +31,10 @@ module Http
     ), e.message
   end
 
-  def self.request(http_verb, url_as_string, body, api_key, endpoint_label, auth_header)
+  def self.request(http_verb, url_as_string, body, api_key, endpoint_label, auth_header, auth_method)
     response = if auth_header.nil?
       HTTP
-        .auth("Bearer #{api_key}")
+        .auth("#{auth_method} #{api_key}")
         .headers(accept: "application/json")
         .send(http_verb, url_as_string, json: body)
     else
