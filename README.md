@@ -1,5 +1,7 @@
 # Backend de DataPass
 [![Rails tests](https://github.com/betagouv/signup-back/actions/workflows/ci.yml/badge.svg)](https://github.com/betagouv/signup-back/actions/workflows/ci.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/713ba5c1e90ee6a35937/maintainability)](https://codeclimate.com/github/betagouv/signup-back/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/713ba5c1e90ee6a35937/test_coverage)](https://codeclimate.com/github/betagouv/signup-back/test_coverage)
 
 Les instructions d’installation globale (via VMs / vagrant) se trouvent ici : https://github.com/betagouv/datapass
 
