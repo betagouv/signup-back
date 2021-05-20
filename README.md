@@ -21,7 +21,9 @@ rails db:schema:load
 ## Tests
 
 ```sh
-bundle exec rspec spec/
+bundle exec rspec
+# Avec code coverage
+COVERAGE=true bundle exec rspec
 ```
 
 Vous pouvez utiliser [guard](https://github.com/guard/guard) pour lancer les
