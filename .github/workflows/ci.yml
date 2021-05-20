@@ -3,15 +3,11 @@ env:
   COVERAGE: true
   RUBY_VERSION: 2.7.3
 
-name: Rails tests
-on:
-  push:
-    branches-exclude:
-      - dependabot/*
-    pull_request:
+name: CI (Tests, Lint, Coverage, Code quality)
+on: [push]
 jobs:
-  test-and-lint:
-    name: RSpec
+  test:
+    name: Tests with coverage and code quality
     runs-on: ubuntu-18.04
     services:
       postgres:
@@ -82,6 +78,14 @@ jobs:
           CC_TEST_REPORTER_ID: c520d0a599739b0fb177eb2ecfeaa72792c262af475dfa0a7bcea092fdcd3301
         with:
           coverageCommand: bundle exec rspec
+
+  lint:
+    name: Rubocop
+    if: "${{ github.actor != 'dependabot[bot]' }}"
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Run Standardrb linter
         uses: amoeba/standardrb-action@v2
