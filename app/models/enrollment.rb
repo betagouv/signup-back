@@ -102,6 +102,10 @@ class Enrollment < ActiveRecord::Base
       if enrollment.target_api == "aidants_connect" && !ENV["DISABLE_AIDANTS_CONNECT_BRIDGE"].present?
         AidantsConnectBridge.call(enrollment)
       end
+
+      if enrollment.target_api == "hubee" && !ENV["DISABLE_HUBEE_BRIDGE"].present?
+        HubeeBridge.call(enrollment)
+      end
     end
 
     event :loop_without_job do
@@ -153,6 +157,10 @@ class Enrollment < ActiveRecord::Base
 
   def submitted_at
     events.where(name: "submitted").order("created_at").last["created_at"]
+  end
+
+  def validated_at
+    events.where(name: "validated").order("created_at").last["created_at"]
   end
 
   def copy(current_user)

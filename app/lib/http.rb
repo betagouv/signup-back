@@ -63,11 +63,11 @@ module Http
     ), e.message
   end
 
-  def self.post(url_as_string, body, api_key, endpoint_label, auth_header = nil)
-    request(:post, url_as_string, body, api_key, endpoint_label, auth_header)
+  def self.post(url_as_string, body, api_key, endpoint_label, auth_header = nil, auth_method = "Bearer")
+    request(:post, url_as_string, body, api_key, endpoint_label, auth_header, auth_method)
   end
 
-  def self.patch(url_as_string, body, api_key, endpoint_label, auth_header = nil)
-    request(:patch, url_as_string, body, api_key, endpoint_label, auth_header)
+  def self.patch(url_as_string, body, api_key, endpoint_label, auth_header = nil, auth_method = "Bearer")
+    request(:patch, url_as_string, body, api_key, endpoint_label, auth_header, auth_method)
   end
 end
