@@ -1,8 +1,4 @@
-class ApiEntrepriseBridge < BridgeService
-  def initialize(enrollment)
-    @enrollment = enrollment
-  end
-
+class ApiEntrepriseBridge < ApplicationBridge
   def call
     name = @enrollment.intitule
     email = @enrollment.user.email

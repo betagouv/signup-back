@@ -1,8 +1,4 @@
-class AidantsConnectBridge < BridgeService
-  def initialize(enrollment)
-    @enrollment = enrollment
-  end
-
+class AidantsConnectBridge < ApplicationBridge
   def call
     Http.post(
       "#{ENV.fetch("AIDANTS_CONNECT_HOST")}/datapass_receiver/",

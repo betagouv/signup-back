@@ -1,8 +1,4 @@
-class ApiDroitsCnamBridge < BridgeService
-  def initialize(enrollment)
-    @enrollment = enrollment
-  end
-
+class ApiDroitsCnamBridge < ApplicationBridge
   def call
     EnrollmentMailer.with(
       target_api: "api_droits_cnam",

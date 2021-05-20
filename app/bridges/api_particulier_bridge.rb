@@ -1,8 +1,4 @@
-class ApiParticulierBridge < BridgeService
-  def initialize(enrollment)
-    @enrollment = enrollment
-  end
-
+class ApiParticulierBridge < ApplicationBridge
   def call
     name = "#{@enrollment.nom_raison_sociale} - #{@enrollment.id}"
     contact_technique_email = @enrollment.contacts.find { |contact| contact["id"] == "technique" }["email"]
