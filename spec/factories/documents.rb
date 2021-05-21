@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :document do
+  factory :document, class: Document::DelegationServicePublic do
     type { "Document::DelegationServicePublic" }
 
     attachable { build(:enrollment, :franceconnect) }
