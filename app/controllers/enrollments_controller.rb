@@ -181,9 +181,7 @@ class EnrollmentsController < ApplicationController
           # we force the logout so the token can be refreshed.
           # NB: if the error is something else, the user will keep clicking on "soumettre"
           # without any effect. We log this in case some user get stuck into this
-          session.delete("access_token")
-          session.delete("id_token")
-          sign_out current_user
+          clear_user_session!
           puts "#{e.message.inspect} e.message"
           raise ApplicationController::AccessDenied, e.message
         end

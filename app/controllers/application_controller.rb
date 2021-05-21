@@ -75,6 +75,17 @@ class ApplicationController < ActionController::API
     }
   end
 
+  protected
+
+  def clear_user_session!
+    return unless user_signed_in?
+
+    session.delete("access_token")
+    session.delete("id_token")
+
+    sign_out current_user
+  end
+
   private
 
   def pagination_dict(collection)
