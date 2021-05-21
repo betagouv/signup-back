@@ -79,4 +79,49 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe "#update" do
+    subject(:update_user) do
+      put :update, params: {
+        id: user_updated.id,
+        user: user_updated_params
+      }
+    end
+
+    let(:user_updated) { create(:user) }
+    let(:user_updated_params) do
+      {
+        given_name: "not relevant",
+        roles: ["hello"]
+      }
+    end
+
+    before do
+      login(user)
+    end
+
+    context "when user is not an admin" do
+      let(:user) { create(:user) }
+
+      it { is_expected.to have_http_status(:forbidden) }
+    end
+
+    context "when user is an admin" do
+      let(:user) { create(:user, :administrator) }
+
+      it { is_expected.to have_http_status(:ok) }
+
+      it "updates roles" do
+        expect {
+          update_user
+        }.to change { user_updated.reload.roles }.to(user_updated_params[:roles])
+      end
+
+      it "does not update other attributes" do
+        expect {
+          update_user
+        }.not_to change { user_updated.reload.given_name }
+      end
+    end
+  end
 end
