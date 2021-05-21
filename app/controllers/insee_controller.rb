@@ -15,7 +15,7 @@ class InseeController < ApplicationController
 
   # GET /insee/categorie_juridique/1
   def categorie_juridique
-    response = File.read("./public/codes_naf.json")
+    response = File.read("./public/categories_juridiques_20200701.json")
     parsed_response = JSON.parse(response)
 
     code = params.fetch(:id, "")
