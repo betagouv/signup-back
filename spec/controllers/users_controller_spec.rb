@@ -10,11 +10,7 @@ RSpec.describe UsersController, type: :controller do
       login(user)
     end
 
-    it "renders 200" do
-      make_call
-
-      expect(response.status).to eq(200)
-    end
+    it { is_expected.to have_http_status(:ok) }
 
     it "renders user's attributes" do
       make_call
