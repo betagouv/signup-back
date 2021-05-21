@@ -199,4 +199,36 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe "#personal_information" do
+    subject(:personal_information) do
+      get :personal_information
+    end
+
+    context "without a user" do
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
+
+    context "with a user" do
+      let(:user) { create(:user) }
+
+      before do
+        login(user)
+      end
+
+      it "logs out user" do
+        personal_information
+
+        get :me
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "redirects to oauth join organization path" do
+        personal_information
+
+        expect(response).to redirect_to("#{ENV.fetch("OAUTH_HOST")}/users/personal-information")
+      end
+    end
+  end
 end
