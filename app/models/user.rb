@@ -1,6 +1,12 @@
 class User < ActiveRecord::Base
   devise :omniauthable, omniauth_providers: [:api_gouv]
-  validates :email, format: {with: URI::MailTo::EMAIL_REGEXP, message: "Vous devez renseigner un email valide"}
+
+  validates :email,
+    uniqueness: true,
+    format: {
+      with: URI::MailTo::EMAIL_REGEXP,
+      message: "Vous devez renseigner un email valide"
+    }
 
   has_many :enrollments
   has_many :dpo_enrollments, foreign_key: :dpo_id, class_name: :Enrollment
