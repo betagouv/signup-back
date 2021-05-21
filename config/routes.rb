@@ -12,6 +12,8 @@ Rails.application.routes.draw do
         get :next_enrollments
         patch :update_owner
         patch :update_rgpd_contact
+
+        get :email_templates, to: "enrollments_email_templates#index"
       end
     end
 

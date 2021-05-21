@@ -36,16 +36,14 @@ RSpec.describe EnrollmentsController, "review", type: :controller do
 
     it { expect(response).to have_http_status(:ok) }
 
-    it "sends an email to enrollment's user with a valid template, with comment and with target api label" do
+    it "sends an email to enrollment's user with comment only as body" do
       expect {
         review_application
       }.to change { ActionMailer::Base.deliveries.count }.by(1)
 
       last_mail = ActionMailer::Base.deliveries.last
 
-      expect(last_mail.body).to include(template_sample)
-      expect(last_mail.body).to include(comment)
-      expect(last_mail.body).to include(template_footer_sample)
+      expect(last_mail.body).to eq(comment)
     end
   end
 

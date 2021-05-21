@@ -105,7 +105,7 @@ class EnrollmentsController < ApplicationController
   # POST /enrollments
   def create
     target_api = params.fetch(:enrollment, {})["target_api"]
-    unless EnrollmentMailer::MAIL_PARAMS.key?(target_api)
+    unless DataProvidersConfiguration.instance.exists?(target_api)
       raise ApplicationController::UnprocessableEntity, "Une erreur inattendue est survenue: API cible invalide. Aucun changement n’a été sauvegardé."
     end
     enrollment_class = "Enrollment::#{target_api.underscore.classify}".constantize
@@ -200,8 +200,7 @@ class EnrollmentsController < ApplicationController
         target_api: @enrollment.target_api,
         enrollment_id: @enrollment.id,
         template: event,
-        message: params[:comment],
-        comment_full_edit_mode: params[:commentFullEditMode]
+        message: params[:comment]
       ).notification_email.deliver_later
 
       if event == "send_application"
