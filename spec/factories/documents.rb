@@ -4,10 +4,14 @@ FactoryBot.define do
 
     attachable { build(:enrollment, :franceconnect) }
 
-    attachment do
-      Rack::Test::UploadedFile.new(
+    transient do
+      file_extension { "pdf" }
+    end
+
+    after(:build) do |document, evaluator|
+      document.attachment = Rack::Test::UploadedFile.new(
         Rails.root.join(
-          "spec/fixtures/dummy.pdf",
+          "spec/fixtures/dummy.#{evaluator.file_extension}"
         )
       )
     end
