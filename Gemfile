@@ -22,6 +22,10 @@ gem "rails-i18n"
 gem "sib-api-v3-sdk"
 gem "state_machines-activerecord"
 
+group :test do
+  gem "timecop"
+end
+
 group :development, :test do
   gem "factory_bot_rails"
   gem "rspec-rails"
