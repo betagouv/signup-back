@@ -84,6 +84,10 @@ FactoryBot.define do
       cgu_approved { true }
     end
 
+    trait :refused do
+      status { "refused" }
+    end
+
     trait :public do
       validated
     end
