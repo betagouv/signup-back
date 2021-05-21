@@ -3,11 +3,11 @@ env:
   COVERAGE: true
   RUBY_VERSION: 2.7.3
 
-name: CI (Tests, Lint, Coverage, Code quality)
+name: CI
 on: [push]
 jobs:
   test:
-    name: Tests with coverage and code quality
+    name: Tests (RSpec)
     runs-on: ubuntu-18.04
     services:
       postgres:
@@ -80,7 +80,7 @@ jobs:
           coverageCommand: bundle exec rspec
 
   lint:
-    name: Rubocop
+    name: Linter (StandardRB)
     if: "${{ github.actor != 'dependabot[bot]' }}"
     runs-on: ubuntu-18.04
     steps:
