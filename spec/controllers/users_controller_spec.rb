@@ -124,4 +124,47 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe "#create" do
+    subject(:create_user) do
+      post :create, params: {
+        email: email
+      }
+    end
+    let(:email) { generate(:email) }
+
+    before do
+      login(user)
+    end
+
+    context "when user is not an admin" do
+      let(:user) { create(:user) }
+
+      it { is_expected.to have_http_status(:forbidden) }
+    end
+
+    context "when user is an admin" do
+      let(:user) { create(:user, :administrator) }
+
+      it { is_expected.to have_http_status(:ok) }
+
+      context "when email is already taken" do
+        before do
+          create(:user, email: email)
+        end
+
+        it { is_expected.to have_http_status(:unprocessable_entity) }
+      end
+
+      context "when email is not already taken" do
+        it "creates a new user" do
+          expect {
+            create_user
+          }.to change { User.count }.by(1)
+        end
+
+        it { is_expected.to have_http_status(:ok) }
+      end
+    end
+  end
 end
