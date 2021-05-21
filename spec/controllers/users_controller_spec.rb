@@ -167,4 +167,36 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe "#join_organization" do
+    subject(:join_organization) do
+      get :join_organization
+    end
+
+    context "without a user" do
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
+
+    context "with a user" do
+      let(:user) { create(:user) }
+
+      before do
+        login(user)
+      end
+
+      it "logs out user" do
+        join_organization
+
+        get :me
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "redirects to oauth join organization path" do
+        join_organization
+
+        expect(response).to redirect_to("#{ENV.fetch("OAUTH_HOST")}/users/join-organization")
+      end
+    end
+  end
 end
