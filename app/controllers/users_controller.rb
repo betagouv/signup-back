@@ -1,12 +1,11 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  def index
-    users_with_roles_only = params.permit(:users_with_roles_only)[:users_with_roles_only]
-    @users = policy_scope(User).order :email
 
-    if users_with_roles_only == "true"
-      # get users that have at least one roles
-      @users = @users.where("roles <> '{}'")
+  def index
+    @users = policy_scope(User).order(:email)
+
+    if users_with_roles_only?
+      @users = @users.with_at_least_one_role
     end
 
     render json: @users,
@@ -68,5 +67,9 @@ class UsersController < ApplicationController
 
   def pundit_params_for(_record)
     params.fetch(:user, {})
+  end
+
+  def users_with_roles_only?
+    params.permit(:users_with_roles_only)[:users_with_roles_only] == "true"
   end
 end

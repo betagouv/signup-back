@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
   has_many :responsable_traitement_enrollments, foreign_key: :responsable_traitement_id, class_name: :Enrollment
   has_many :events
 
+  scope :with_at_least_one_role, -> { where("roles <> '{}'") }
+
   def self.reconcile(external_user_info)
     user = where(
       email: external_user_info["email"]
