@@ -29,7 +29,7 @@ class EnrollmentEmailTemplatesRetriever
     if custom_template_exists?(email_kind)
       render_specific_template_without_layout(email_kind)
     else
-      render_default_template_with_layout(email_kind)
+      render_default_template(email_kind)
     end
   end
 
@@ -40,10 +40,10 @@ class EnrollmentEmailTemplatesRetriever
     )
   end
 
-  def render_default_template_with_layout(email_kind)
+  def render_default_template(email_kind)
     renderer.render(
       file: "enrollment_mailer/#{email_kind}",
-      layout: "layouts/enrollment_mailer"
+      layout: false
     )
   end
 

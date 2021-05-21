@@ -61,20 +61,20 @@ RSpec.describe EnrollmentEmailTemplatesRetriever, type: :service do
         end
 
         describe "plain text content" do
-          let(:enrollment_mailer_layout_sample) do
-            File.open(Rails.root.join("app/views/layouts/enrollment_mailer.text.erb")) { |f| f.readline }.chomp
-          end
-
-          let(:default_review_application_sample) do
+          let(:default_review_application_first_line) do
             File.open(Rails.root.join("app/views/enrollment_mailer/review_application.text.erb")) { |f| f.readline }.chomp
           end
 
-          it "includes enrollment_mailer layout" do
-            expect(subject.plain_text_content).to include(enrollment_mailer_layout_sample)
+          let(:default_review_application_third_line) do
+            IO.readlines(Rails.root.join("app/views/enrollment_mailer/review_application.text.erb"))[2].chomp
           end
 
-          it "includes review_application view" do
-            expect(subject.plain_text_content).to include(default_review_application_sample)
+          it "includes review_application view, without layout" do
+            first_line_of_plain_text = subject.plain_text_content.split("\n")[0]
+            third_line_of_plain_text = subject.plain_text_content.split("\n")[2]
+
+            expect(first_line_of_plain_text).to eq(default_review_application_first_line)
+            expect(third_line_of_plain_text).to eq(default_review_application_third_line)
           end
 
           it "includes valid url to datapass" do
