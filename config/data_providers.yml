@@ -78,6 +78,8 @@ api_entreprise:
     <<: *shared_mailer
     review_application:
       subject: "✒️ Votre demande requiert des modifications"
+    validate_application:
+      subject: "✅ Votre demande d’accès a été validée par le service juridique"
 
 preuve_covoiturage:
   label: Registre de preuve de covoiturage
