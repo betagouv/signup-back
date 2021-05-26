@@ -74,7 +74,10 @@ api_droits_cnam:
 api_entreprise:
   label: API Entreprise
   support_email: support@entreprise.api.gouv.fr
-  mailer: *shared_mailer
+  mailer:
+    <<: *shared_mailer
+    review_application:
+      subject: "✒️ Votre demande requiert des modifications"
 
 preuve_covoiturage:
   label: Registre de preuve de covoiturage
