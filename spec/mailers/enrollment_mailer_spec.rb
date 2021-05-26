@@ -12,19 +12,23 @@ RSpec.describe EnrollmentMailer, type: :mailer do
 
     let(:to_email) { generate(:email) }
     let(:target_api) { "franceconnect" }
-    let(:enrollment) { create(:enrollment, :franceconnect) }
-    let(:template) { "review_application" }
-    let(:message) { "Hello world!" }
+    let(:enrollment) { create(:enrollment, :franceconnect, user: user) }
+    let(:user) { create(:user, :with_all_infos) }
 
-    context "without configuration mocking" do
-      it "renders valid headers" do
-        expect(mail.subject).to eq("Votre demande requiert des modifications")
-        expect(mail.to).to eq([to_email])
-        expect(mail.from).to eq(["support.partenaires@franceconnect.gouv.fr"])
-      end
+    describe "manual review from instructor" do
+      context "with custom message" do
+        let(:template) { "review_application" }
+        let(:message) { "Hello world!" }
 
-      it "renders valid body with message only" do
-        expect(mail.body.encoded).to eq(message)
+        it "renders valid headers" do
+          expect(mail.subject).to eq("Votre demande requiert des modifications")
+          expect(mail.to).to eq([to_email])
+          expect(mail.from).to eq(["support.partenaires@franceconnect.gouv.fr"])
+        end
+
+        it "renders valid body with message only" do
+          expect(mail.body.encoded).to eq(message)
+        end
       end
     end
   end
