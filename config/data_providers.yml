@@ -80,6 +80,8 @@ api_entreprise:
       subject: "✒️ Votre demande requiert des modifications"
     validate_application:
       subject: "✅ Votre demande d’accès a été validée par le service juridique"
+    refuse_application:
+      subject: "🚫 Votre demande d’accès à l’API Entreprise a été refusée"
 
 preuve_covoiturage:
   label: Registre de preuve de covoiturage
