@@ -76,6 +76,8 @@ api_entreprise:
   support_email: support@entreprise.api.gouv.fr
   mailer:
     <<: *shared_mailer
+    create_application:
+      subject: "💾 Le brouillon de votre demande a bien été enregistré"
     review_application:
       subject: "✒️ Votre demande requiert des modifications"
     validate_application:
