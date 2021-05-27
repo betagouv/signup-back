@@ -78,8 +78,10 @@ api_entreprise:
     <<: *shared_mailer
     create_application:
       subject: "💾 Le brouillon de votre demande a bien été enregistré"
+      skip_layout: true
     send_application:
       subject: "📬 Votre demande a bien été reçue par API Entreprise"
+      skip_layout: true
     review_application:
       subject: "✒️ Votre demande requiert des modifications"
     validate_application:
