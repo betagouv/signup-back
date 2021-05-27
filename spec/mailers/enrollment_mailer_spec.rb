@@ -31,5 +31,15 @@ RSpec.describe EnrollmentMailer, type: :mailer do
         end
       end
     end
+
+    describe "custom layout for a target API" do
+      let(:target_api) { "api_entreprise" }
+      let(:template) { "create_application" }
+      let(:message) { nil }
+
+      it "renders custom subject" do
+        expect(mail.subject).to eq("💾 Le brouillon de votre demande a bien été enregistré")
+      end
+    end
   end
 end
