@@ -85,7 +85,7 @@ api_entreprise:
     review_application:
       subject: "✒️ Votre demande requiert des modifications"
     validate_application:
-      subject: "✅ Votre demande d’accès a été validée par le service juridique"
+      subject: "✅ Votre demande d’accès à l'API Entreprise a été validée"
     refuse_application:
       subject: "🚫 Votre demande d’accès à l’API Entreprise a été refusée"
 
