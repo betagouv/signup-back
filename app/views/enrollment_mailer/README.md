@@ -94,6 +94,6 @@ Bonjour <%= "#{@user.given_name} #{@user.family_name}" %>,
 
 Votre demande d’habilitation n°<%= @enrollment.id %> a été traitée par notre service juridique, il nous manque cependant certaines informations pour rendre un avis.
 
-Pour compléter votre demande, suivez le lien suivant <%= @enrollment_url %>
+Pour compléter votre demande, suivez le lien suivant <%= @url %>
 <%= @instructor.given_name %> pour <%= @target_api_label %>
 ```
