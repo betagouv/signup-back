@@ -34,3 +34,13 @@ tests en continue:
 ```sh
 bundle exec guard
 ```
+
+## Brakeman
+
+[Brakeman](https://github.com/presidentbeef/brakeman) est un outil d'analyse
+statique de sécurité. Vous pouvez le faire tourner à l'aide la commande
+suivante:
+
+```sh
+bundle exec brakeman -Iconfig/brakeman.ignore
+```

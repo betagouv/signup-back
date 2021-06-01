@@ -31,6 +31,7 @@ group :development, :test do
   gem "byebug"
   gem "guard-rspec", require: false
   gem "guard-standardrb"
+  gem "brakeman"
 end
 
 group :development do
