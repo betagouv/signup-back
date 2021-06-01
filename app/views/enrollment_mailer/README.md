@@ -3,26 +3,35 @@
 Il est possible de personnaliser certains emails en fonction du type de service
 impliqué dans la demande Datapass.
 
-Les emails personnalisables sont:
+Les emails personnalisables envoyés après modification de l'instructeur sont:
 
-* L'email de refus d'une demande
-* L'email de demande de modification d'une demande
-* L'email de validation d'une demande
+1. L'email de refus d'une demande
+1. L'email de demande de modification d'une demande
+1. L'email de validation d'une demande
 
-Ces 3 emails sont à destination du demandeur.
+Ces 3 emails sont à destination du demandeur, et personnalisable depuis
+l'interface d'instruction sur Datapass.
+
+Les emails personnalisables envoyés directement depuis le backend de DataPass:
+
+1. L'email de création d'une demande
+1. L'email d'envoi d'une demande
 
 ## Comportement par défaut pour tous les services
 
-Par défaut, les emails sont envoyés avec le template
-[enrollment_mailer.text.erb](../layouts/enrollment_mailer.text.erb), qui
-correspond au squelette de l'email, et en fonction du type d'action, la vue
+Par défaut, les emails sont envoyés en fonction du type d'action, la vue
 utilisée est:
 
 * [refuse_application.text.erb](refuse_application.text.erb) pour un refus
 * [review_application.text.erb](review_application.text.erb) pour une demande de modification
 * [validate_application.text.erb](validate_application.text.erb) pour une validaton
+* [create_application.text.erb](create_application.text.erb) pour une création
+* [send_application.text.erb](send_application.text.erb) pour un envoi
+* [validate_application.text.erb](validate_application.text.erb) pour une validaton
 
-Une modification sur l'un de ces 4 fichiers impacte l'intégralité des services
+L'ensemble de l'email au format text se trouve au sein des fichiers ci-dessus.
+
+Une modification sur l'un de ces fichiers impacte l'intégralité des services
 utilisant Datapass : si vous voulez effectuer une modification sur un service
 particulier, utilisez la méthode décrite ci-dessous.
 
@@ -38,10 +47,6 @@ particulier, utilisez la méthode décrite ci-dessous.
    `api_entreprise/review_application.text.erb`
 3. Mettre **l'intégralité** du contenu de l'email, avec l'introduction et la
    signature : cet email sera renvoyé tel quel
-
-Ces emails sont ensuite accessibles depuis l'application Datapass, lorsque vous
-voulez effectuer une modération sur l'une des demandes, et entièrement
-customisable au besoin avant l'envoi.
 
 Vous pouvez de même modifier le sujet de l'email au besoin directement dans le
 fichier [data_providers.yml](../../config/data_providers.yml) sous la clé correspondant à
