@@ -182,7 +182,7 @@ class EnrollmentsController < ApplicationController
           # NB: if the error is something else, the user will keep clicking on "soumettre"
           # without any effect. We log this in case some user get stuck into this
           clear_user_session!
-          puts "#{e.message.inspect} e.message"
+          Sentry.capture_exception(e)
           raise ApplicationController::AccessDenied, e.message
         end
       end
