@@ -74,7 +74,18 @@ api_droits_cnam:
 api_entreprise:
   label: API Entreprise
   support_email: support@entreprise.api.gouv.fr
-  mailer: *shared_mailer
+  mailer:
+    <<: *shared_mailer
+    create_application:
+      subject: "💾 Le brouillon de votre demande a bien été enregistré"
+    send_application:
+      subject: "📬 Votre demande a bien été reçue par API Entreprise"
+    review_application:
+      subject: "✒️ Votre demande requiert des modifications"
+    validate_application:
+      subject: "✅ Votre demande d’accès à l'API Entreprise a été validée"
+    refuse_application:
+      subject: "🚫 Votre demande d’accès à l’API Entreprise a été refusée"
 
 preuve_covoiturage:
   label: Registre de preuve de covoiturage

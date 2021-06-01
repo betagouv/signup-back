@@ -1,5 +1,10 @@
 class EnrollmentMailer < ActionMailer::Base
+  layout false
+
   def notification_email
+    @enrollment = Enrollment.find(params[:enrollment_id])
+    @user = @enrollment.user
+
     @target_api_label = data_provider_config["label"]
     @message = params[:message]
     @applicant_email = params[:applicant_email]
@@ -14,12 +19,10 @@ class EnrollmentMailer < ActionMailer::Base
 
     if manual_review_from_instructor?
       render_mail(
-        content_type: "text/plain",
         body: params[:message]
       )
     else
       render_mail(
-        template_path: %W[enrollment_mailer/#{params[:target_api]} enrollment_mailer],
         template_name: params[:template]
       )
     end
@@ -46,13 +49,21 @@ class EnrollmentMailer < ActionMailer::Base
   private
 
   def render_mail(attributes)
-    subject = data_provider_config["mailer"][params[:template]]["subject"]
+    subject = data_provider_mailer_config["subject"]
 
     mail({
       to: params[:to],
       subject: subject,
       from: data_provider_config["support_email"]
-    }.merge(attributes))
+    }) do |format|
+      format.text do
+        if attributes[:body]
+          render plain: attributes[:body]
+        else
+          render template: extract_template_path(attributes[:template_name])
+        end
+      end
+    end
   end
 
   def manual_review_from_instructor?
@@ -62,6 +73,28 @@ class EnrollmentMailer < ActionMailer::Base
       review_application
       validate_application
     ].include?(params[:template])
+  end
+
+  def extract_template_path(template_name)
+    if custom_template_exists?(template_name)
+      "enrollment_mailer/#{params[:target_api]}/#{template_name}"
+    else
+      "enrollment_mailer/#{template_name}"
+    end
+  end
+
+  def custom_template_exists?(template_name)
+    File.exist?(
+      Rails.root.join(
+        File.join(
+          "app/views/enrollment_mailer/#{params[:target_api]}/#{template_name}.text.erb"
+        )
+      )
+    )
+  end
+
+  def data_provider_mailer_config
+    @data_provider_mailer_config ||= data_provider_config["mailer"][params[:template]]
   end
 
   def data_provider_config

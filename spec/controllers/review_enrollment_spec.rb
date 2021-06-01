@@ -28,12 +28,6 @@ RSpec.describe EnrollmentsController, "review", type: :controller do
   describe "when admin sends only a comment" do
     let(:comment_full_edit_mode) { nil }
 
-    let(:template_sample) do
-      File.open(Rails.root.join("app/views/layouts/enrollment_mailer.text.erb")) { |f| f.readline }.chomp
-    end
-
-    let(:template_footer_sample) { "FranceConnect" }
-
     it { expect(response).to have_http_status(:ok) }
 
     it "sends an email to enrollment's user with comment only as body" do
