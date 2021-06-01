@@ -44,15 +44,7 @@ RSpec.describe EnrollmentMailer, type: :mailer do
         File.open(Rails.root.join("app/views/enrollment_mailer/create_application.text.erb")) { |f| f.readline }.chomp
       end
 
-      let(:template_sample) do
-        File.open(Rails.root.join("app/views/layouts/enrollment_mailer.text.erb")) { |f| f.readline }.chomp
-      end
-
-      let(:cartobio_send_application_email_sample) do
-        File.open(Rails.root.join("app/views/enrollment_mailer/cartobio/send_application.text.erb")) { |f| f.readline }.chomp
-      end
-
-      describe "default layout for a target API" do
+      describe "default template for a target API" do
         let(:target_api) { "aidants_connect" }
         let(:template) { "create_application" }
 
@@ -62,10 +54,6 @@ RSpec.describe EnrollmentMailer, type: :mailer do
 
         it "renders default template" do
           expect(mail.body.encoded).to include(create_application_email_sample)
-        end
-
-        it "uses default layout" do
-          expect(mail.body.encoded).to include(template_sample)
         end
       end
 
@@ -84,25 +72,8 @@ RSpec.describe EnrollmentMailer, type: :mailer do
         context "when skip layout option is true" do
           let(:target_api) { "api_entreprise" }
 
-          it "does not use default layout" do
-            expect(mail.body.encoded).not_to include(template_sample)
-          end
-
           it "renders custom template" do
             expect(mail.body.encoded).to include("Bonjour #{enrollment.user.given_name}")
-          end
-        end
-
-        context "when skip layout option is false" do
-          let(:target_api) { "cartobio" }
-
-          it "uses default layout" do
-            expect(mail.body.encoded).to include(template_sample)
-          end
-
-          it "renders custom template" do
-            expect(mail.body.encoded).to include(cartobio_send_application_email_sample)
-            expect(mail.body.encoded).not_to include(create_application_email_sample)
           end
         end
       end

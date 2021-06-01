@@ -111,14 +111,6 @@ RSpec.describe EnrollmentEmailTemplatesRetriever, type: :service do
           end
         end
 
-        let(:enrollment_mailer_layout_sample) do
-          File.open(Rails.root.join("app/views/layouts/enrollment_mailer.text.erb")) { |f| f.readline }.chomp
-        end
-
-        it "does not include enrollment_mailer layout" do
-          expect(subject.plain_text_content).not_to include(enrollment_mailer_layout_sample)
-        end
-
         it "includes default validate_application view" do
           expect(subject.plain_text_content).to include("#{instructor.given_name} pour API Entreprise")
         end

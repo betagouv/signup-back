@@ -1,5 +1,5 @@
 class EnrollmentMailer < ActionMailer::Base
-  layout :choose_layout
+  layout false
 
   def notification_email
     @enrollment = Enrollment.find(params[:enrollment_id])
@@ -91,18 +91,6 @@ class EnrollmentMailer < ActionMailer::Base
         )
       )
     )
-  end
-
-  def choose_layout
-    if manual_review_from_instructor? || skip_layout?
-      false
-    else
-      "enrollment_mailer"
-    end
-  end
-
-  def skip_layout?
-    data_provider_mailer_config["skip_layout"]
   end
 
   def data_provider_mailer_config
