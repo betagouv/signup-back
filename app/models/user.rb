@@ -1,11 +1,19 @@
 class User < ActiveRecord::Base
   devise :omniauthable, omniauth_providers: [:api_gouv]
-  validates :email, format: {with: URI::MailTo::EMAIL_REGEXP, message: "Vous devez renseigner un email valide"}
+
+  validates :email,
+    uniqueness: true,
+    format: {
+      with: URI::MailTo::EMAIL_REGEXP,
+      message: "Vous devez renseigner un email valide"
+    }
 
   has_many :enrollments
   has_many :dpo_enrollments, foreign_key: :dpo_id, class_name: :Enrollment
   has_many :responsable_traitement_enrollments, foreign_key: :responsable_traitement_id, class_name: :Enrollment
   has_many :events
+
+  scope :with_at_least_one_role, -> { where("roles <> '{}'") }
 
   def self.reconcile(external_user_info)
     user = where(
