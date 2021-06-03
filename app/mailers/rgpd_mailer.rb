@@ -37,7 +37,7 @@ class RgpdMailer < ActionMailer::Base
       result = @send_in_blue.send_transac_email(email)
       Rails.logger.info "Email sent with id: #{result.inspect}"
     rescue SibApiV3Sdk::ApiError => e
-      Rails.logger.error "Exception when calling SMTPApi->send_transac_email: #{e.inspect} #{e.response_body.inspect}"
+      Sentry.capture_exception(e)
     end
   end
 
@@ -79,7 +79,7 @@ class RgpdMailer < ActionMailer::Base
       result = @send_in_blue.send_transac_email(email)
       Rails.logger.info "Email sent with id: #{result.inspect}"
     rescue SibApiV3Sdk::ApiError => e
-      Rails.logger.error "Exception when calling SMTPApi->send_transac_email: #{e.inspect} #{e.response_body.inspect}"
+      Sentry.capture_exception(e)
     end
   end
 
