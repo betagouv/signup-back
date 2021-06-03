@@ -5,6 +5,7 @@ RSpec.describe Event, type: :model do
     %i[
       created
       updated
+      notified
       validated
       refused
       asked_for_modification
