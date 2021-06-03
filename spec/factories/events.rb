@@ -32,6 +32,12 @@ FactoryBot.define do
       with_comment
     end
 
+    trait :notified do
+      name { "notified" }
+
+      with_comment
+    end
+
     trait :asked_for_modification do
       name { "asked_for_modification" }
 
