@@ -144,6 +144,7 @@ RSpec.describe EnrollmentsController, "#trigger", type: :controller do
 
   describe "validate_application event" do
     let(:event) { "validate_application" }
+    let(:comment) { "I like trains" }
 
     before do
       allow(FranceconnectBridge).to receive(:call)
@@ -190,7 +191,15 @@ RSpec.describe EnrollmentsController, "#trigger", type: :controller do
             context "when enrollment is in sent mode" do
               let(:enrollment_status) { :sent }
 
-              it { is_expected.to have_http_status(:ok) }
+              context "when comment is present" do
+                it { is_expected.to have_http_status(:ok) }
+              end
+
+              context "when comment is missing" do
+                let(:comment) { nil }
+
+                it { is_expected.to have_http_status(:unprocessable_entity) }
+              end
             end
 
             context "when enrollment is in pending mode" do
