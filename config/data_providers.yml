@@ -9,7 +9,7 @@ shared:
       subject: "Votre demande requiert des modifications"
     refuse_application: &shared_refuse_application_mailer
       subject: "Votre demande a été refusée"
-    notify_application_sent: &shared_notify_appication_sent_mailer
+    notify_application_sent: &shared_notify_application_sent_mailer
       subject: "Nouvelle demande sur DataPass"
     create_application: &shared_create_application_mailer
       subject: "Votre demande a été enregistrée"
@@ -139,5 +139,10 @@ api_hermes_production:
 
 hubee:
   label: Hubee
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_pro_sante_connect:
+  label: API Pro Santé Connect
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
