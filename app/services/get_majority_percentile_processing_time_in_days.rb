@@ -37,6 +37,10 @@ class GetMajorityPercentileProcessingTimeInDays < ApplicationService
       .execute(query)
       .getvalue(0, 0)
 
+    if majority_percentile_processing_time_in_days.nil?
+      majority_percentile_processing_time_in_days = "21"
+    end
+
     if majority_percentile_processing_time_in_days.to_i < 3
       majority_percentile_processing_time_in_days = "3"
     end
