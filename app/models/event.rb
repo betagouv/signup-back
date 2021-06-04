@@ -9,6 +9,8 @@ class Event < ActiveRecord::Base
   protected
 
   def validate_comment
-    errors[:comment] << "Vous devez renseigner un commentaire" if name.in?(["refused", "asked_for_modification"]) && !comment.present?
+    if name.in?(["refused", "asked_for_modification", "validated", "notified"]) && !comment.present?
+      errors[:comment] << "Vous devez renseigner un commentaire"
+    end
   end
 end

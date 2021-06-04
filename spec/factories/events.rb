@@ -12,6 +12,8 @@ FactoryBot.define do
 
     trait :updated do
       name { "updated" }
+
+      with_comment
     end
 
     trait :submitted do
@@ -20,10 +22,18 @@ FactoryBot.define do
 
     trait :validated do
       name { "validated" }
+
+      with_comment
     end
 
     trait :refused do
       name { "refused" }
+
+      with_comment
+    end
+
+    trait :notified do
+      name { "notified" }
 
       with_comment
     end
