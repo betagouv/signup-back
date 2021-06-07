@@ -29,14 +29,14 @@ class Enrollment::AidantsConnectPolicy < EnrollmentPolicy
         :participation_reseau,
         :nom_reseau,
         :associated_public_organisation,
-        :label_pass_numerique,
         :label_france_services,
         :label_fabrique_territoires,
         :recrutement_conseiller_numerique,
         :utilisation_identifiants_usagers,
         :demandes_par_semaines,
         :adresse_mail_professionnelle,
-        :has_professional_contact_only
+        :has_professional_contact_only,
+        :has_non_elected_contact_only
       ]
     ])
 
