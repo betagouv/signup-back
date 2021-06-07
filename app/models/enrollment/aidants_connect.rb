@@ -32,7 +32,10 @@ class Enrollment::AidantsConnect < Enrollment
 
     errors[:cgu_approved] << "Vous devez valider les modalités d’utilisation avant de continuer" unless cgu_approved?
     unless additional_content&.fetch("has_professional_contact_only", false)&.present?
-      errors[:secret_statistique_agreement] << "Vous devez valider que la liste des aidants à habiliter contient exclusivement des aidants professionnels avant de continuer"
+      errors[:has_professional_contact_only] << "Vous devez valider que la liste des aidants à habiliter contient exclusivement des aidants professionnels avant de continuer"
+    end
+    unless additional_content&.fetch("has_non_elected_contact_only", false)&.present?
+      errors[:has_non_elected_contact_only] << "Vous devez valider qu’aucun élu n’est impliqué dans l’habilitation Aidants Connect"
     end
   end
 end
