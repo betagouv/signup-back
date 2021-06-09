@@ -102,8 +102,8 @@ class HubeeBridge < ApplicationBridge
         },
         accessMode: "API",
         notificationFrequency: "unitaire",
-        activateDateTime: created_at.iso8601,
-        validateDateTime: validated_at.iso8601,
+        activateDateTime: nil,
+        validateDateTime: nil,
         rejectDateTime: nil,
         endDateTime: nil,
         updateDateTime: updated_at.iso8601,
@@ -116,7 +116,7 @@ class HubeeBridge < ApplicationBridge
           mobileNumber: nil
         },
         rejectionReason: nil,
-        status: "Actif",
+        status: "Inactif",
         email: email,
         localAdministrator: {
           email: contacts.find { |contact| contact["id"] == "metier" }["email"],
