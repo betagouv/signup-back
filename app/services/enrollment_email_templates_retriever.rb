@@ -63,7 +63,7 @@ class EnrollmentEmailTemplatesRetriever
     @variables ||= {
       url: enrollment_url,
       target_api_label: target_api_label,
-      front_url: front_url,
+      front_host: front_host,
       user: user,
       enrollment: enrollment,
       instructor: instructor
@@ -71,14 +71,14 @@ class EnrollmentEmailTemplatesRetriever
   end
 
   def enrollment_url
-    "#{front_url}/#{enrollment.target_api.tr("_", "-")}/#{enrollment.id}"
+    "#{front_host}/#{enrollment.target_api.tr("_", "-")}/#{enrollment.id}"
   end
 
   def target_api_label
     target_api_data["label"]
   end
 
-  def front_url
+  def front_host
     ENV.fetch("FRONT_HOST")
   end
 
