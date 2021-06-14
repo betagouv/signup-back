@@ -32,7 +32,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update_owner?
-    record.validated? && user.is_administrator?
+    (record.validated? || record.refused?) && user.is_administrator?
   end
 
   def update_rgpd_contact?
