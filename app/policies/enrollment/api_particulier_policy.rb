@@ -9,7 +9,11 @@ class Enrollment::ApiParticulierPolicy < EnrollmentPolicy
         :cnaf_quotient_familial,
         :cnaf_allocataires,
         :cnaf_enfants,
-        :cnaf_adresse
+        :cnaf_adresse,
+        :pole_emploi_identite,
+        :pole_emploi_contact,
+        :pole_emploi_adresse,
+        :pole_emploi_inscription
       ]
     ])
 
