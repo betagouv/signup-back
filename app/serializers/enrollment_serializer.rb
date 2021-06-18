@@ -4,7 +4,7 @@ class EnrollmentSerializer < ActiveModel::Serializer
     :additional_content, :intitule, :description, :fondement_juridique_title, :fondement_juridique_url,
     :data_recipients, :data_retention_period, :data_retention_comment, :dpo_label, :dpo_email, :dpo_phone_number,
     :responsable_traitement_label, :responsable_traitement_email, :responsable_traitement_phone_number, :demarche,
-    :type_projet, :date_mise_en_production, :volumetrie_approximative
+    :type_projet, :date_mise_en_production, :volumetrie_approximative, :dpo_is_informed
 
   belongs_to :user, serializer: UserWithProfileSerializer
 

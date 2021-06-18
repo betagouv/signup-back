@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 2021_06_21_125425) do
     t.string "type_projet"
     t.string "date_mise_en_production"
     t.string "volumetrie_approximative"
+    t.boolean "dpo_is_informed"
     t.index ["copied_from_enrollment_id"], name: "index_enrollments_on_copied_from_enrollment_id"
     t.index ["dpo_id"], name: "index_enrollments_on_dpo_id"
     t.index ["responsable_traitement_id"], name: "index_enrollments_on_responsable_traitement_id"
