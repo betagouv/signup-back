@@ -216,7 +216,7 @@ class EnrollmentsController < ApplicationController
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
           rgpd_role: RESPONSABLE_TRAITEMENT_LABEL,
-          contact_label: @enrollment.responsable_traitement_label,
+          contact_label: [@enrollment.responsable_traitement_given_name, @enrollment.responsable_traitement_family_name].join(" "),
           owner_email: @enrollment.user.email,
           nom_raison_sociale: @enrollment.nom_raison_sociale,
           intitule: @enrollment.intitule
@@ -228,7 +228,7 @@ class EnrollmentsController < ApplicationController
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
           rgpd_role: DPO_LABEL,
-          contact_label: @enrollment.dpo_label,
+          contact_label: [@enrollment.dpo_given_name, @enrollment.dpo_family_name].join(" "),
           owner_email: @enrollment.user.email,
           nom_raison_sociale: @enrollment.nom_raison_sociale,
           intitule: @enrollment.intitule
@@ -265,7 +265,7 @@ class EnrollmentsController < ApplicationController
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
           rgpd_role: RESPONSABLE_TRAITEMENT_LABEL,
-          contact_label: @enrollment.responsable_traitement_label,
+          contact_label: [@enrollment.responsable_traitement_given_name, @enrollment.responsable_traitement_family_name].join(" "),
           owner_email: @enrollment.user.email,
           nom_raison_sociale: @enrollment.nom_raison_sociale,
           intitule: @enrollment.intitule
@@ -277,7 +277,7 @@ class EnrollmentsController < ApplicationController
           target_api: @enrollment.target_api,
           enrollment_id: @enrollment.id,
           rgpd_role: DPO_LABEL,
-          contact_label: @enrollment.dpo_label,
+          contact_label: [@enrollment.dpo_given_name, @enrollment.dpo_family_name].join(" "),
           owner_email: @enrollment.user.email,
           nom_raison_sociale: @enrollment.nom_raison_sociale,
           intitule: @enrollment.intitule

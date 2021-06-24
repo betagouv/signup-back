@@ -14,9 +14,12 @@ event_draft_2:
     dpo_id:
       - null
       - 1
-    dpo_label:
-      - "George Abitbol"
-      - "User Test"
+    dpo_family_name:
+      - "Abitbol"
+      - "Test"
+    dpo_given_name:
+      - "George"
+      - "User"
     updated_at:
       - <%= 1.days.ago.to_s(:db) %>
       - <%= 1.hours.ago.to_s(:db) %>

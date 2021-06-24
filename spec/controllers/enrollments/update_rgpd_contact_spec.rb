@@ -111,7 +111,7 @@ RSpec.describe EnrollmentsController, "#update_rgpd_contact", type: :controller 
       context "with dpo informations" do
         let(:enrollment_attributes) do
           {
-            dpo_label: "dpo_label",
+            dpo_family_name: "dpo_family_name",
             dpo_email: generate(:email),
             dpo_phone_number: "0636656565"
           }
@@ -163,7 +163,7 @@ RSpec.describe EnrollmentsController, "#update_rgpd_contact", type: :controller 
       context "with responsable traitement informations" do
         let(:enrollment_attributes) do
           {
-            responsable_traitement_label: "responsable_traitement_label",
+            responsable_traitement_family_name: "responsable_traitement_family_name",
             responsable_traitement_email: generate(:email),
             responsable_traitement_phone_number: "0636656565"
           }
@@ -219,7 +219,7 @@ RSpec.describe EnrollmentsController, "#update_rgpd_contact", type: :controller 
 
         let(:enrollment_attributes) do
           {
-            responsable_traitement_label: "responsable_traitement_label"
+            responsable_traitement_family_name: "responsable_traitement_family_name"
           }
         end
 

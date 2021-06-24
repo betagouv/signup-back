@@ -90,7 +90,7 @@ RSpec.describe EnrollmentsController, "#show", type: :controller do
     end
 
     it "includes fields defined in EnrollmentSerializer only" do
-      expect(show_enrollment_payload["dpo_label"]).to eq(enrollment.dpo_label)
+      expect(show_enrollment_payload["dpo_family_name"]).to eq(enrollment.dpo_family_name)
     end
   end
 end

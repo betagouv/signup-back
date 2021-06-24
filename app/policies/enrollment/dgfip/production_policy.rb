@@ -11,12 +11,16 @@ class Enrollment::Dgfip::ProductionPolicy < EnrollmentPolicy
       :data_recipients,
       :data_retention_period,
       :data_retention_comment,
-      :dpo_label,
+      :dpo_family_name,
+      :dpo_given_name,
       :dpo_email,
       :dpo_phone_number,
-      :responsable_traitement_label,
+      :dpo_job,
+      :responsable_traitement_family_name,
+      :responsable_traitement_given_name,
       :responsable_traitement_email,
       :responsable_traitement_phone_number,
+      :responsable_traitement_job,
       documents_attributes: [
         :attachment,
         :type
