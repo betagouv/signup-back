@@ -26,12 +26,16 @@ DEFAULTS: &DEFAULTS
   data_recipients: "Agents instructeurs des demandes"
   data_retention_period: 24
   data_retention_comment: null
-  dpo_label: "User Test"
+  dpo_family_name: "Test"
+  dpo_given_name: "User"
   dpo_id: <%= ActiveRecord::FixtureSet.identify(:user) %>
   dpo_phone_number: "0123456789"
-  responsable_traitement_label: "User Test"
+  dpo_job: "Directeur technique"
+  responsable_traitement_family_name: "Test"
+  responsable_traitement_given_name: "User"
   responsable_traitement_id: <%= ActiveRecord::FixtureSet.identify(:user) %>
   responsable_traitement_phone_number: "0123456789"
+  responsable_traitement_job: "Maire"
   user_id: <%= ActiveRecord::FixtureSet.identify(:user) %>
 
 enrollment_draft:

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_21_125425) do
+ActiveRecord::Schema.define(version: 2021_06_22_162321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,10 +48,10 @@ ActiveRecord::Schema.define(version: 2021_06_21_125425) do
     t.string "data_retention_comment"
     t.integer "organization_id"
     t.bigint "dpo_id"
-    t.string "dpo_label"
+    t.string "dpo_family_name"
     t.string "dpo_phone_number"
     t.bigint "responsable_traitement_id"
-    t.string "responsable_traitement_label"
+    t.string "responsable_traitement_family_name"
     t.string "responsable_traitement_phone_number"
     t.bigint "copied_from_enrollment_id"
     t.string "demarche"
@@ -59,6 +59,10 @@ ActiveRecord::Schema.define(version: 2021_06_21_125425) do
     t.string "date_mise_en_production"
     t.string "volumetrie_approximative"
     t.boolean "dpo_is_informed"
+    t.string "dpo_given_name"
+    t.string "dpo_job"
+    t.string "responsable_traitement_given_name"
+    t.string "responsable_traitement_job"
     t.index ["copied_from_enrollment_id"], name: "index_enrollments_on_copied_from_enrollment_id"
     t.index ["dpo_id"], name: "index_enrollments_on_dpo_id"
     t.index ["responsable_traitement_id"], name: "index_enrollments_on_responsable_traitement_id"

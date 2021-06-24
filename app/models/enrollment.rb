@@ -242,10 +242,10 @@ class Enrollment < ActiveRecord::Base
   def rgpd_validation
     errors[:data_retention_period] << "Vous devez renseigner la conservation des données avant de continuer" unless data_retention_period.present?
     errors[:data_recipients] << "Vous devez renseigner les destinataires des données avant de continuer" unless data_recipients.present?
-    errors[:dpo_label] << "Vous devez renseigner un nom pour le délégué à la protection des données avant de continuer" unless dpo_label.present?
+    errors[:dpo_family_name] << "Vous devez renseigner un nom pour le délégué à la protection des données avant de continuer" unless dpo_family_name.present?
     errors[:dpo_email] << "Vous devez renseigner un email pour le délégué à la protection des données avant de continuer" unless dpo_email.present?
     errors[:dpo_phone_number] << "Vous devez renseigner un numéro de téléphone pour le délégué à la protection des données avant de continuer" unless dpo_phone_number.present?
-    errors[:responsable_traitement_label] << "Vous devez renseigner un nom pour le responsable de traitement avant de continuer" unless responsable_traitement_label.present?
+    errors[:responsable_traitement_family_name] << "Vous devez renseigner un nom pour le responsable de traitement avant de continuer" unless responsable_traitement_family_name.present?
     errors[:responsable_traitement_email] << "Vous devez renseigner un email pour le responsable de traitement avant de continuer" unless responsable_traitement_email.present?
     errors[:responsable_traitement_phone_number] << "Vous devez renseigner un numéro de téléphone pour le responsable de traitement avant de continuer" unless responsable_traitement_phone_number.present?
   end
@@ -289,6 +289,7 @@ class Enrollment < ActiveRecord::Base
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
     errors[:siret] << "Vous devez renseigner un SIRET d’organisation valide avant de continuer" unless nom_raison_sociale
     errors[:cgu_approved] << "Vous devez valider les modalités d’utilisation avant de continuer" unless cgu_approved?
-    errors[:dpo_is_informed] << "Vous devez confirmer avoir informé le DPD de votre organisation avant de continuer" unless dpo_is_informed?
+    # TODO validate this plus full profile by default
+    # errors[:dpo_is_informed] << "Vous devez confirmer avoir informé le DPD de votre organisation avant de continuer" unless dpo_is_informed?
   end
 end

@@ -54,7 +54,7 @@ FactoryBot.define do
       dpo { build(:user, :dpo) }
 
       after(:build) do |enrollment|
-        enrollment.dpo_label ||= enrollment.dpo.given_name
+        enrollment.dpo_family_name ||= enrollment.dpo.family_name
         enrollment.dpo_phone_number ||= enrollment.dpo.phone_number
       end
     end
@@ -63,7 +63,7 @@ FactoryBot.define do
       responsable_traitement { build(:user, :responsable_traitement) }
 
       after(:build) do |enrollment|
-        enrollment.responsable_traitement_label ||= enrollment.responsable_traitement.given_name
+        enrollment.responsable_traitement_family_name ||= enrollment.responsable_traitement.family_name
         enrollment.responsable_traitement_phone_number ||= enrollment.responsable_traitement.phone_number
       end
     end

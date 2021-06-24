@@ -49,12 +49,16 @@ class EnrollmentPolicy < ApplicationPolicy
 
   def permitted_attributes_for_update_rgpd_contact
     [
-      :responsable_traitement_label,
+      :responsable_traitement_family_name,
+      :responsable_traitement_given_name,
       :responsable_traitement_email,
       :responsable_traitement_phone_number,
-      :dpo_label,
+      :responsable_traitement_job,
+      :dpo_family_name,
+      :dpo_given_name,
       :dpo_email,
-      :dpo_phone_number
+      :dpo_phone_number,
+      :dpo_job
     ]
   end
 
@@ -77,14 +81,18 @@ class EnrollmentPolicy < ApplicationPolicy
       :data_recipients,
       :data_retention_period,
       :data_retention_comment,
-      :dpo_label,
+      :dpo_family_name,
+      :dpo_given_name,
       :dpo_email,
       :dpo_phone_number,
-      :responsable_traitement_label,
+      :dpo_job,
+      :responsable_traitement_family_name,
+      :responsable_traitement_given_name,
       :responsable_traitement_email,
       :responsable_traitement_phone_number,
+      :responsable_traitement_job,
       :demarche,
-      contacts: [:id, :email, :phone_number],
+      contacts: [:id, :family_name, :given_name, :email, :phone_number, :job],
       documents_attributes: [
         :attachment,
         :type
