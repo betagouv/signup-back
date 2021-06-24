@@ -103,7 +103,7 @@ class HubeeBridge < ApplicationBridge
         accessMode: "API",
         notificationFrequency: "unitaire",
         activateDateTime: nil,
-        validateDateTime: nil,
+        validateDateTime: validated_at.iso8601,
         rejectDateTime: nil,
         endDateTime: nil,
         updateDateTime: updated_at.iso8601,
