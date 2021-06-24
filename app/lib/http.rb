@@ -17,7 +17,7 @@ module Http
         endpoint_label,
         url_as_string,
         response.code,
-        response.parse
+        response.to_s
       )
     end
 
@@ -49,7 +49,7 @@ module Http
         endpoint_label,
         url_as_string,
         response.code,
-        response.parse
+        response.to_s
       )
     end
 
