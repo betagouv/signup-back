@@ -90,6 +90,17 @@ class HubeeBridge < ApplicationBridge
     end
 
     # 3. create subscription
+    delegation_actor = nil
+    unless contacts.find { |contact| contact["id"] == "technique" }["email"].empty?
+      delegation_actor = {
+        email: contacts.find { |contact| contact["id"] == "technique" }["email"],
+        firstName: contacts.find { |contact| contact["id"] == "technique" }["given_name"],
+        lastName: contacts.find { |contact| contact["id"] == "technique" }["family_name"],
+        function: contacts.find { |contact| contact["id"] == "technique" }["job"],
+        phoneNumber: contacts.find { |contact| contact["id"] == "technique" }["phone_number"],
+        mobileNumber: nil
+      }
+    end
     create_subscription_response = Http.post(
       "#{api_host}/referential/v1/subscriptions",
       {
@@ -107,14 +118,7 @@ class HubeeBridge < ApplicationBridge
         rejectDateTime: nil,
         endDateTime: nil,
         updateDateTime: updated_at.iso8601,
-        delegationActor: {
-          email: contacts.find { |contact| contact["id"] == "technique" }["email"],
-          firstName: contacts.find { |contact| contact["id"] == "technique" }["given_name"],
-          lastName: contacts.find { |contact| contact["id"] == "technique" }["family_name"],
-          function: contacts.find { |contact| contact["id"] == "technique" }["job"],
-          phoneNumber: contacts.find { |contact| contact["id"] == "technique" }["phone_number"],
-          mobileNumber: nil
-        },
+        delegationActor: delegation_actor,
         rejectionReason: nil,
         status: "Inactif",
         email: email,
