@@ -28,9 +28,8 @@ class EnrollmentMailer < ActionMailer::Base
     end
   end
 
-  def add_scopes_in_franceconnect_email
+  def notify_support_franceconnect
     @target_api_label = data_provider_config["label"]
-    from = data_provider_config["support_email"]
     @nom_raison_sociale = params[:nom_raison_sociale]
     @previous_enrollment_id = params[:previous_enrollment_id]
     @scopes = params[:scopes]
@@ -38,11 +37,11 @@ class EnrollmentMailer < ActionMailer::Base
 
     mail(
       to: "support.partenaires@franceconnect.gouv.fr",
-      subject: "[DataPass] nouveaux scopes pour \"#{@nom_raison_sociale} - #{@previous_enrollment_id}\"",
-      from: from,
+      subject: params[:subject],
+      from: "datapass@api.gouv.fr",
       cc: "datapass@api.gouv.fr",
-      template_path: "enrollment_mailer",
-      template_name: "add_scopes_in_franceconnect"
+      template_path: "enrollment_mailer/admin",
+      template_name: params[:template_name]
     )
   end
 
