@@ -15,8 +15,7 @@ class Enrollment::FranceconnectPolicy < EnrollmentPolicy
         :openid
       ],
       additional_content: [
-        :eidas_1,
-        :eidas_2,
+        :eidas_level,
         :has_alternative_authentication_methods
       ]
     ])
