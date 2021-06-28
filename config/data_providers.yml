@@ -146,3 +146,8 @@ api_pro_sante_connect:
   label: API Pro Santé Connect
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
+
+api_indemnites_journalieres_cnam:
+  label: API Indemnités Journalières (CNAM)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer

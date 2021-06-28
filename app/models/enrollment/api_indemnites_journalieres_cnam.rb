@@ -1,4 +1,4 @@
-class Enrollment::ApiDroitsCnam < Enrollment
+class Enrollment::ApiIndemnitesJournalieresCnam < Enrollment
   protected
 
   def sent_validation

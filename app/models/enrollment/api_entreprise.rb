@@ -4,8 +4,7 @@ class Enrollment::ApiEntreprise < Enrollment
   def sent_validation
     super
 
-    errors[:scopes] << "Vous devez cocher au moins un périmètre de données avant de continuer" unless scopes.any? { |_, v| v }
-
+    scopes_validation
     contact_technique_validation
     contact_metier_validation
   end

@@ -279,6 +279,14 @@ class Enrollment < ActiveRecord::Base
     errors[:fondement_juridique_url] << "Vous devez joindre l’URL ou le document du texte relatif au traitement avant de continuer" unless fondement_juridique_url.present? || documents.where(type: "Document::LegalBasis").present?
   end
 
+  def scopes_validation
+    errors[:scopes] << "Vous devez cocher au moins un périmètre de données avant de continuer" unless scopes.any? { |_, v| v }
+  end
+
+  def previous_enrollment_id_validation
+    errors[:previous_enrollment_id] << "Vous devez associer cette demande à une demande Franceconnect validée" unless previous_enrollment_id.present?
+  end
+
   def sent_validation
     contact = contacts&.find { |e| e["id"] == "technique" }
     errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch("email", false)&.present?
