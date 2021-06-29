@@ -211,3 +211,13 @@ api_robf_production:
   label: API ROBF (Production)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
+
+api_cpr_pro_sandbox:
+  label: API CPR PRO - ADELIE (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_cpr_pro_production:
+  label: API CPR PRO - ADELIE (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
