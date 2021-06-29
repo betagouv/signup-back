@@ -171,3 +171,13 @@ api_opale_production:
   label: API OPALE (Production)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
+
+api_mire_sandbox:
+  label: API MIRE (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_mire_production:
+  label: API MIRE (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
