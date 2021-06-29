@@ -201,3 +201,13 @@ api_e_pro_production:
   label: API E-PRO (Production)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
+
+api_robf_sandbox:
+  label: API ROBF (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_robf_production:
+  label: API ROBF (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
