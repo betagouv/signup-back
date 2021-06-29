@@ -191,3 +191,13 @@ api_ocfi_production:
   label: API OCFI (Production)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
+
+api_e_pro_sandbox:
+  label: API E-PRO (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_e_pro_production:
+  label: API E-PRO (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
