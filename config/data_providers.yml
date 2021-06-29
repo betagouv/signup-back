@@ -151,3 +151,13 @@ api_indemnites_journalieres_cnam:
   label: API Indemnités Journalières (CNAM)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
+
+api_e_contacts_sandbox:
+  label: API Hermes (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_e_contacts_production:
+  label: API Hermes (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
