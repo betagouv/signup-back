@@ -181,3 +181,13 @@ api_mire_production:
   label: API MIRE (Production)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
+
+api_ocfi_sandbox:
+  label: API OCFI (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_ocfi_production:
+  label: API OCFI (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
