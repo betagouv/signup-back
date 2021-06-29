@@ -161,3 +161,13 @@ api_e_contacts_production:
   label: API Hermes (Production)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
+
+api_opale_sandbox:
+  label: API OPALE (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_opale_production:
+  label: API OPALE (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
