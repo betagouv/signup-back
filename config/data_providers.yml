@@ -153,12 +153,12 @@ api_indemnites_journalieres_cnam:
   mailer: *shared_mailer
 
 api_e_contacts_sandbox:
-  label: API Hermes (Bac à sable)
+  label: API E-Contacts (Bac à sable)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
 
 api_e_contacts_production:
-  label: API Hermes (Production)
+  label: API E-Contacts (Production)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
 
