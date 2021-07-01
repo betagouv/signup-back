@@ -151,3 +151,73 @@ api_indemnites_journalieres_cnam:
   label: API Indemnités Journalières (CNAM)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
+
+api_e_contacts_sandbox:
+  label: API Hermes (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_e_contacts_production:
+  label: API Hermes (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_opale_sandbox:
+  label: API OPALE (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_opale_production:
+  label: API OPALE (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_mire_sandbox:
+  label: API MIRE (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_mire_production:
+  label: API MIRE (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_ocfi_sandbox:
+  label: API OCFI (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_ocfi_production:
+  label: API OCFI (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_e_pro_sandbox:
+  label: API E-PRO (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_e_pro_production:
+  label: API E-PRO (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_robf_sandbox:
+  label: API ROBF (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_robf_production:
+  label: API ROBF (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_cpr_pro_sandbox:
+  label: API CPR PRO - ADELIE (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_cpr_pro_production:
+  label: API CPR PRO - ADELIE (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
