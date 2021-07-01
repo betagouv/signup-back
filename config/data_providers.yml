@@ -221,3 +221,13 @@ api_cpr_pro_production:
   label: API CPR PRO - ADELIE (Production)
   support_email: contact@api.gouv.fr
   mailer: *shared_mailer
+
+api_infinoe_sandbox:
+  label: API INFINOE (Bac à sable)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
+
+api_infinoe_production:
+  label: API INFINOE (Production)
+  support_email: contact@api.gouv.fr
+  mailer: *shared_mailer
