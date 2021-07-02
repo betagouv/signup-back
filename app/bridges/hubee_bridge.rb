@@ -40,12 +40,13 @@ class HubeeBridge < ApplicationBridge
     libelle_commune = response.parse["etablissement"]["libelle_commune"]
 
     api_host = ENV.fetch("HUBEE_HOST")
+    hubee_auth_url = ENV.fetch("HUBEE_AUTH_URL")
     client_id = ENV.fetch("HUBEE_CLIENT_ID")
     client_secret = ENV.fetch("HUBEE_CLIENT_SECRET")
 
     # 1. get token
     token_response = Http.post(
-      "#{api_host}/token",
+      "#{hubee_auth_url}/token",
       {grant_type: "client_credentials", scope: "ADMIN"},
       Base64.strict_encode64("#{client_id}:#{client_secret}"),
       "HubEE",
