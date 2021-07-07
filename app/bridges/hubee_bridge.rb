@@ -112,7 +112,7 @@ class HubeeBridge < ApplicationBridge
           companyRegister: siret,
           branchCode: code_commune
         },
-        accessMode: "API",
+        accessMode: nil,
         notificationFrequency: "unitaire",
         activateDateTime: nil,
         validateDateTime: validated_at.iso8601,
