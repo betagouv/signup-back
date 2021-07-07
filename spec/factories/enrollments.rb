@@ -48,6 +48,12 @@ FactoryBot.define do
           status: "sent"
         )
       end
+
+      after(:build) do |enrollment|
+        enrollment.description ||= "description"
+        enrollment.fondement_juridique_title ||= "title"
+        enrollment.fondement_juridique_url ||= "https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000000886460"
+      end
     end
 
     trait :with_dpo do
@@ -93,6 +99,10 @@ FactoryBot.define do
     end
 
     trait :api_entreprise do
+      initialize_with do
+        Enrollment::ApiEntreprise.new(attributes)
+      end
+
       target_api { "api_entreprise" }
       intitule { "Marché publics de la ville de Clamart" }
 
@@ -100,25 +110,46 @@ FactoryBot.define do
         [
           {
             id: "technique",
-            email: "user-technique@clamart.fr"
+            email: "user-technique@clamart.fr",
+            phone_number: "0636656565"
           },
           {
             id: "metier",
-            email: "user-metier@clamart.fr"
+            email: "user-metier@clamart.fr",
+            phone_number: "0636656565"
           }
         ]
+      end
+
+      scopes do
+        {
+          exercices: true
+        }
       end
     end
 
     trait :api_particulier do
+      initialize_with do
+        Enrollment::ApiParticulier.new(attributes)
+      end
+
       target_api { "api_particulier" }
       intitule { "Délivrance des titres de transport de la ville de Clamart" }
+      fondement_juridique_title { "Arrêté du 8 novembre 2018" }
+      fondement_juridique_url { "https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000000886460" }
+
+      scopes do
+        {
+          pole_emploi_identite: true
+        }
+      end
 
       contacts do
         [
           {
             id: "technique",
-            email: "user-technique@clamart.fr"
+            email: "user-technique@clamart.fr",
+            phone_number: "0636656565"
           },
           {
             id: "metier",
