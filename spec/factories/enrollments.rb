@@ -250,5 +250,38 @@ FactoryBot.define do
         }
       end
     end
+
+    trait :francerelance_fc do
+      initialize_with do
+        Enrollment::FrancerelanceFc.new(attributes)
+      end
+
+      scopes do
+        {
+          family_name: true
+        }
+      end
+
+      contacts do
+        [
+          {
+            id: "technique",
+            email: "user-technique@clamart.fr",
+            phone_number: "0626656565"
+          },
+          {
+            id: "metier",
+            email: "user-metier@clamart.fr",
+            phone_number: "0626656565"
+          }
+        ]
+      end
+
+      additional_content do
+        {
+          date_integration: "2021-07-01"
+        }
+      end
+    end
   end
 end
