@@ -192,5 +192,29 @@ FactoryBot.define do
         ]
       end
     end
+
+    trait :api_droits_cnam do
+      initialize_with do
+        Enrollment::ApiDroitsCnam.new(attributes)
+      end
+
+      previous_enrollment { create(:enrollment, :franceconnect, :validated) }
+
+      contacts do
+        [
+          {
+            id: "technique",
+            email: "user-technique@clamart.fr",
+            phone_number: "0626656565"
+          }
+        ]
+      end
+
+      scopes do
+        {
+          cnam_caisse: true
+        }
+      end
+    end
   end
 end
