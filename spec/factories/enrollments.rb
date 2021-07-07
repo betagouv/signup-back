@@ -1,3 +1,7 @@
+Dir[Rails.root.join("app/models/enrollment/dgfip/*")].sort.each do |file|
+  require file
+end
+
 FactoryBot.define do
   factory :enrollment do
     status { "pending" }
