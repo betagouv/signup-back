@@ -283,5 +283,42 @@ FactoryBot.define do
         }
       end
     end
+
+    trait :aidants_connect do
+      initialize_with do
+        Enrollment::AidantsConnect.new(attributes)
+      end
+
+      contacts do
+        [
+          {
+            id: "metier",
+            email: "user-metier@clamart.fr",
+            phone_number: "0626656565",
+            job: "Directeur",
+            given_name: "Jean",
+            family_name: "Dupont"
+          }
+        ]
+      end
+
+      documents do
+        build_list(:document, 1, :liste_aidants)
+      end
+
+      additional_content do
+        {
+          organization_type: "Ministère",
+          organization_address: "20 avenue de Ségur",
+          organization_postal_code: "75007",
+          organization_city: "Paris",
+          participation_reseau: true,
+          utilisation_identifiants_usagers: true,
+          adresse_mail_professionnelle: true,
+          has_professional_contact_only: true,
+          has_non_elected_contact_only: true
+        }
+      end
+    end
   end
 end

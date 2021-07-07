@@ -15,5 +15,13 @@ FactoryBot.define do
         )
       )
     end
+
+    trait :liste_aidants do
+      initialize_with do
+        Document::ListeAidants.new(attributes)
+      end
+
+      type { "Document::ListeAidants" }
+    end
   end
 end

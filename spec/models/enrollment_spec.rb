@@ -7,6 +7,7 @@ RSpec.describe Enrollment, type: :model do
       api_droits_cnam
       api_impot_particulier_fc_sandbox
       francerelance_fc
+      aidants_connect
     ].each do |target_api_trait|
       expect(build(:enrollment, target_api_trait)).to be_valid
       expect(build(:enrollment, target_api_trait, :sent)).to be_valid
