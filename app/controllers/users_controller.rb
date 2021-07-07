@@ -9,8 +9,8 @@ class UsersController < ApplicationController
     end
 
     render json: @users,
-           each_serializer: AdminUserSerializer,
-           adapter: :json
+      each_serializer: AdminUserSerializer,
+      adapter: :json
   end
 
   def update
@@ -19,10 +19,10 @@ class UsersController < ApplicationController
 
     if @user.update(permitted_attributes(@user))
       render json: @user,
-             serializer: AdminUserSerializer
+        serializer: AdminUserSerializer
     else
       render json: @user.errors,
-             status: :unprocessable_entity
+        status: :unprocessable_entity
     end
   end
 
@@ -34,17 +34,17 @@ class UsersController < ApplicationController
 
     if @user.save
       render json: @user,
-             serializer: AdminUserSerializer
+        serializer: AdminUserSerializer
     else
       render json: @user.errors,
-             status: :unprocessable_entity
+        status: :unprocessable_entity
     end
   end
 
   def me
     user = User.new current_user.attributes
     render json: user,
-           serializer: FullUserSerializer
+      serializer: FullUserSerializer
   end
 
   def join_organization

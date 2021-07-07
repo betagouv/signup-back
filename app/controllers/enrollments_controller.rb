@@ -69,10 +69,10 @@ class EnrollmentsController < ApplicationController
     end
 
     render json: @enrollments,
-           each_serializer: serializer,
-           meta: pagination_dict(@enrollments),
-           adapter: :json,
-           root: "enrollments"
+      each_serializer: serializer,
+      meta: pagination_dict(@enrollments),
+      adapter: :json,
+      root: "enrollments"
   end
 
   # GET /enrollments/1
@@ -301,9 +301,9 @@ class EnrollmentsController < ApplicationController
     @enrollments = policy_scope(Enrollment)
       .where(copied_from_enrollment_id: params[:id])
     render json: @enrollments,
-           each_serializer: LightEnrollmentSerializer,
-           adapter: :json,
-           root: "enrollments"
+      each_serializer: LightEnrollmentSerializer,
+      adapter: :json,
+      root: "enrollments"
   end
 
   # GET enrollments/1/next_enrollments
@@ -311,9 +311,9 @@ class EnrollmentsController < ApplicationController
     @enrollments = policy_scope(Enrollment)
       .where(previous_enrollment_id: params[:id])
     render json: @enrollments,
-           each_serializer: LightEnrollmentSerializer,
-           adapter: :json,
-           root: "enrollments"
+      each_serializer: LightEnrollmentSerializer,
+      adapter: :json,
+      root: "enrollments"
   end
 
   def destroy

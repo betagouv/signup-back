@@ -6,9 +6,9 @@ class EnrollmentsEmailTemplatesController < ApplicationController
     authorize @enrollment, :get_email_templates?
 
     render json: EnrollmentEmailTemplatesRetriever.new(@enrollment, current_user).perform,
-           each_serializer: EnrollmentEmailTemplateSerializer,
-           adapter: :json,
-           root: "email_templates",
-           status: :ok
+      each_serializer: EnrollmentEmailTemplateSerializer,
+      adapter: :json,
+      root: "email_templates",
+      status: :ok
   end
 end
