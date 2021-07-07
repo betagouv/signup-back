@@ -388,7 +388,6 @@ DEPENDENCIES
   rails (~> 5.2.5)
   rails-i18n
   rspec-rails
-  rubocop
   sentry-rails
   sentry-ruby
   sib-api-v3-sdk

@@ -1,6 +1,0 @@
-AllCops:
-  TargetRubyVersion: 2.7.3
-  Exclude:
-    - 'spec/**/*'
-    - 'db/**/*'
-    - 'config/**/*'
