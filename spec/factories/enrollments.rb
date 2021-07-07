@@ -320,5 +320,34 @@ FactoryBot.define do
         }
       end
     end
+
+    trait :hubee do
+      initialize_with do
+        Enrollment::Hubee.new(attributes)
+      end
+
+      demarche { "demarche" }
+
+      contacts do
+        [
+          {
+            id: "metier",
+            email: "user-metier@clamart.fr",
+            phone_number: "0626656565",
+            job: "Directeur",
+            given_name: "Jean",
+            family_name: "Dupont"
+          }
+        ]
+      end
+
+      additional_content do
+        {
+          nom_application_metier: "HubeeBien",
+          nom_editeur: "Tufou SAS",
+          numero_version: "9001"
+        }
+      end
+    end
   end
 end
