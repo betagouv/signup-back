@@ -220,5 +220,35 @@ FactoryBot.define do
         }
       end
     end
+
+    trait :api_impot_particulier_fc_sandbox do
+      initialize_with do
+        Enrollment::ApiImpotParticulierFcSandbox.new(attributes)
+      end
+
+      contacts do
+        [
+          {
+            id: "technique",
+            email: "user-technique@clamart.fr",
+            phone_number: "0626656565",
+            given_name: "Jean",
+            family_name: "Martin"
+          }
+        ]
+      end
+
+      scopes do
+        {
+          dgfip_annee_n_moins_1: true
+        }
+      end
+
+      additional_content do
+        {
+          rgpd_general_agreement: true
+        }
+      end
+    end
   end
 end
