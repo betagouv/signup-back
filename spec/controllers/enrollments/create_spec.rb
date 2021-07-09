@@ -56,6 +56,12 @@ RSpec.describe EnrollmentsController, "#create", type: :controller do
         ActiveJob::Base.queue_adapter = :test
       end
 
+      it "calls notifier created method" do
+        expect_any_instance_of(BaseNotifier).to receive(:created)
+
+        subject
+      end
+
       it "delivers a return receipt email to current user" do
         expect {
           create_enrollment

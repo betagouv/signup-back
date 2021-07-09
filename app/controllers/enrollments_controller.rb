@@ -118,13 +118,7 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.save
       @enrollment.events.create(name: "created", user_id: current_user.id)
-
-      EnrollmentMailer.with(
-        to: current_user.email,
-        target_api: @enrollment.target_api,
-        enrollment_id: @enrollment.id,
-        template: "create_application"
-      ).notification_email.deliver_later
+      @enrollment.notify("created")
 
       render json: @enrollment
     else
