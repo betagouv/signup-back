@@ -5,12 +5,13 @@ class FranceconnectBridge < ApplicationBridge
     email = @enrollment.contacts.find { |contact| contact["id"] == "technique" }["email"]
     scopes = @enrollment[:scopes].reject { |k, v| !v }.keys
     eidas_level = @enrollment.additional_content&.fetch("eidas_level", "")
-    create_enrollment_in_token_manager(@enrollment.id, intitule, nom_raison_sociale, email, scopes, eidas_level)
+    copied_from_enrollment_id = @enrollment.copied_from_enrollment_id
+    create_enrollment_in_token_manager(@enrollment.id, intitule, nom_raison_sociale, email, scopes, eidas_level, copied_from_enrollment_id)
   end
 
   private
 
-  def create_enrollment_in_token_manager(id, intitule, nom_raison_sociale, email, scopes, eidas_level)
+  def create_enrollment_in_token_manager(id, intitule, nom_raison_sociale, email, scopes, eidas_level, copied_from_enrollment_id)
     if eidas_level == "1"
       # note that the FC team test this call with this bash script: https://gitlab.com/france-connect/FranceConnect/snippets/1828712
       response = Http.post(
@@ -22,7 +23,8 @@ class FranceconnectBridge < ApplicationBridge
           authorized_emails: [email],
           signup_id: id,
           datapass_id: id,
-          scopes: scopes
+          scopes: scopes,
+          copied_from_datapass_id: copied_from_enrollment_id
         },
         ENV.fetch("FRANCECONNECT_PARTICULIER_API_KEY"),
         "Espace Partenaire FranceConnect"
