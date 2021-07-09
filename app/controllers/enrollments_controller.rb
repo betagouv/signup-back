@@ -132,6 +132,8 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
+      @enrollment.notify("updated", user_id: current_user.id, diff: @enrollment.previous_changes)
+
       render json: @enrollment
     else
       render json: @enrollment.errors, status: :unprocessable_entity

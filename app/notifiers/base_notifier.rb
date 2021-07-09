@@ -13,4 +13,7 @@ class BaseNotifier
       template: "create_application"
     ).notification_email.deliver_later
   end
+
+  def updated(diff:, user_id:)
+  end
 end
