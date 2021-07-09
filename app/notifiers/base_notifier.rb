@@ -22,29 +22,11 @@ class BaseNotifier
 
   def rgpd_contact_updated(diff:, user_id:, responsable_traitement_email:, dpo_email:)
     if responsable_traitement_email
-      RgpdMailer.with(
-        to: enrollment.responsable_traitement.email,
-        target_api: enrollment.target_api,
-        enrollment_id: enrollment.id,
-        rgpd_role: EnrollmentsController::RESPONSABLE_TRAITEMENT_LABEL,
-        contact_label: [enrollment.responsable_traitement_given_name, enrollment.responsable_traitement_family_name].join(" "),
-        owner_email: enrollment.user.email,
-        nom_raison_sociale: enrollment.nom_raison_sociale,
-        intitule: enrollment.intitule
-      ).rgpd_contact_email.deliver_later
+      deliver_rgpd_email_for(:responsable_traitement)
     end
 
     if dpo_email
-      RgpdMailer.with(
-        to: enrollment.dpo.email,
-        target_api: enrollment.target_api,
-        enrollment_id: enrollment.id,
-        rgpd_role: EnrollmentsController::DPO_LABEL,
-        contact_label: [enrollment.dpo_given_name, enrollment.dpo_family_name].join(" "),
-        owner_email: enrollment.user.email,
-        nom_raison_sociale: enrollment.nom_raison_sociale,
-        intitule: enrollment.intitule
-      ).rgpd_contact_email.deliver_later
+      deliver_rgpd_email_for(:dpo)
     end
   end
 
@@ -72,29 +54,11 @@ class BaseNotifier
     deliver_event_mailer(__method__, comment)
 
     if enrollment.responsable_traitement.present?
-      RgpdMailer.with(
-        to: enrollment.responsable_traitement.email,
-        target_api: enrollment.target_api,
-        enrollment_id: enrollment.id,
-        rgpd_role: EnrollmentsController::RESPONSABLE_TRAITEMENT_LABEL,
-        contact_label: [enrollment.responsable_traitement_given_name, enrollment.responsable_traitement_family_name].join(" "),
-        owner_email: enrollment.user.email,
-        nom_raison_sociale: enrollment.nom_raison_sociale,
-        intitule: enrollment.intitule
-      ).rgpd_contact_email.deliver_later
+      deliver_rgpd_email_for(:responsable_traitement)
     end
 
     if enrollment.dpo.present?
-      RgpdMailer.with(
-        to: enrollment.dpo.email,
-        target_api: enrollment.target_api,
-        enrollment_id: enrollment.id,
-        rgpd_role: EnrollmentsController::DPO_LABEL,
-        contact_label: [enrollment.dpo_given_name, enrollment.dpo_family_name].join(" "),
-        owner_email: enrollment.user.email,
-        nom_raison_sociale: enrollment.nom_raison_sociale,
-        intitule: enrollment.intitule
-      ).rgpd_contact_email.deliver_later
+      deliver_rgpd_email_for(:dpo)
     end
   end
 
@@ -108,5 +72,18 @@ class BaseNotifier
       template: event.to_s,
       message: comment
     ).notification_email.deliver_later
+  end
+
+  def deliver_rgpd_email_for(entity)
+    RgpdMailer.with(
+      to: enrollment.public_send(entity).email,
+      target_api: enrollment.target_api,
+      enrollment_id: enrollment.id,
+      rgpd_role: Kernel.const_get("EnrollmentsController::#{entity.upcase}_LABEL"),
+      contact_label: enrollment.public_send("#{entity}_full_name"),
+      owner_email: enrollment.user.email,
+      nom_raison_sociale: enrollment.nom_raison_sociale,
+      intitule: enrollment.intitule
+    ).rgpd_contact_email.deliver_later
   end
 end

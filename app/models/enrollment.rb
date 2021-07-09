@@ -165,6 +165,14 @@ class Enrollment < ActiveRecord::Base
     end
   end
 
+  def responsable_traitement_full_name
+    [responsable_traitement_given_name, responsable_traitement_family_name].join(" ")
+  end
+
+  def dpo_full_name
+    [dpo_given_name, dpo_family_name].join(" ")
+  end
+
   def submitted_at
     events.where(name: "submitted").order("created_at").last["created_at"]
   end
