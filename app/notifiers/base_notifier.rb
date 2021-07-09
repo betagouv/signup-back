@@ -17,6 +17,9 @@ class BaseNotifier
   def updated(diff:, user_id:)
   end
 
+  def owner_updated(diff:, user_id:)
+  end
+
   def send_application(comment:, current_user:)
     deliver_event_mailer(__method__, comment)
 

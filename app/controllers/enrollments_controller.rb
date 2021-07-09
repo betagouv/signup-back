@@ -207,6 +207,8 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
+      @enrollment.notify("owner_updated", user_id: current_user.id, diff: @enrollment.previous_changes)
+
       render json: @enrollment
     else
       render json: @enrollment.errors, status: :unprocessable_entity
@@ -219,6 +221,7 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
+
       if params[:enrollment].has_key?(:responsable_traitement_email)
         RgpdMailer.with(
           to: @enrollment.responsable_traitement.email,
