@@ -189,47 +189,11 @@ class EnrollmentsController < ApplicationController
       user_id: current_user.id,
       comment: params[:comment]
     )
-      EnrollmentMailer.with(
-        to: @enrollment.user.email,
-        target_api: @enrollment.target_api,
-        enrollment_id: @enrollment.id,
-        template: event,
-        message: params[:comment]
-      ).notification_email.deliver_later
-
-      if event == "send_application"
-        EnrollmentMailer.with(
-          to: @enrollment.subscribers.map(&:email),
-          target_api: @enrollment.target_api,
-          enrollment_id: @enrollment.id,
-          template: "notify_application_sent",
-          applicant_email: current_user.email
-        ).notification_email.deliver_later
-      end
-      if event == "validate_application" && @enrollment.responsable_traitement.present?
-        RgpdMailer.with(
-          to: @enrollment.responsable_traitement.email,
-          target_api: @enrollment.target_api,
-          enrollment_id: @enrollment.id,
-          rgpd_role: RESPONSABLE_TRAITEMENT_LABEL,
-          contact_label: [@enrollment.responsable_traitement_given_name, @enrollment.responsable_traitement_family_name].join(" "),
-          owner_email: @enrollment.user.email,
-          nom_raison_sociale: @enrollment.nom_raison_sociale,
-          intitule: @enrollment.intitule
-        ).rgpd_contact_email.deliver_later
-      end
-      if event == "validate_application" && @enrollment.dpo.present?
-        RgpdMailer.with(
-          to: @enrollment.dpo.email,
-          target_api: @enrollment.target_api,
-          enrollment_id: @enrollment.id,
-          rgpd_role: DPO_LABEL,
-          contact_label: [@enrollment.dpo_given_name, @enrollment.dpo_family_name].join(" "),
-          owner_email: @enrollment.user.email,
-          nom_raison_sociale: @enrollment.nom_raison_sociale,
-          intitule: @enrollment.intitule
-        ).rgpd_contact_email.deliver_later
-      end
+      @enrollment.notify(
+        event,
+        comment: params[:comment],
+        current_user: current_user
+      )
 
       render json: @enrollment
     else
