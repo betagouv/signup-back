@@ -221,31 +221,13 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
-
-      if params[:enrollment].has_key?(:responsable_traitement_email)
-        RgpdMailer.with(
-          to: @enrollment.responsable_traitement.email,
-          target_api: @enrollment.target_api,
-          enrollment_id: @enrollment.id,
-          rgpd_role: RESPONSABLE_TRAITEMENT_LABEL,
-          contact_label: [@enrollment.responsable_traitement_given_name, @enrollment.responsable_traitement_family_name].join(" "),
-          owner_email: @enrollment.user.email,
-          nom_raison_sociale: @enrollment.nom_raison_sociale,
-          intitule: @enrollment.intitule
-        ).rgpd_contact_email.deliver_later
-      end
-      if params[:enrollment].has_key?(:dpo_email)
-        RgpdMailer.with(
-          to: @enrollment.dpo.email,
-          target_api: @enrollment.target_api,
-          enrollment_id: @enrollment.id,
-          rgpd_role: DPO_LABEL,
-          contact_label: [@enrollment.dpo_given_name, @enrollment.dpo_family_name].join(" "),
-          owner_email: @enrollment.user.email,
-          nom_raison_sociale: @enrollment.nom_raison_sociale,
-          intitule: @enrollment.intitule
-        ).rgpd_contact_email.deliver_later
-      end
+      @enrollment.notify(
+        "rgpd_contact_updated",
+        user_id: current_user.id,
+        diff: @enrollment.previous_changes,
+        responsable_traitement_email: params[:enrollment][:responsable_traitement_email],
+        dpo_email: params[:enrollment][:dpo_email]
+      )
 
       render json: @enrollment
     else
