@@ -33,7 +33,7 @@ class EnrollmentsController < ApplicationController
           next unless %w[id siret nom_raison_sociale target_api status user.email].include? filter_key
           filter_value = [filter_value] unless filter_value.is_a?(Array)
           sanitized_filter_value = filter_value.map { |f| Regexp.escape(f) }
-          san_fil_val_without_accent = sanitized_filter_value.map { |f| ActiveSupport::Inflector.transliterate(f) }.join("|")
+          san_fil_val_without_accent = sanitized_filter_value.map { |f| ActiveSupport::Inflector.transliterate(f, ".") }.join("|")
           next if san_fil_val_without_accent == ""
 
           if filter_key.start_with? "user."
