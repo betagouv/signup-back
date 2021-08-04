@@ -21,13 +21,13 @@ class Enrollment < ActiveRecord::Base
 
   has_many :documents, as: :attachable
   accepts_nested_attributes_for :documents
-  belongs_to :user
   has_many :events, dependent: :destroy
   belongs_to :copied_from_enrollment, class_name: :Enrollment, foreign_key: :copied_from_enrollment_id, optional: true
   validates :copied_from_enrollment, uniqueness: true, if: -> { copied_from_enrollment.present? }
   belongs_to :previous_enrollment, class_name: :Enrollment, foreign_key: :previous_enrollment_id, optional: true
-  belongs_to :dpo, class_name: :User, foreign_key: :dpo_id, optional: true
-  belongs_to :responsable_traitement, class_name: :User, foreign_key: :responsable_traitement_id, optional: true
+
+  has_many :team_members
+  has_many :users, through: :team_members
 
   state_machine :status, initial: :pending do
     state :pending
@@ -113,6 +113,14 @@ class Enrollment < ActiveRecord::Base
     # see https://guides.rubyonrails.org/active_record_querying.html#pure-string-conditions
     # As long as the injected parameters is verified against a whitelist, we consider this safe.
     User.where("'#{target_api}:subscriber' = ANY(roles)")
+  end
+
+  def owners
+    team_members.where(type: "demandeur")
+  end
+
+  def responsable_traitement
+    team_members.where(type: "responsable_traitement").first
   end
 
   def dpo_email=(email)

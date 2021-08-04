@@ -4,11 +4,11 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
-    (record.pending? || record.modification_pending?) && user == record.user
+    (record.pending? || record.modification_pending?) && user.is_owner?(record)
   end
 
   def destroy?
-    (record.pending? || record.modification_pending?) && user == record.user
+    (record.pending? || record.modification_pending?) && user.is_owner?(record)
   end
 
   def notify?
@@ -16,7 +16,7 @@ class EnrollmentPolicy < ApplicationPolicy
   end
 
   def send_application?
-    record.can_send_application? && user == record.user
+    record.can_send_application? && user.is_owner?(record)
   end
 
   def validate_application?
@@ -81,18 +81,8 @@ class EnrollmentPolicy < ApplicationPolicy
       :data_recipients,
       :data_retention_period,
       :data_retention_comment,
-      :dpo_family_name,
-      :dpo_given_name,
-      :dpo_email,
-      :dpo_phone_number,
-      :dpo_job,
-      :responsable_traitement_family_name,
-      :responsable_traitement_given_name,
-      :responsable_traitement_email,
-      :responsable_traitement_phone_number,
-      :responsable_traitement_job,
       :demarche,
-      contacts: [:id, :family_name, :given_name, :email, :phone_number, :job],
+      team_members: [:type, :family_name, :given_name, :email, :phone_number, :job],
       documents_attributes: [
         :attachment,
         :type
@@ -108,10 +98,8 @@ class EnrollmentPolicy < ApplicationPolicy
         .select { |r| r.end_with?(":reporter") }
         .map { |r| r.split(":").first }
         .uniq
-      scope.where("target_api IN (?)", target_apis)
-        .or(scope.where(user_id: user.id))
-        .or(scope.where(dpo_id: user.id).where(status: "validated"))
-        .or(scope.where(responsable_traitement_id: user.id).where(status: "validated"))
+      scope.includes(:team_members).where(target_api: target_apis)
+        .or(scope.includes(:team_members).where(team_members: {user_id: user.id}))
     end
   end
 end

@@ -8,9 +8,8 @@ class User < ActiveRecord::Base
       message: "Vous devez renseigner un email valide"
     }
 
-  has_many :enrollments
-  has_many :dpo_enrollments, foreign_key: :dpo_id, class_name: :Enrollment
-  has_many :responsable_traitement_enrollments, foreign_key: :responsable_traitement_id, class_name: :Enrollment
+  has_many :team_members
+  has_many :enrollments, through: :team_members
   has_many :events
 
   scope :with_at_least_one_role, -> { where("roles <> '{}'") }
@@ -35,6 +34,10 @@ class User < ActiveRecord::Base
     user.save
 
     user
+  end
+
+  def is_owner?(enrollment)
+    enrollment.owners.any? { |owner| owner.user == self }
   end
 
   def is_instructor?(target_api)

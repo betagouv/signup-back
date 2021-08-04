@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_25_151759) do
+ActiveRecord::Schema.define(version: 2021_07_29_144851) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,7 +27,6 @@ ActiveRecord::Schema.define(version: 2021_06_25_151759) do
 
   create_table "enrollments", force: :cascade do |t|
     t.jsonb "scopes", default: {}
-    t.jsonb "contacts", array: true
     t.string "siret"
     t.string "status"
     t.boolean "cgu_approved"
@@ -37,7 +36,6 @@ ActiveRecord::Schema.define(version: 2021_06_25_151759) do
     t.string "linked_token_manager_id"
     t.string "nom_raison_sociale"
     t.integer "previous_enrollment_id"
-    t.bigint "user_id"
     t.jsonb "additional_content", default: {}
     t.string "intitule"
     t.string "description"
@@ -47,26 +45,13 @@ ActiveRecord::Schema.define(version: 2021_06_25_151759) do
     t.string "data_recipients"
     t.string "data_retention_comment"
     t.integer "organization_id"
-    t.bigint "dpo_id"
-    t.string "dpo_family_name"
-    t.string "dpo_phone_number"
-    t.bigint "responsable_traitement_id"
-    t.string "responsable_traitement_family_name"
-    t.string "responsable_traitement_phone_number"
     t.bigint "copied_from_enrollment_id"
     t.string "demarche"
     t.string "type_projet"
     t.string "date_mise_en_production"
     t.string "volumetrie_approximative"
     t.boolean "dpo_is_informed"
-    t.string "dpo_given_name"
-    t.string "dpo_job"
-    t.string "responsable_traitement_given_name"
-    t.string "responsable_traitement_job"
     t.index ["copied_from_enrollment_id"], name: "index_enrollments_on_copied_from_enrollment_id"
-    t.index ["dpo_id"], name: "index_enrollments_on_dpo_id"
-    t.index ["responsable_traitement_id"], name: "index_enrollments_on_responsable_traitement_id"
-    t.index ["user_id"], name: "index_enrollments_on_user_id"
   end
 
   create_table "events", id: :serial, force: :cascade do |t|
@@ -80,6 +65,21 @@ ActiveRecord::Schema.define(version: 2021_06_25_151759) do
     t.index ["enrollment_id"], name: "index_events_on_enrollment_id"
     t.index ["name"], name: "index_events_on_name"
     t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
+  create_table "team_members", force: :cascade do |t|
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "family_name"
+    t.string "given_name"
+    t.string "phone_number"
+    t.string "job"
+    t.string "type"
+    t.bigint "enrollment_id"
+    t.bigint "user_id"
+    t.index ["enrollment_id"], name: "index_team_members_on_enrollment_id"
+    t.index ["user_id"], name: "index_team_members_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -100,9 +100,8 @@ ActiveRecord::Schema.define(version: 2021_06_25_151759) do
 
   add_foreign_key "enrollments", "enrollments", column: "copied_from_enrollment_id"
   add_foreign_key "enrollments", "enrollments", column: "previous_enrollment_id"
-  add_foreign_key "enrollments", "users"
-  add_foreign_key "enrollments", "users", column: "dpo_id"
-  add_foreign_key "enrollments", "users", column: "responsable_traitement_id"
   add_foreign_key "events", "enrollments"
   add_foreign_key "events", "users"
+  add_foreign_key "team_members", "enrollments"
+  add_foreign_key "team_members", "users"
 end

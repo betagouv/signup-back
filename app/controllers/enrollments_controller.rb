@@ -19,7 +19,7 @@ class EnrollmentsController < ApplicationController
           next unless ["updated_at"].include? sort_key
           next unless %w[asc desc].include? sort_direction
 
-          @enrollments = @enrollments.order("#{sort_key} #{sort_direction.upcase}")
+          @enrollments = @enrollments.order("\"enrollments\".\"#{sort_key}\" #{sort_direction.upcase}")
         end
       end
     rescue JSON::ParserError
@@ -30,22 +30,19 @@ class EnrollmentsController < ApplicationController
       filter = JSON.parse(params.fetch(:filter, "[]"))
       filter.each do |filter_item|
         filter_item.each do |filter_key, filter_value|
-          next unless %w[id siret nom_raison_sociale target_api status user.email].include? filter_key
+          next unless %w[id siret nom_raison_sociale target_api status team_members.email].include? filter_key
+          is_fuzzy = %w[id siret nom_raison_sociale team_members.email].include? filter_key
           filter_value = [filter_value] unless filter_value.is_a?(Array)
           sanitized_filter_value = filter_value.map { |f| Regexp.escape(f) }
           san_fil_val_without_accent = sanitized_filter_value.map { |f| ActiveSupport::Inflector.transliterate(f, " ") }.join("|")
           next if san_fil_val_without_accent == ""
 
-          if filter_key.start_with? "user."
-            @enrollments = @enrollments.joins(
-              "INNER JOIN users \"user\" ON \"user\".id = enrollments.user_id"
-            )
+          if filter_key.start_with? "team_members."
+            @enrollments = @enrollments.includes(:team_members)
             sanitized_filter_key = filter_key.split(".").map { |e| "\"#{e}\"" }.join(".")
           else
             sanitized_filter_key = "\"enrollments\".\"#{filter_key}\""
           end
-
-          is_fuzzy = %w[id siret nom_raison_sociale user.email].include? filter_key
 
           @enrollments = @enrollments.where(
             "#{sanitized_filter_key}::varchar(255) ~* ?",
