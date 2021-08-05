@@ -17,11 +17,13 @@ gem "omniauth-oauth2"
 gem "pg"
 gem "puma", "~> 3.12"
 gem "pundit"
+gem "redis"
 gem "rails", "~> 5.2.5"
 gem "rails-i18n"
 gem "sentry-ruby"
 gem "sentry-rails"
 gem "sib-api-v3-sdk"
+gem "sidekiq", "~> 5.0"
 gem "state_machines-activerecord"
 
 group :test do
