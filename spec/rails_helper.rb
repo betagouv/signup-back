@@ -7,6 +7,7 @@ require File.expand_path("../../config/environment", __FILE__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
 require "rspec/rails"
+require "sidekiq/testing"
 require "spec_helper"
 
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |file| require file }
@@ -51,6 +52,18 @@ RSpec.configure do |config|
     FileUtils.rm_rf(
       Rails.root.join("tmp/uploads")
     )
+  end
+
+  config.before(:each) do
+    Sidekiq::Worker.clear_all
+  end
+
+  config.before(:each, type: :worker) do
+    Sidekiq::Testing.inline!
+  end
+
+  config.after(:each, type: :worker) do
+    Sidekiq::Testing.fake!
   end
 
   # RSpec Rails can automatically mix in different behaviours to your tests
