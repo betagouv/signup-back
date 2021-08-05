@@ -45,6 +45,7 @@ group :development do
   gem "standardrb"
   gem "spring"
   gem "spring-watcher-listen", "~> 2.0.0"
+  gem "foreman"
 end
 
 gem "active_model_serializers", "~> 0.10.12"

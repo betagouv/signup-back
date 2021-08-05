@@ -1,4 +1,5 @@
 # Backend de DataPass
+
 [![Rails tests](https://github.com/betagouv/signup-back/actions/workflows/ci.yml/badge.svg)](https://github.com/betagouv/signup-back/actions/workflows/ci.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/713ba5c1e90ee6a35937/maintainability)](https://codeclimate.com/github/betagouv/signup-back/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/713ba5c1e90ee6a35937/test_coverage)](https://codeclimate.com/github/betagouv/signup-back/test_coverage)
@@ -9,8 +10,8 @@ Pour le développement en local, suivez les instructions ci-dessous:
 
 ## Dépendances
 
-* ruby 2.7.3
-* postgresql 9.5
+- ruby 2.7.3
+- postgresql 9.5
 
 ## Installation
 
@@ -33,6 +34,12 @@ tests en continue:
 
 ```sh
 bundle exec guard
+```
+
+## Run
+
+```sh
+bundle exec foreman start -f Procfile.dev
 ```
 
 ## Brakeman
