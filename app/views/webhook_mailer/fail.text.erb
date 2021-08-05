@@ -1,0 +1,19 @@
+Votre endpoint <%= @webhook_url  %> n'accepte plus les appels de notre webhook depuis environ 10m.
+
+Les informations techniques sont les suivantes:
+
+**Payload**
+
+La payload envoyée:
+
+```
+<%= @payload %>
+```
+
+**Status**
+
+<%= @webhook_response_status %>
+
+**Body**
+
+<%= @webhook_response_body %>
