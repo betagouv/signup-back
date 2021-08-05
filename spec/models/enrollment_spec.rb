@@ -23,10 +23,11 @@ RSpec.describe Enrollment, type: :model do
   end
 
   describe "validate_application transition" do
-    subject { enrollment.validate_application(user_id: user.id, comment: "whatever") }
+    subject { enrollment.validate_application(params) }
 
     let(:user) { create(:user) }
     let(:enrollment) { create(:enrollment, target_api, :sent) }
+    let(:params) { {user_id: user.id, comment: "whatever"} }
 
     context "with api_particulier as target api" do
       let(:target_api) { :api_particulier }
@@ -91,8 +92,8 @@ RSpec.describe Enrollment, type: :model do
     context "with francerelance_fc as target api" do
       let(:target_api) { :francerelance_fc }
 
-      it "runs FranceconnectBridge" do
-        expect(FranceconnectBridge).to receive(:call).with(enrollment)
+      it "runs FrancerelanceFcBridge" do
+        expect(FrancerelanceFcBridge).to receive(:call).with(enrollment)
 
         subject
       end

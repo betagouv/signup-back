@@ -1,0 +1,2 @@
+class FrancerelanceFcBridge < FranceconnectBridge
+end
