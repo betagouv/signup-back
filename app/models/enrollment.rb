@@ -113,6 +113,16 @@ class Enrollment < ActiveRecord::Base
     end
   end
 
+  def notify(event, *args)
+    notifier_class.new(self).public_send(event, *args)
+  end
+
+  def notifier_class
+    Kernel.const_get("#{self.class}Notifier")
+  rescue NameError
+    BaseNotifier
+  end
+
   def subscribers
     unless DataProvidersConfiguration.instance.exists?(target_api)
       raise ApplicationController::UnprocessableEntity, "Une erreur inattendue est survenue: API cible invalide."
@@ -153,6 +163,14 @@ class Enrollment < ActiveRecord::Base
     else
       User.reconcile({"email" => email.strip})
     end
+  end
+
+  def responsable_traitement_full_name
+    [responsable_traitement_given_name, responsable_traitement_family_name].join(" ")
+  end
+
+  def dpo_full_name
+    [dpo_given_name, dpo_family_name].join(" ")
   end
 
   def submitted_at
