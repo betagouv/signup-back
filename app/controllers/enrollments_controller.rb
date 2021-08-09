@@ -118,7 +118,7 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.save
       @enrollment.events.create(name: "created", user_id: current_user.id)
-      @enrollment.notify("created")
+      @enrollment.notify_event("created")
 
       render json: @enrollment
     else
@@ -132,7 +132,7 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
-      @enrollment.notify("updated", user_id: current_user.id, diff: @enrollment.previous_changes)
+      @enrollment.notify_event("updated", user_id: current_user.id, diff: @enrollment.previous_changes)
 
       render json: @enrollment
     else
@@ -189,7 +189,7 @@ class EnrollmentsController < ApplicationController
       user_id: current_user.id,
       comment: params[:comment]
     )
-      @enrollment.notify(
+      @enrollment.notify_event(
         event,
         comment: params[:comment],
         current_user: current_user
@@ -207,7 +207,7 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
-      @enrollment.notify("owner_updated", user_id: current_user.id, diff: @enrollment.previous_changes)
+      @enrollment.notify_event("owner_updated", user_id: current_user.id, diff: @enrollment.previous_changes)
 
       render json: @enrollment
     else
@@ -221,7 +221,7 @@ class EnrollmentsController < ApplicationController
 
     if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
-      @enrollment.notify(
+      @enrollment.notify_event(
         "rgpd_contact_updated",
         user_id: current_user.id,
         diff: @enrollment.previous_changes,
