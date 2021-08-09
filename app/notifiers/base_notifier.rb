@@ -42,6 +42,10 @@ class BaseNotifier
     ).notification_email.deliver_later
   end
 
+  def notify(comment:, current_user:)
+    deliver_event_mailer(__method__, comment)
+  end
+
   def review_application(comment:, current_user:)
     deliver_event_mailer(__method__, comment)
   end

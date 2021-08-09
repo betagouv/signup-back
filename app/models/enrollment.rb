@@ -113,7 +113,7 @@ class Enrollment < ActiveRecord::Base
     end
   end
 
-  def notify(event, *args)
+  def notify_event(event, *args)
     notifier_class.new(self).public_send(event, *args)
   end
 
