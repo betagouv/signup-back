@@ -28,8 +28,7 @@ class RgpdMailer < ActionMailer::Base
         owner_email: params[:owner_email],
         nom_raison_sociale: params[:nom_raison_sociale],
         intitule: params[:intitule],
-        url: "#{ENV.fetch("FRONT_HOST").sub(/^https:\/\//, "")}/#{params[:target_api].tr("_", "-")}/#{params[:enrollment_id]}",
-        enrollment_id: params[:enrollment_id]
+        url: "#{ENV.fetch("FRONT_HOST").sub(/^https:\/\//, "")}/#{params[:target_api].tr("_", "-")}/#{params[:enrollment_id]}"
       },
       tags: ["rgpd-contact-email"]
     })
