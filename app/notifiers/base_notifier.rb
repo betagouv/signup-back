@@ -1,10 +1,4 @@
-class BaseNotifier
-  attr_reader :enrollment
-
-  def initialize(enrollment)
-    @enrollment = enrollment
-  end
-
+class BaseNotifier < AbstractNotifier
   def created
     EnrollmentMailer.with(
       to: enrollment.user.email,
