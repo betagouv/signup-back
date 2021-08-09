@@ -437,4 +437,39 @@ RSpec.describe EnrollmentsController, "#trigger", type: :controller do
       end
     end
   end
+
+  describe "review_application" do
+    let(:event) { "review_application" }
+    let(:comment) { "comment" }
+
+    context "with valid user and enrollment" do
+      let(:user) { create(:user, roles: ["franceconnect:instructor"]) }
+      let(:enrollment_status) { :sent }
+
+      before do
+        login(user)
+      end
+
+      it { is_expected.to have_http_status(:ok) }
+
+      describe "emails send" do
+        before do
+          ActiveJob::Base.queue_adapter = :inline
+        end
+
+        after do
+          ActiveJob::Base.queue_adapter = :test
+        end
+
+        it "sends an email to enrollment's user" do
+          make_request
+
+          enrollment_user_email = ActionMailer::Base.deliveries.first
+          expect(enrollment_user_email).to be_present
+
+          expect(enrollment_user_email.to).to eq([enrollment.user.email])
+        end
+      end
+    end
+  end
 end
