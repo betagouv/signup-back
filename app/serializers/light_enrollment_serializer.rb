@@ -1,5 +1,5 @@
 class LightEnrollmentSerializer < ActiveModel::Serializer
-  attributes :id, :updated_at, :nom_raison_sociale, :target_api, :status, :owners
+  attributes :id, :updated_at, :nom_raison_sociale, :target_api, :status, :demandeurs
 
   attribute :acl do
     EnrollmentPolicy.acl_methods.map do |method|
@@ -7,9 +7,9 @@ class LightEnrollmentSerializer < ActiveModel::Serializer
     end.to_h
   end
 
-  def owners
-    object.owners.map do |owner|
-      TeamMemberSerializer.new(owner)
+  def demandeurs
+    object.demandeurs.map do |demandeur|
+      TeamMemberSerializer.new(demandeur)
     end
   end
 

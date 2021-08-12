@@ -36,8 +36,16 @@ class User < ActiveRecord::Base
     user
   end
 
-  def is_owner?(enrollment)
-    enrollment.owners.any? { |owner| owner.user == self }
+  def is_demandeur?(enrollment)
+    enrollment.demandeurs.any? { |demandeur| demandeur.user == self }
+  end
+
+  def is_member?(enrollment)
+    enrollment.team_members.any? { |team_member| team_member.user == self }
+  end
+
+  def belongs_to_organization?(enrollment)
+    organizations.any? { |o| o["id"] == enrollment.organization_id }
   end
 
   def is_instructor?(target_api)

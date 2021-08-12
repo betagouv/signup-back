@@ -14,8 +14,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = policy_scope(User).find(params[:id])
-    authorize @user
+    @user = authorize User.find(params[:id])
 
     if @user.update(permitted_attributes(@user))
       render json: @user,

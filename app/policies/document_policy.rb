@@ -1,7 +1,7 @@
 class DocumentPolicy < ApplicationPolicy
   def show?
-    user.is_reporter?(record.attachable.target_api) ||
-      user.is_instructor?(record.attachable.target_api) ||
-      (user == record.attachable.user)
+    # must be the same policy than enrollment_policy#show?
+    user.is_member?(record.attachable) ||
+      user.is_reporter?(record.attachable.target_api)
   end
 end

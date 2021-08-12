@@ -1,7 +1,7 @@
 class CreateTeamMembers < ActiveRecord::Migration[5.2]
   def change
     create_table :team_members do |t|
-      t.string "email", null: false
+      t.string "email"
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
       t.string "family_name"
@@ -16,6 +16,7 @@ class CreateTeamMembers < ActiveRecord::Migration[5.2]
     reversible do |dir|
       # move jsonb[] contacts to team_members table
       dir.up do
+        # TODO replace technique with contact_technique and metier with contact_metier
         execute <<-SQL
           INSERT INTO team_members (enrollment_id, email, family_name, given_name, job, type, phone_number, created_at, updated_at)
           select enrollment_id, email, family_name, given_name, job, id as type, phone_number, timestamp 'epoch', timestamp 'epoch'

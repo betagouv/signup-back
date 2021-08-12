@@ -25,7 +25,7 @@ class RgpdMailer < ActionMailer::Base
         target_api_label: target_api_label,
         rgpd_role: params[:rgpd_role],
         contact_label: params[:contact_label],
-        owner_email: params[:owner_email],
+        owner_email: params[:demandeur_email],
         nom_raison_sociale: params[:nom_raison_sociale],
         intitule: params[:intitule],
         url: "#{ENV.fetch("FRONT_HOST").sub(/^https:\/\//, "")}/#{params[:target_api].tr("_", "-")}/#{params[:enrollment_id]}"

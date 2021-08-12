@@ -3,7 +3,7 @@ module EmailNotifierMethods
 
   def deliver_created_mail_to_enrollment_creator
     EnrollmentMailer.with(
-      to: enrollment.user.email,
+      to: enrollment.demandeurs.pluck(:email),
       target_api: enrollment.target_api,
       enrollment_id: enrollment.id,
       template: "create_application"
@@ -12,7 +12,7 @@ module EmailNotifierMethods
 
   def deliver_event_mailer(event, comment)
     EnrollmentMailer.with(
-      to: enrollment.user.email,
+      to: enrollment.demandeurs.pluck(:email),
       target_api: enrollment.target_api,
       enrollment_id: enrollment.id,
       template: event.to_s,
@@ -27,19 +27,19 @@ module EmailNotifierMethods
       enrollment_id: enrollment.id,
       rgpd_role: Kernel.const_get("EnrollmentsController::#{entity.upcase}_LABEL"),
       contact_label: enrollment.public_send("#{entity}_full_name"),
-      owner_email: enrollment.user.email,
+      demandeur_email: enrollment.demandeurs.pluck(:email).first,
       nom_raison_sociale: enrollment.nom_raison_sociale,
       intitule: enrollment.intitule
     ).rgpd_contact_email.deliver_later
   end
 
-  def notify_subscribers_by_email_for_sent_application(current_user: nil)
+  def notify_subscribers_by_email_for_sent_application
     EnrollmentMailer.with(
-      to: enrollment.subscribers.map(&:email),
+      to: enrollment.subscribers.pluck(:email),
       target_api: enrollment.target_api,
       enrollment_id: enrollment.id,
       template: "notify_application_sent",
-      applicant_email: current_user.email
+      applicant_email: enrollment.demandeurs.pluck(:email)
     ).notification_email.deliver_later
   end
 

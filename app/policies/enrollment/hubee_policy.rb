@@ -15,7 +15,7 @@ class Enrollment::HubeePolicy < EnrollmentPolicy
         :attachment,
         :type
       ],
-      contacts: [:id, :given_name, :family_name, :email, :phone_number, :job],
+      team_members_attributes: [:id, :type, :family_name, :given_name, :email, :phone_number, :job],
       additional_content: [
         :nom_application_metier,
         :nom_editeur,

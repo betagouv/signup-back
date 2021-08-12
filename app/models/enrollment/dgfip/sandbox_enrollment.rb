@@ -10,9 +10,10 @@ class Enrollment::Dgfip::SandboxEnrollment < Enrollment
 
     # Mise en œuvre
     contact_technique_validation
-    contact_technique = contacts&.find { |e| e["id"] == "technique" }
-    errors[:contacts] << "Vous devez renseigner un prénom pour le contact technique avant de continuer" if contact_technique&.fetch("given_name", "").to_s.strip.empty?
-    errors[:contacts] << "Vous devez renseigner un nom pour le contact technique avant de continuer" if contact_technique&.fetch("family_name", "").to_s.strip.empty?
+    team_members.where(type: "technique").each do |team_member|
+      errors[:team_members] << "Vous devez renseigner un prénom pour le responsable technique avant de continuer" if team_member.given_name.to_s.strip.empty?
+      errors[:team_members] << "Vous devez renseigner un nom pour le responsable technique avant de continuer" if team_member.family_name.to_s.strip.empty?
+    end
 
     # CGU
     errors[:cgu_approved] << "Vous devez valider les modalités d’utilisation avant de continuer" unless cgu_approved?

@@ -5,7 +5,9 @@ class EnrollmentSerializer < ActiveModel::Serializer
     :data_recipients, :data_retention_period, :data_retention_comment, :demarche,
     :type_projet, :date_mise_en_production, :volumetrie_approximative, :dpo_is_informed
 
-  has_many :team_members, serializer: TeamMemberWithProfileSerializer
+  has_many :team_members, serializer: TeamMemberWithProfileSerializer do
+    object.team_members.order(:id)
+  end
 
   has_many :documents
   has_many :events

@@ -10,7 +10,7 @@ class Enrollment::Hubee < Enrollment
 
     cadre_juridique_validation
 
-    contact_validation("metier", "responsable abonnement", true)
+    team_members_validation("metier", "responsable abonnement", true)
 
     errors[:nom_application_metier] << "Vous devez renseigner le nom de l’application métier avant de continuer" unless additional_content&.fetch("nom_application_metier", false)&.present?
     errors[:nom_editeur] << "Vous devez renseigner le nom de l’éditeur avant de continuer" unless additional_content&.fetch("nom_editeur", false)&.present?

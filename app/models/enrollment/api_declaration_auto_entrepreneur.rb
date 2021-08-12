@@ -5,7 +5,7 @@ class Enrollment::ApiDeclarationAutoEntrepreneur < Enrollment
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
     errors[:siret] << "Vous devez renseigner un SIRET d’organisation valide avant de continuer" unless nom_raison_sociale
 
-    contact_validation("technique", "responsable technique")
+    team_members_validation("technique", "responsable technique")
     contact_metier_validation
 
     rgpd_validation

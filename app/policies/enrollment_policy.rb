@@ -1,22 +1,42 @@
 class EnrollmentPolicy < ApplicationPolicy
+  def show?
+    user.is_member?(record) || user.is_reporter?(record.target_api)
+  end
+
   def create?
-    record.pending?
+    # note that we cannot use 'user.is_demandeur?(record)' here because team_members
+    # are not persisted yet. We cannot use 'where' on team_members and we cannot
+    # use team_member.user_id for comparaison since it has not been set yet.
+    record.pending? &&
+      user.belongs_to_organization?(record) &&
+      record.team_members.any? { |t_m| t_m["type"] == "demandeur" && t_m.email == user.email }
   end
 
   def update?
-    (record.pending? || record.modification_pending?) && user.is_owner?(record)
+    (record.pending? || record.modification_pending?) &&
+      user.belongs_to_organization?(record) &&
+      user.is_demandeur?(record)
   end
 
   def destroy?
-    (record.pending? || record.modification_pending?) && user.is_owner?(record)
+    (record.pending? || record.modification_pending?) &&
+      user.is_demandeur?(record)
   end
 
   def notify?
     record.can_notify? && user.is_instructor?(record.target_api)
   end
 
+  def copy?
+    (record.validated? || record.refused?) &&
+      user.belongs_to_organization?(record) &&
+      user.is_demandeur?(record)
+  end
+
   def send_application?
-    record.can_send_application? && user.is_owner?(record)
+    record.can_send_application? &&
+      user.belongs_to_organization?(record) &&
+      user.is_demandeur?(record)
   end
 
   def validate_application?
@@ -82,7 +102,7 @@ class EnrollmentPolicy < ApplicationPolicy
       :data_retention_period,
       :data_retention_comment,
       :demarche,
-      team_members: [:type, :family_name, :given_name, :email, :phone_number, :job],
+      team_members_attributes: [:id, :type, :family_name, :given_name, :email, :phone_number, :job],
       documents_attributes: [
         :attachment,
         :type
@@ -99,7 +119,7 @@ class EnrollmentPolicy < ApplicationPolicy
         .map { |r| r.split(":").first }
         .uniq
       scope.includes(:team_members).where(target_api: target_apis)
-        .or(scope.includes(:team_members).where(team_members: {user_id: user.id}))
+        .or(scope.includes(:team_members).where(team_members: {user: user}))
     end
   end
 end

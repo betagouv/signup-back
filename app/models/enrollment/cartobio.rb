@@ -1,7 +1,11 @@
 class Enrollment::Cartobio < Enrollment
   def sent_validation
-    contact = contacts&.find { |e| e["id"] == "technique" }
-    errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch("email", false)&.present?
+    unless team_members.exists?(type: "technique")
+      errors[:team_members] << "Vous devez renseigner un contact responsable technique avant de continuer"
+    end
+    team_members.where(type: "technique").each do |team_member|
+      errors[:team_members] << "Vous devez renseigner un email valide pour le responsable technique avant de continuer" unless URI::MailTo::EMAIL_REGEXP.match?(team_member.email)
+    end
 
     errors[:description] << "Vous devez renseigner la description de la démarche avant de continuer" unless description.present?
     errors[:siret] << "Vous devez renseigner un SIRET d’organisation valide avant de continuer" unless nom_raison_sociale.present?

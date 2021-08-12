@@ -12,17 +12,7 @@ class Enrollment::LeTaxiChauffeursPolicy < EnrollmentPolicy
       :data_recipients,
       :data_retention_period,
       :data_retention_comment,
-      :dpo_family_name,
-      :dpo_given_name,
-      :dpo_email,
-      :dpo_phone_number,
-      :dpo_job,
-      :responsable_traitement_family_name,
-      :responsable_traitement_given_name,
-      :responsable_traitement_email,
-      :responsable_traitement_phone_number,
-      :responsable_traitement_job,
-      contacts: [:id, :email, :phone_number],
+      team_members_attributes: [:id, :type, :family_name, :given_name, :email, :phone_number, :job],
       additional_content: [
         :solution_logicielle
       ]

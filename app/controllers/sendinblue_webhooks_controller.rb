@@ -53,10 +53,10 @@ class SendinblueWebhooksController < ApplicationController
     enrollment = Enrollment.find(enrollment_id.to_i)
     instructor_email = enrollment.events.where(name: "validated")[0].user["email"]
 
-    # 5. notify enrollment owner that he made an error with the provided rgpd email
+    # 5. notify enrollment demandeurs that he made an error with the provided rgpd email
     RgpdMailer.with(
       target_api: enrollment[:target_api],
-      to: enrollment.user[:email],
+      to: enrollment.demandeurs.pluck(:email),
       enrollment_id: enrollment[:id],
       rgpd_role: rgpd_role,
       rgpd_contact_email: rgpd_contact_email,

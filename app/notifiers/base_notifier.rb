@@ -11,6 +11,7 @@ class BaseNotifier < AbstractNotifier
   def owner_updated(diff:, user_id:)
   end
 
+  # TODO replace dpo with delegue_protection_donnees everywhere
   def rgpd_contact_updated(diff:, user_id:, responsable_traitement_email:, dpo_email:)
     notify_rgpd_contacts_by_email(
       responsable_traitement_email: responsable_traitement_email,
@@ -21,7 +22,7 @@ class BaseNotifier < AbstractNotifier
   def send_application(comment:, current_user:)
     deliver_event_mailer(__method__, comment)
 
-    notify_subscribers_by_email_for_sent_application(current_user: current_user)
+    notify_subscribers_by_email_for_sent_application
   end
 
   def notify(comment:, current_user:)

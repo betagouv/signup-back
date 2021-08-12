@@ -1,7 +1,11 @@
 class Enrollment::LeTaxiClients < Enrollment
   def sent_validation
-    contact = contacts&.find { |e| e["id"] == "technique" }
-    errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch("email", false)&.present?
+    unless team_members.exists?(type: "technique")
+      errors[:team_members] << "Vous devez renseigner un contact responsable technique avant de continuer"
+    end
+    team_members.where(type: "technique").each do |team_member|
+      errors[:team_members] << "Vous devez renseigner un email valide pour le responsable technique avant de continuer" unless URI::MailTo::EMAIL_REGEXP.match?(team_member.email)
+    end
 
     rgpd_validation
 
