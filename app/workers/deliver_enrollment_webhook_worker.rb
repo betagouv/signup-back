@@ -1,5 +1,5 @@
 require "http"
-require "digest"
+require "openssl"
 
 class DeliverEnrollmentWebhookWorker < ApplicationWorker
   sidekiq_options queue: "webhooks"
@@ -23,8 +23,7 @@ class DeliverEnrollmentWebhookWorker < ApplicationWorker
     HTTP
       .headers(
         "Content-Type" => "application/json",
-        "X-Hub-Signature" => generate_hub_signature(target_api),
-        "X-Hub-Timestamp" => now.to_i
+        "X-Hub-Signature-256" => "sha256=#{generate_hub_signature(target_api, payload)}"
       )
       .post(
         webhook_url(target_api),
@@ -88,8 +87,12 @@ class DeliverEnrollmentWebhookWorker < ApplicationWorker
     (tries_count**4) + 15 + (rand(30) * (tries_count + 1))
   end
 
-  def generate_hub_signature(target_api)
-    Digest::SHA256.base64digest("#{verify_token(target_api)}#{now.to_i}")
+  def generate_hub_signature(target_api, payload)
+    OpenSSL::HMAC.hexdigest(
+      OpenSSL::Digest.new("sha256"),
+      verify_token(target_api),
+      payload.to_json
+    )
   end
 
   def webhook_url(target_api)
@@ -106,9 +109,5 @@ class DeliverEnrollmentWebhookWorker < ApplicationWorker
       201,
       204
     ]
-  end
-
-  def now
-    @now ||= Time.now
   end
 end
