@@ -115,7 +115,9 @@ Datapass et de votre système, il est impossible pour un attaquant de forger une
 requête et de taper sur votre système sans connaître la valeur du token de
 vérification.
 
-Il est **fortement recommandé** de vérifier la valeur `X-Hub-Signature-256`.
+⚠️ Il est **impératif de vérifier la valeur `X-Hub-Signature-256` dans votre système**, le cas contraire n'importe
+quel personne connaissant l'url de votre service pourra exploiter cette faille
+et donc générer des accès à vos données.
 
 Ci dessous un exemple (en ruby/rails) qui vérifie la valeur du `X-Hub-Signature-256`:
 
