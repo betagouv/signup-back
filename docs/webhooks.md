@@ -40,7 +40,7 @@ s'effectue en créant un notifier spécifique au système portant le nom de
 `SuperServiceNotifier`, qui hérite de
 [`AbstractNotifier`](./app/notifiers/abstract_notifier.rb).
 
-Chacune des méthodes correspond à un événement asssocié à la demande datapass,
+Chacune des méthodes correspond à un événement associé à la demande datapass,
 défini dans le modèle `Enrollment` (la description de chacun de ces événements
 se trouve plus bas dans ce document)
 
