@@ -33,4 +33,5 @@ class WebhookEnrollmentSerializer < ActiveModel::Serializer
   belongs_to :responsable_traitement, serializer: UserWithProfileSerializer
 
   has_many :events, serializer: WebhookEventSerializer
+  has_many :documents
 end
