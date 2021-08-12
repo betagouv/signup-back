@@ -53,11 +53,7 @@ Rails.application.routes.draw do
 
   get "/uploads/:model/:type/:mounted_as/:id/:filename", to: "documents#show", constraints: {filename: /[^\/]+/}
 
-  if Rails.env.development?
+  authenticate :user, lambda { |u| u.is_administrator? } do
     mount Sidekiq::Web => "/sidekiq"
-  else
-    authenticate :user, lambda { |u| u.is_administrator? } do
-      mount Sidekiq::Web => "/sidekiq"
-    end
   end
 end
