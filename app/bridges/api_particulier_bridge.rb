@@ -18,7 +18,7 @@ class ApiParticulierBridge < ApplicationBridge
 
   def create_enrollment_in_token_manager(id, name, contact_technique_email, owner_email, scopes)
     response = Http.post(
-      "#{ENV.fetch("PORTAIL_API_GOUV_FR_HOST")}/api-particulier/subscribe",
+      "#{ENV.fetch("API_PARTICULIER_HOST")}/api/applications",
       {
         name: name,
         technical_contact_email: contact_technique_email,
@@ -26,8 +26,8 @@ class ApiParticulierBridge < ApplicationBridge
         data_pass_id: id,
         scopes: scopes
       },
-      ENV.fetch("PORTAIL_API_GOUV_FR_API_KEY"),
-      "Portail api.gouv.fr",
+      ENV.fetch("API_PARTICULIER_API_KEY"),
+      "API Particulier",
       "X-Api-Key"
     )
 
