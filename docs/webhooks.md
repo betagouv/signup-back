@@ -10,7 +10,7 @@ pouvez utiliser ce système (par exemple pour gérer un CRM, mettre en place des
 statistiques..).
 
 Le système de webhooks utilise l'approche du token de vérification et du header
-`X-Hub-Signature` permettant d'authentifier les appels depuis le endpoint cible.
+`X-Hub-Signature-256` permettant d'authentifier les appels depuis le endpoint cible.
 
 L'implémentation des webhooks s'effectue en 2 étapes: une partie sur Datapass et
 une partie sur votre système.
@@ -105,35 +105,29 @@ HTTP considérés comme étant un succès sont `200`, `201` et `204`.
 Niveau sécurité, afin de garantir que la payload envoyée est bien émise par
 Datapass, 2 headers sont ajoutés à la requête :
 
-- `X-Hub-Timestamp`, `timestamp` : correspond au timestamp d'envoi effective du webhook ;
-- `X-Hub-Signature`, `string` : sha256 en base64 de la concatenation
-  du token de vérification et du `X-Hub-Timestamp` ;
+- `X-Hub-Signature-256`, `string` : [HMAC en SHA256 ( Hash-based Message Authentication Code
+  )](https://fr.wikipedia.org/wiki/HMAC) ayant pour clé la valeur de jeton de
+  vérification et comme données le contenu du body de la requête.
 
-Ces deux headers permettent d'authentifier chaque payload reçu par votre
+Ce header permet d'authentifier chaque payload reçu par votre
 système : en effet, vu que le token de vérification est seulement connu de
 Datapass et de votre système, il est impossible pour un attaquant de forger une
 requête et de taper sur votre système sans connaître la valeur du token de
 vérification.
 
-La présence du timestamp permet aussi à votre système d'exclure des potentiels
-appels ayant un timestamp dans le passé, dans le cas où un attaquant intercepte
-une des payloads et tente d'utiliser les 2 headers d'un appel passé.
+Il est **fortement recommandé** de vérifier la valeur `X-Hub-Signature-256`.
 
-Il est **fortement recommandé** de vérifier la valeur `X-Hub-Signature` et d'exclure
-les appels ayant un `X-Hub-Timestamp` inférieur au dernier timestamp reçu par
-votre système.
-
-Ci dessous un exemple (en ruby/rails) qui vérifie la valeur du `X-Hub-Signature:`
+Ci dessous un exemple (en ruby/rails) qui vérifie la valeur du `X-Hub-Signature-256`:
 
 ```ruby
-hub_signature = request.headers['X-Hub-Signature']
-hub_timestamp = request.headers['X-Hub-Timestamp']
+hub_signature = request.headers['X-Hub-Signature-256']
+payload_body = request.body
 verify_token = ENV['DATAPASS_WEBHOOK_VERIFY_TOKEN']
 
-compute_hub_signature = Digest::SHA256.base64digest("#{verify_token}#{hub_timestamp}")
+compute_hub_signature = 'sha256=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), verify_token, payload_body)
 
 # La valeur ci-dessous est true si la signature est valide
-hub_signature == compute_hub_signature
+Rack::Utils.secure_compare(hub_signature, compute_hub_signature)
 ```
 
 Lors de l'événement `validated`, si votre système répond avec un ID de jeton

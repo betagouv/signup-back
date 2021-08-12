@@ -16,8 +16,7 @@ RSpec.describe DeliverEnrollmentWebhookWorker, type: :worker do
       body: payload.to_json,
       headers: {
         "Content-Type" => "application/json",
-        "X-Hub-Signature" => hub_signature,
-        "X-Hub-Timestamp" => Time.now.to_i
+        "X-Hub-Signature-256" => "sha256=#{hub_signature}"
       }
     ).to_return(status: status, body: body)
   end
@@ -26,7 +25,13 @@ RSpec.describe DeliverEnrollmentWebhookWorker, type: :worker do
 
   let(:webhook_url) { "https://service.gouv.fr/webhook" }
   let(:verify_token) { "verify_token" }
-  let(:hub_signature) { Digest::SHA256.base64digest("#{verify_token}#{Time.now.to_i}") }
+  let(:hub_signature) do
+    OpenSSL::HMAC.hexdigest(
+      OpenSSL::Digest.new("sha256"),
+      verify_token,
+      payload.to_json
+    )
+  end
 
   before do
     Timecop.freeze
