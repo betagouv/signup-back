@@ -1,6 +1,6 @@
 ## Implémentation d'un wehbook
 
-Datapass possède un système de webhooks permettant de souscrire aux différents
+DataPass possède un système de webhooks permettant de souscrire aux différents
 changement d'état d'une demande. Par défaut ce système est désactivé (en faveur
 d'emails de notifications et d'un appel via un bridge (code spécifique au
 fournisseur de service) lors d'une validation d'une demande).
@@ -12,18 +12,18 @@ statistiques..).
 Le système de webhooks utilise l'approche du token de vérification et du header
 `X-Hub-Signature-256` permettant d'authentifier les appels depuis le endpoint cible.
 
-L'implémentation des webhooks s'effectue en 2 étapes: une partie sur Datapass et
+L'implémentation des webhooks s'effectue en 2 étapes: une partie sur DataPass et
 une partie sur votre système.
 
-### Partie 1: Datapass
+### Partie 1: DataPass
 
-Afin de pouvoir activer les webhooks sur Datapass, il faut définir 2 variables
+Afin de pouvoir activer les webhooks sur DataPass, il faut définir 2 variables
 d'environnement:
 
 1. Une jeton de vérification qui permettra de signer les appels ;
 2. L'URL du endpoint qui acceptera les appels webhooks.
 
-Avec le service identifié dans Datapass comme `super_service`, les variables
+Avec le service identifié dans DataPass comme `super_service`, les variables
 seront:
 
 1. `SUPER_SERVICE_VERIFY_TOKEN`
@@ -103,7 +103,7 @@ Votre serveur doit obligatoirement répondre avec un status de succès. Les code
 HTTP considérés comme étant un succès sont `200`, `201` et `204`.
 
 Niveau sécurité, afin de garantir que la payload envoyée est bien émise par
-Datapass, 2 headers sont ajoutés à la requête :
+DataPass, 2 headers sont ajoutés à la requête :
 
 - `X-Hub-Signature-256`, `string` : [HMAC en SHA256 ( Hash-based Message Authentication Code
   )](https://fr.wikipedia.org/wiki/HMAC) ayant pour clé la valeur de jeton de
@@ -111,7 +111,7 @@ Datapass, 2 headers sont ajoutés à la requête :
 
 Ce header permet d'authentifier chaque payload reçu par votre
 système : en effet, vu que le token de vérification est seulement connu de
-Datapass et de votre système, il est impossible pour un attaquant de forger une
+DataPass et de votre système, il est impossible pour un attaquant de forger une
 requête et de taper sur votre système sans connaître la valeur du token de
 vérification.
 
