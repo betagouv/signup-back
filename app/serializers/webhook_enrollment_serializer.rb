@@ -28,7 +28,7 @@ class WebhookEnrollmentSerializer < ActiveModel::Serializer
     :volumetrie_approximative,
     :dpo_is_informed
 
-  belongs_to :user, serializer: UserWithProfileSerializer
+  belongs_to :user, serializer: WebhookEnrollmentOwnerSerializer
   belongs_to :dpo, serializer: UserWithProfileSerializer
   belongs_to :responsable_traitement, serializer: UserWithProfileSerializer
 

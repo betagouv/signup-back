@@ -21,6 +21,8 @@ RSpec.describe WebhookEnrollmentSerializer, type: :serializer do
       expect(payload[user_kind]).to have_key(:email)
     end
 
+    expect(payload[:user]).to have_key(:uid)
+
     expect(payload).to have_key(:events)
 
     expect(payload[:events][0]).to be_present
