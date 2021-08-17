@@ -12,8 +12,6 @@ Rails.application.routes.draw do
         post :copy
         get :copies
         get :next_enrollments
-        patch :update_owner
-        patch :update_rgpd_contact
 
         get :email_templates, to: "enrollments_email_templates#index"
       end
@@ -26,10 +24,8 @@ Rails.application.routes.draw do
       get "/users/sign_out", to: "users/sessions#destroy", as: :destroy_user_session
     end
 
-    resources :users do
-      collection do
-      end
-    end
+    resources :users, except: [:destroy, :show]
+    resources :team_members, only: [:update]
 
     get "/stats", to: "stats#show"
     get "/stats/majority_percentile_processing_time_in_days", to: "stats#majority_percentile_processing_time_in_days"

@@ -51,35 +51,8 @@ class EnrollmentPolicy < ApplicationPolicy
     record.can_refuse_application? && user.is_instructor?(record.target_api)
   end
 
-  def update_owner?
-    (record.validated? || record.refused?) && user.is_administrator?
-  end
-
-  def update_rgpd_contact?
-    record.validated? && user.is_administrator?
-  end
-
   def get_email_templates?
     user.is_instructor?(record.target_api)
-  end
-
-  def permitted_attributes_for_update_owner
-    [:user_email]
-  end
-
-  def permitted_attributes_for_update_rgpd_contact
-    [
-      :responsable_traitement_family_name,
-      :responsable_traitement_given_name,
-      :responsable_traitement_email,
-      :responsable_traitement_phone_number,
-      :responsable_traitement_job,
-      :dpo_family_name,
-      :dpo_given_name,
-      :dpo_email,
-      :dpo_phone_number,
-      :dpo_job
-    ]
   end
 
   def permitted_attributes

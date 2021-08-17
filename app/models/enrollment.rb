@@ -124,12 +124,22 @@ class Enrollment < ActiveRecord::Base
     team_members.where(type: "responsable_traitement").first
   end
 
-  def responsable_traitement_full_name
-    [responsable_traitement_given_name, responsable_traitement_family_name].join(" ")
+  def responsable_traitement_email
+    team_members.where(type: "responsable_traitement").pluck(:email).first
   end
 
-  def dpo_full_name
-    [dpo_given_name, dpo_family_name].join(" ")
+  def delegue_protection_donnees_email
+    team_members.where(type: "delegue_protection_donnees").pluck(:email).first
+  end
+
+  def responsable_traitement_full_name
+    team_member = team_members.where(type: "responsable_traitement").first
+    [team_member["given_name"], team_member["family_name"]].join(" ")
+  end
+
+  def delegue_protection_donnees_full_name
+    team_member = team_members.where(type: "delegue_protection_donnees").first
+    [team_member["given_name"], team_member["family_name"]].join(" ")
   end
 
   def submitted_at
@@ -246,7 +256,7 @@ class Enrollment < ActiveRecord::Base
   def rgpd_validation
     errors[:data_retention_period] << "Vous devez renseigner la conservation des données avant de continuer" unless data_retention_period.present?
     errors[:data_recipients] << "Vous devez renseigner les destinataires des données avant de continuer" unless data_recipients.present?
-    team_members_validation("delegue_protection_donnees", EnrollmentsController::DPO_LABEL)
+    team_members_validation("delegue_protection_donnees", EnrollmentsController::DELEGUE_PROTECTION_DONNEES_LABEL)
     team_members_validation("responsable_traitement", EnrollmentsController::RESPONSABLE_TRAITEMENT_LABEL)
   end
 

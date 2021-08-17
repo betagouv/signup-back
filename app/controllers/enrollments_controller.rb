@@ -1,6 +1,6 @@
 class EnrollmentsController < ApplicationController
   RESPONSABLE_TRAITEMENT_LABEL = "responsable de traitement"
-  DPO_LABEL = "délégué à la protection des données"
+  DELEGUE_PROTECTION_DONNEES_LABEL = "délégué à la protection des données"
 
   before_action :authenticate_user!, except: [:public]
   before_action :set_current_user, only: %i[update copy create]
@@ -193,40 +193,6 @@ class EnrollmentsController < ApplicationController
       render json: @enrollment
     else
       render status: :unprocessable_entity, json: @enrollment.errors
-    end
-  end
-
-  # PATCH /enrollment/1/update_owner
-  def update_owner
-    @enrollment = authorize Enrollment.find(params[:id])
-
-    if @enrollment.update(permitted_attributes(@enrollment))
-      @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
-      @enrollment.notify_event("owner_updated", user_id: current_user.id, diff: @enrollment.previous_changes)
-
-      render json: @enrollment
-    else
-      render json: @enrollment.errors, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH /enrollment/1/update_rgpd_contact
-  def update_rgpd_contact
-    @enrollment = authorize Enrollment.find(params[:id])
-
-    if @enrollment.update(permitted_attributes(@enrollment))
-      @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
-      @enrollment.notify_event(
-        "rgpd_contact_updated",
-        user_id: current_user.id,
-        diff: @enrollment.previous_changes,
-        responsable_traitement_email: params[:enrollment][:responsable_traitement_email],
-        dpo_email: params[:enrollment][:dpo_email]
-      )
-
-      render json: @enrollment
-    else
-      render json: @enrollment.errors, status: :unprocessable_entity
     end
   end
 

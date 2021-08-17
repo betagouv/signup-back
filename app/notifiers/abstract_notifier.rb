@@ -14,11 +14,7 @@ class AbstractNotifier
     fail NotImplementedError
   end
 
-  def owner_updated(diff:, user_id:)
-    fail NotImplementedError
-  end
-
-  def rgpd_contact_updated(diff:, user_id:, responsable_traitement_email:, dpo_email:)
+  def team_member_updated(team_member_type:)
     fail NotImplementedError
   end
 

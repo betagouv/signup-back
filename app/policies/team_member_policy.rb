@@ -1,21 +1,15 @@
 class TeamMemberPolicy < ApplicationPolicy
-  # TODO all team_member visible only if user is demandeur or admin ?
-  # TODO update? only for demandeur
-  # def update?
-  #   user.is_administrator?
-  # end
-
-  # TODO pointless fornow
-
-  def show?
-    user.is_member?(record.enrollment)
-  end
-
-  def create?
-    user.is_demandeur?(record.enrollment)
-  end
-
   def update?
-    user.is_demandeur?(record.enrollment)
+    (record.enrollment.validated? || record.enrollment.refused?) && user.is_administrator?
+  end
+
+  def permitted_attributes
+    [
+      :family_name,
+      :given_name,
+      :email,
+      :phone_number,
+      :job
+    ]
   end
 end

@@ -15,7 +15,6 @@ class TeamMember < ActiveRecord::Base
   belongs_to :enrollment
   belongs_to :user, optional: true
   before_save :set_user, if: :will_save_change_to_email?
-  before_save :set_to_current_user
 
   validates :email,
     format: {
@@ -27,22 +26,7 @@ class TeamMember < ActiveRecord::Base
     true
   end
 
-  def disable_edition
-    false
-  end
-
   protected
-
-  def set_to_current_user
-    if disable_edition
-      self.family_name = Current.user.family_name
-      self.given_name = Current.user.given_name
-      self.email = Current.user.email
-      self.phone_number = Current.user.phone_number
-      self.job = Current.user.job
-      self.user = Current.user
-    end
-  end
 
   def set_user
     self.user = if has_linked_user && email.present?

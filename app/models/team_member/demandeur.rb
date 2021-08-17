@@ -1,9 +1,15 @@
 class TeamMember::Demandeur < TeamMember
-  def update(attributes)
-    # this model cannot be edited
+  def has_linked_user
+    true
   end
 
-  def disable_edition
-    true
+  protected
+
+  def set_user
+    super
+    self.family_name = user.family_name
+    self.given_name = user.given_name
+    self.phone_number = user.phone_number
+    self.job = user.job
   end
 end

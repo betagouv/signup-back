@@ -31,7 +31,7 @@ class SendinblueWebhooksController < ApplicationController
 
     email_uuid = transactional_email["transactionalEmails"][0]["uuid"]
     rgpd_contact_email = transactional_email["transactionalEmails"][0]["email"]
-    rgpd_role = transactional_email["transactionalEmails"][0]["subject"][/(#{EnrollmentsController::RESPONSABLE_TRAITEMENT_LABEL}|#{EnrollmentsController::DPO_LABEL})/o, 1]
+    rgpd_role = transactional_email["transactionalEmails"][0]["subject"][/(#{EnrollmentsController::RESPONSABLE_TRAITEMENT_LABEL}|#{EnrollmentsController::DELEGUE_PROTECTION_DONNEES_LABEL})/o, 1]
 
     # 4. get email content
     get_email_content_response = Http.get(
