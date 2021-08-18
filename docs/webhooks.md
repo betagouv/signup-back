@@ -132,7 +132,7 @@ compute_hub_signature = 'sha256=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new(
 Rack::Utils.secure_compare(hub_signature, compute_hub_signature)
 ```
 
-Lors de l'événement `validated`, si votre système répond avec un ID de jeton
+Lors de l'événement `validate_application`, si votre système répond avec un ID de jeton
 celui-ci sera affecté à la demande.
 
 Le format attendu est au format json:
