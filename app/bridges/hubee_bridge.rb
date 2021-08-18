@@ -1,19 +1,17 @@
 class HubeeBridge < ApplicationBridge
   def call
-    email = @enrollment.user.email
-    phone_number = @enrollment.user.phone_number
-    contacts = @enrollment.contacts
+    email = @enrollment.demandeurs.pluck(:email).first
+    phone_number = @enrollment.demandeurs.pluck(:phone_number).first
+    team_members = @enrollment.team_members
     siret = @enrollment[:siret]
-    created_at = @enrollment[:created_at]
     updated_at = @enrollment[:updated_at]
     validated_at = @enrollment.validated_at
     linked_token_manager_id = create_enrollment_in_token_manager(
       @enrollment.id,
       email,
       phone_number,
-      contacts,
+      team_members,
       siret,
-      created_at,
       updated_at,
       validated_at
     )
@@ -26,9 +24,8 @@ class HubeeBridge < ApplicationBridge
     id,
     email,
     phone_number,
-    contacts,
+    team_members,
     siret,
-    created_at,
     updated_at,
     validated_at
   )
@@ -92,16 +89,18 @@ class HubeeBridge < ApplicationBridge
 
     # 3. create subscription
     delegation_actor = nil
-    unless contacts.find { |contact| contact["id"] == "technique" }["email"].empty?
+    contact_technique = team_members.find { |team_member| team_member["type"] == "technique" }
+    unless contact_technique.nil? && contact_technique["email"].empty?
       delegation_actor = {
-        email: contacts.find { |contact| contact["id"] == "technique" }["email"],
-        firstName: contacts.find { |contact| contact["id"] == "technique" }["given_name"],
-        lastName: contacts.find { |contact| contact["id"] == "technique" }["family_name"],
-        function: contacts.find { |contact| contact["id"] == "technique" }["job"],
-        phoneNumber: contacts.find { |contact| contact["id"] == "technique" }["phone_number"],
+        email: ["email"],
+        firstName: contact_technique["given_name"],
+        lastName: contact_technique["family_name"],
+        function: contact_technique["job"],
+        phoneNumber: contact_technique["phone_number"],
         mobileNumber: nil
       }
     end
+    contact_metier = team_members.find { |team_member| team_member["type"] == "metier" }
     create_subscription_response = Http.post(
       "#{api_host}/referential/v1/subscriptions",
       {
@@ -124,11 +123,11 @@ class HubeeBridge < ApplicationBridge
         status: "Inactif",
         email: email,
         localAdministrator: {
-          email: contacts.find { |contact| contact["id"] == "metier" }["email"],
-          firstName: contacts.find { |contact| contact["id"] == "metier" }["given_name"],
-          lastName: contacts.find { |contact| contact["id"] == "metier" }["family_name"],
-          function: contacts.find { |contact| contact["id"] == "metier" }["job"],
-          phoneNumber: contacts.find { |contact| contact["id"] == "metier" }["phone_number"],
+          email: contact_metier["email"],
+          firstName: contact_metier["given_name"],
+          lastName: contact_metier["family_name"],
+          function: contact_metier["job"],
+          phoneNumber: contact_metier["phone_number"],
           mobileNumber: nil
         }
       },

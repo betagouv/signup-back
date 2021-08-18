@@ -1,7 +1,7 @@
 class ApiParticulierBridge < ApplicationBridge
   def call
     name = "#{@enrollment.nom_raison_sociale} - #{@enrollment.id}"
-    contact_technique_email = @enrollment.contacts.find { |contact| contact["id"] == "technique" }["email"]
+    contact_technique_email = @enrollment.team_members.where(type: "technique").pluck(:email).first
     demandeur_email = @enrollment.demandeurs.pluck(:email).first
     scopes = @enrollment[:scopes].reject { |_, v| !v }.keys
     linked_token_manager_id = create_enrollment_in_token_manager(

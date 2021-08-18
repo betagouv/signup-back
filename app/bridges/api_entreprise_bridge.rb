@@ -1,10 +1,10 @@
 class ApiEntrepriseBridge < ApplicationBridge
   def call
     name = @enrollment.intitule
-    email = @enrollment.user.email
-    uid = @enrollment.user.uid
+    email = @enrollment.demandeurs.pluck(:email).first
+    uid = @enrollment.demandeurs.pluck(:uid).first
     scopes = @enrollment[:scopes]
-    contacts = @enrollment.contacts
+    team_members = @enrollment.team_members.where(type: %w[metier technique])
     siret = @enrollment[:siret]
     cgu_agreement_date = @enrollment.submitted_at
     previous_linked_token_manager_id =
@@ -17,7 +17,7 @@ class ApiEntrepriseBridge < ApplicationBridge
       email,
       uid,
       scopes,
-      contacts,
+      team_members,
       siret,
       cgu_agreement_date,
       previous_linked_token_manager_id
@@ -33,7 +33,7 @@ class ApiEntrepriseBridge < ApplicationBridge
     email,
     uid,
     scopes,
-    contacts,
+    team_members,
     siret,
     cgu_agreement_date,
     previous_linked_token_manager_id
@@ -92,13 +92,12 @@ class ApiEntrepriseBridge < ApplicationBridge
     user_id = user["id"]
 
     # 4. create token
-    formatted_contacts = contacts
-      .select { |contact| contact["id"].in?(%w[technique metier]) }
-      .map { |contact|
+    formatted_team_members = team_members
+      .map { |team_member|
         {
-          "email" => contact["email"],
-          "phone_number" => contact["phone_number"],
-          "contact_type" => contact["id"] == "technique" ? "tech" : "admin"
+          "email" => team_member["email"],
+          "phone_number" => team_member["phone_number"],
+          "contact_type" => team_member["type"] == "technique" ? "tech" : "admin"
         }
       }
     formatted_scopes = scopes
@@ -115,7 +114,7 @@ class ApiEntrepriseBridge < ApplicationBridge
       {
         subject: name,
         roles: formatted_scopes,
-        contacts: formatted_contacts,
+        contacts: formatted_team_members,
         authorization_request_id: id.to_s
       },
       api_key,
