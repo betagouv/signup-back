@@ -10,9 +10,9 @@ RSpec.describe Enrollment, type: :model do
       aidants_connect
       hubee
     ].each do |target_api_trait|
-      expect(build(:enrollment, target_api_trait)).to be_valid
-      expect(build(:enrollment, target_api_trait, :sent)).to be_valid
-      expect(build(:enrollment, target_api_trait, :validated)).to be_valid
+      expect(build(:enrollment, target_api_trait)).to be_valid, "Enrollment #{target_api_trait} factory is not valid"
+      expect(build(:enrollment, target_api_trait, :sent)).to be_valid, "Enrollment #{target_api_trait} factory with sent trait is not valid"
+      expect(build(:enrollment, target_api_trait, :validated)).to be_valid, "Enrollment #{target_api_trait} factory with validated trait is not valid"
 
       begin
         create(:enrollment, target_api_trait, :sent)

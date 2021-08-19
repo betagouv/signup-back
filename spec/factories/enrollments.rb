@@ -15,6 +15,8 @@ FactoryBot.define do
 
     transient do
       organization_kind { :clamart }
+      contacts { [] }
+      user { nil }
     end
 
     after(:build) do |enrollment, evaluator|
@@ -22,11 +24,26 @@ FactoryBot.define do
 
       enrollment.siret = organization["siret"]
 
-      if enrollment.user
-        enrollment.user.organizations ||= []
-        enrollment.user.organizations << organization
+      if evaluator.user
+        demandeur = build(:team_member, :demandeur, user: evaluator.user, enrollment: enrollment)
       else
-        enrollment.user = build(:user, organizations: [organization])
+        demandeur = build(:team_member, :demandeur, :with_user, enrollment: enrollment)
+      end
+
+      enrollment.team_members << demandeur
+      demandeur.user.organizations ||= []
+      demandeur.user.organizations << organization
+
+      if evaluator.contacts.any?
+        evaluator.contacts.each do |contact_payload|
+          next if enrollment.team_members.where(type: contact_payload[:id].underscore.classify).present?
+
+          enrollment.team_members << build(
+            :team_member,
+            contact_payload[:id],
+            contact_payload.except(:id),
+          )
+        end
       end
 
       enrollment.organization_id = organization["id"]
@@ -61,20 +78,14 @@ FactoryBot.define do
     end
 
     trait :with_dpo do
-      dpo { build(:user, :dpo) }
-
       after(:build) do |enrollment|
-        enrollment.dpo_family_name ||= enrollment.dpo.family_name
-        enrollment.dpo_phone_number ||= enrollment.dpo.phone_number
+        enrollment.team_members << build(:team_member, :delegue_protection_donnees, enrollment: enrollment)
       end
     end
 
     trait :with_responsable_traitement do
-      responsable_traitement { build(:user, :responsable_traitement) }
-
       after(:build) do |enrollment|
-        enrollment.responsable_traitement_family_name ||= enrollment.responsable_traitement.family_name
-        enrollment.responsable_traitement_phone_number ||= enrollment.responsable_traitement.phone_number
+        enrollment.team_members << build(:team_member, :responsable_traitement, enrollment: enrollment)
       end
     end
 
@@ -151,7 +162,7 @@ FactoryBot.define do
       contacts do
         [
           {
-            id: "technique",
+            id: "responsable_technique",
             email: "user-technique@clamart.fr",
             phone_number: "0636656565"
           },
@@ -189,7 +200,7 @@ FactoryBot.define do
       contacts do
         [
           {
-            id: "technique",
+            id: "responsable_technique",
             email: "user-technique@clamart.fr",
             phone_number: "0626656565"
           }
@@ -207,7 +218,7 @@ FactoryBot.define do
       contacts do
         [
           {
-            id: "technique",
+            id: "responsable_technique",
             email: "user-technique@clamart.fr",
             phone_number: "0626656565"
           }
@@ -229,7 +240,7 @@ FactoryBot.define do
       contacts do
         [
           {
-            id: "technique",
+            id: "responsable_technique",
             email: "user-technique@clamart.fr",
             phone_number: "0626656565",
             given_name: "Jean",
@@ -265,7 +276,7 @@ FactoryBot.define do
       contacts do
         [
           {
-            id: "technique",
+            id: "responsable_technique",
             email: "user-technique@clamart.fr",
             phone_number: "0626656565"
           },
