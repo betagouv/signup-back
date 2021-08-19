@@ -3,7 +3,6 @@ class EnrollmentsController < ApplicationController
   DELEGUE_PROTECTION_DONNEES_LABEL = "délégué à la protection des données"
 
   before_action :authenticate_user!, except: [:public]
-  before_action :set_current_user, only: %i[update copy create]
 
   # GET /enrollments
   def index
@@ -231,10 +230,6 @@ class EnrollmentsController < ApplicationController
   end
 
   private
-
-  def set_current_user
-    Current.user = current_user
-  end
 
   def pundit_params_for(_record)
     params.fetch(:enrollment, {})

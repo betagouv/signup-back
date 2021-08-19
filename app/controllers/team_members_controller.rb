@@ -2,7 +2,6 @@ class TeamMembersController < ApplicationController
   before_action :authenticate_user!
 
   def update
-    Current.user = current_user
     @team_member = authorize TeamMember.find(params[:id])
 
     if @team_member.update(permitted_attributes(@team_member))
