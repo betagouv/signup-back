@@ -45,7 +45,14 @@ class User < ActiveRecord::Base
   end
 
   def belongs_to_organization?(enrollment)
-    organizations.any? { |o| o["id"] == enrollment.organization_id }
+    organizations.any? do |o|
+      o["id"] == enrollment.organization_id ||
+        (
+          !enrollment.organization_id.present? &&
+            enrollment.previous_enrollment_id.present? &&
+            o["id"] == enrollment.previous_enrollment.organization_id
+        )
+    end
   end
 
   def is_instructor?(target_api)
