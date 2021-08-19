@@ -34,6 +34,8 @@ FactoryBot.define do
       demandeur.user.organizations ||= []
       demandeur.user.organizations << organization
 
+      demandeur.user.save!
+
       if evaluator.contacts.any?
         evaluator.contacts.each do |contact_payload|
           next if enrollment.team_members.where(type: contact_payload[:id].underscore.classify).present?

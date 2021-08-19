@@ -2,6 +2,12 @@ FactoryBot.define do
   factory :team_member do
     email
 
+    after(:build) do |team_member|
+      if team_member.type == 'demandeur' && team_member.user.present?
+        team_member.email = team_member.user.email
+      end
+    end
+
     trait :contact_metier do
       initialize_with do
         TeamMember::ContactMetier.new(attributes)
