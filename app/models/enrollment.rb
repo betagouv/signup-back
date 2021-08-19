@@ -195,7 +195,10 @@ class Enrollment < ActiveRecord::Base
 
   def set_company_info
     # taking the siret from users organization ensure the user belongs to the organization
-    selected_organization = team_members.find { |tm| tm.type == "demandeur" }.user.organizations.find { |o| o["id"] == organization_id }
+    current_user_email = team_members.find { |tm| tm.type == "demandeur" }.email
+    current_user = User.find_by(email: current_user_email)
+
+    selected_organization = current_user.organizations.find { |o| o["id"] == organization_id }
     siret = selected_organization["siret"]
 
     response = HTTP.get("https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/#{siret}")
