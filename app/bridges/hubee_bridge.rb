@@ -89,18 +89,18 @@ class HubeeBridge < ApplicationBridge
 
     # 3. create subscription
     delegation_actor = nil
-    contact_technique = team_members.find { |team_member| team_member["type"] == "technique" }
-    unless contact_technique.nil? && contact_technique["email"].empty?
+    responsable_technique = team_members.find { |team_member| team_member["type"] == "responsable_technique" }
+    unless responsable_technique.nil? && responsable_technique["email"].empty?
       delegation_actor = {
         email: ["email"],
-        firstName: contact_technique["given_name"],
-        lastName: contact_technique["family_name"],
-        function: contact_technique["job"],
-        phoneNumber: contact_technique["phone_number"],
+        firstName: responsable_technique["given_name"],
+        lastName: responsable_technique["family_name"],
+        function: responsable_technique["job"],
+        phoneNumber: responsable_technique["phone_number"],
         mobileNumber: nil
       }
     end
-    contact_metier = team_members.find { |team_member| team_member["type"] == "metier" }
+    contact_metier = team_members.find { |team_member| team_member["type"] == "contact_metier" }
     create_subscription_response = Http.post(
       "#{api_host}/referential/v1/subscriptions",
       {

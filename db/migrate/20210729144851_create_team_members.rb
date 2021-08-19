@@ -16,10 +16,9 @@ class CreateTeamMembers < ActiveRecord::Migration[5.2]
     reversible do |dir|
       # move jsonb[] contacts to team_members table
       dir.up do
-        # TODO replace technique with contact_technique and metier with contact_metier
         execute <<-SQL
           INSERT INTO team_members (enrollment_id, email, family_name, given_name, job, type, phone_number, created_at, updated_at)
-          select enrollment_id, email, family_name, given_name, job, id as type, phone_number, timestamp 'epoch', timestamp 'epoch'
+          select enrollment_id, email, family_name, given_name, job, CASE WHEN id='technique' THEN 'responsable_technique' WHEN id='metier' THEN 'contact_metier' END, phone_number, timestamp 'epoch', timestamp 'epoch'
           from (
               select id as enrollment_id, unnest(contacts) as c
               from enrollments e

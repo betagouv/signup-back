@@ -113,12 +113,12 @@ FactoryBot.define do
       contacts do
         [
           {
-            id: "technique",
+            id: "responsable_technique",
             email: "user-technique@clamart.fr",
             phone_number: "0636656565"
           },
           {
-            id: "metier",
+            id: "contact_metier",
             email: "user-metier@clamart.fr",
             phone_number: "0636656565"
           }
@@ -156,7 +156,7 @@ FactoryBot.define do
             phone_number: "0636656565"
           },
           {
-            id: "metier",
+            id: "contact_metier",
             email: "user-metier@clamart.fr"
           }
         ]
@@ -270,7 +270,7 @@ FactoryBot.define do
             phone_number: "0626656565"
           },
           {
-            id: "metier",
+            id: "contact_metier",
             email: "user-metier@clamart.fr",
             phone_number: "0626656565"
           }
@@ -292,7 +292,7 @@ FactoryBot.define do
       contacts do
         [
           {
-            id: "metier",
+            id: "contact_metier",
             email: "user-metier@clamart.fr",
             phone_number: "0626656565",
             job: "Directeur",
@@ -331,7 +331,7 @@ FactoryBot.define do
       contacts do
         [
           {
-            id: "metier",
+            id: "contact_metier",
             email: "user-metier@clamart.fr",
             phone_number: "0626656565",
             job: "Directeur",

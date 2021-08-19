@@ -2,7 +2,7 @@ class FranceconnectBridge < ApplicationBridge
   def call
     nom_raison_sociale = @enrollment.nom_raison_sociale
     intitule = @enrollment.intitule
-    email = @enrollment.team_members.where(type: "technique").pluck(:email).first
+    email = @enrollment.team_members.where(type: "responsable_technique").pluck(:email).first
     scopes = @enrollment[:scopes].reject { |k, v| !v }.keys
     eidas_level = @enrollment.additional_content&.fetch("eidas_level", "")
     copied_from_enrollment_id = @enrollment.copied_from_enrollment_id

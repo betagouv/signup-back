@@ -1,12 +1,12 @@
 class TeamMember < ActiveRecord::Base
   # enable Single Table Inheritance with a snake_case value as discriminatory field
   class << self
-    # ex: 'contact_technique' => TeamMember::ContactTechnique
+    # ex: 'responsable_technique' => TeamMember::ResponsableTechnique
     def find_sti_class(type)
       "TeamMember::#{type.underscore.classify}".constantize
     end
 
-    # ex: > TeamMember::ContactTechnique => 'contact_technique'
+    # ex: > TeamMember::ResponsableTechnique => 'responsable_technique'
     def sti_name
       name.demodulize.underscore
     end

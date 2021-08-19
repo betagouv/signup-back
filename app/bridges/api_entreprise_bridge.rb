@@ -4,7 +4,7 @@ class ApiEntrepriseBridge < ApplicationBridge
     email = @enrollment.demandeurs.pluck(:email).first
     uid = @enrollment.demandeurs.pluck(:uid).first
     scopes = @enrollment[:scopes]
-    team_members = @enrollment.team_members.where(type: %w[metier technique])
+    team_members = @enrollment.team_members.where(type: %w[contact_metier responsable_technique])
     siret = @enrollment[:siret]
     cgu_agreement_date = @enrollment.submitted_at
     previous_linked_token_manager_id =
@@ -97,7 +97,7 @@ class ApiEntrepriseBridge < ApplicationBridge
         {
           "email" => team_member["email"],
           "phone_number" => team_member["phone_number"],
-          "contact_type" => team_member["type"] == "technique" ? "tech" : "admin"
+          "contact_type" => team_member["type"] == "responsable_technique" ? "tech" : "admin"
         }
       }
     formatted_scopes = scopes

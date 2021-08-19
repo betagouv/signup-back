@@ -5,6 +5,6 @@ class Enrollment::ApiParticulier < Enrollment
     super
 
     scopes_validation
-    contact_technique_validation
+    responsable_technique_validation
   end
 end

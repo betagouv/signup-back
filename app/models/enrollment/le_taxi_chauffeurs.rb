@@ -1,9 +1,9 @@
 class Enrollment::LeTaxiChauffeurs < Enrollment
   def sent_validation
-    unless team_members.exists?(type: "metier")
+    unless team_members.exists?(type: "contact_metier")
       errors[:team_members] << "Vous devez renseigner un contact chargé de suivit avant de continuer"
     end
-    team_members.where(type: "metier").each do |team_member|
+    team_members.where(type: "contact_metier").each do |team_member|
       errors[:team_members] << "Vous devez renseigner un email valide pour le chargé de suivit avant de continuer" unless URI::MailTo::EMAIL_REGEXP.match?(team_member.email)
     end
 

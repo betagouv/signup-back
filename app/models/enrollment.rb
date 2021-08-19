@@ -245,12 +245,12 @@ class Enrollment < ActiveRecord::Base
     end
   end
 
-  def contact_technique_validation
-    team_members_validation("technique", "contact technique")
+  def responsable_technique_validation
+    team_members_validation("responsable_technique", "responsable technique")
   end
 
   def contact_metier_validation
-    team_members_validation("metier", "contact métier")
+    team_members_validation("contact_metier", "contact métier")
   end
 
   def rgpd_validation
