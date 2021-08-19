@@ -94,7 +94,7 @@ class Enrollment < ActiveRecord::Base
   end
 
   def notifier_class
-    Kernel.const_get("#{self.class}Notifier")
+    Kernel.const_get("#{target_api.classify}Notifier")
   rescue NameError
     BaseNotifier
   end
