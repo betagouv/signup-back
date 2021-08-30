@@ -74,7 +74,7 @@ class Enrollment < ActiveRecord::Base
       )
     end
 
-    before_transition sent: :validated do |enrollment, _|
+    before_transition sent: :validated do |enrollment, transition|
       if enrollment.target_api == "api_particulier" && !ENV["DISABLE_API_PARTICULIER_BRIDGE"].present?
         ApiParticulierBridge.call(enrollment)
       end
@@ -91,8 +91,9 @@ class Enrollment < ActiveRecord::Base
         ApiDroitsCnamBridge.call(enrollment)
       end
 
-      if enrollment.target_api == "api_impot_particulier_fc_sandbox" && !ENV["DISABLE_API_IMPOT_PARTICULIER_BRIDGE"].present?
-        ApiImpotParticulierFcSandboxBridge.call(enrollment)
+      # TODO provision this new variable in prod env
+      if enrollment.target_api == "api_impot_particulier_fc_sandbox" && !ENV["DISABLE_API_IMPOT_PARTICULIER_FC_SANDBOX_BRIDGE"].present?
+        ApiImpotParticulierFcSandboxBridge.call(enrollment, transition.args[0][:user_id])
       end
 
       if enrollment.target_api == "francerelance_fc" && !ENV["DISABLE_FRANCECONNECT_BRIDGE"].present?
