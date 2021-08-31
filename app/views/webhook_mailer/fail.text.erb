@@ -1,6 +1,12 @@
-Votre endpoint <%= @webhook_url  %> n'accepte plus les appels de notre webhook depuis environ 10m.
+Bonjour,
+
+DataPass cherche à notifier votre <%= @api_manager_label %> depuis 10 minutes mais n’y parvient plus. Une demande DataPass n’a donc pas été transmise automatiquement à vos services.
 
 Les informations techniques sont les suivantes:
+
+**Endpoint**
+
+<%= @webhook_url %>
 
 **Payload**
 
@@ -17,3 +23,9 @@ La payload envoyée:
 **Body**
 
 <%= @webhook_response_body %>
+
+Merci de transmettre ce message à votre équipe technique pour correction. Nous sommes disponibles pour vos questions techniques à l’adresse mail suivante : datapass@api.gouv.fr.
+
+Cordialement,
+
+L’équipe DataPass

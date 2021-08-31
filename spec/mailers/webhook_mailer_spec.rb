@@ -9,7 +9,7 @@ RSpec.describe WebhookMailer, type: :mailer do
       ).fail
     end
 
-    let(:target_api) { "franceconnect" }
+    let(:target_api) { "api_entreprise" }
     let(:payload) { {lol: "oki"} }
     let(:webhook_response_body) { "PANIK" }
     let(:webhook_response_status) { 500 }
@@ -24,17 +24,18 @@ RSpec.describe WebhookMailer, type: :mailer do
       ENV["#{target_api.upcase}_WEBHOOK_URL"] = nil
     end
 
-    let!(:franceconnect_instructors) { create_list(:user, 2, roles: ["franceconnect:instructor", "franceconnect:reporter"]) }
-    let!(:foreign_instructor) { create(:user, roles: ["api_entreprise:instructor"]) }
+    let!(:api_entreprise_instructors) { create_list(:user, 2, roles: ["api_entreprise:instructor", "api_entreprise:reporter"]) }
+    let!(:foreign_instructor) { create(:user, roles: ["franceconnect:instructor"]) }
 
     it "sends email to target api instructors, with datapass@api.gouv.fr in cc and from" do
-      expect(mail.to).to eq(franceconnect_instructors.pluck(:email))
+      expect(mail.to).to eq(api_entreprise_instructors.pluck(:email))
 
       expect(mail.from).to eq(["datapass@api.gouv.fr"])
       expect(mail.cc).to eq(["datapass@api.gouv.fr"])
     end
 
-    it "renders relevant information in body" do
+    it "renders relevant information in body and subject" do
+      expect(mail.subject).to include("API Entreprise")
       expect(mail.body.encoded).to include(webhook_url)
       expect(mail.body.encoded).to include("\"lol\": \"oki\"")
       expect(mail.body.encoded).to include(webhook_response_status.to_s)

@@ -73,6 +73,7 @@ api_droits_cnam:
 
 api_entreprise:
   label: API Entreprise
+  api_manager_label: dashboard API Entreprise
   support_email: support@entreprise.api.gouv.fr
   mailer:
     <<: *shared_mailer
