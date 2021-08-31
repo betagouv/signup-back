@@ -24,7 +24,7 @@ RSpec.describe WebhookMailer, type: :mailer do
       ENV["#{target_api.upcase}_WEBHOOK_URL"] = nil
     end
 
-    let!(:franceconnect_instructors) { create_list(:user, 2, roles: ["franceconnect:instructor"]) }
+    let!(:franceconnect_instructors) { create_list(:user, 2, roles: ["franceconnect:instructor", "franceconnect:reporter"]) }
     let!(:foreign_instructor) { create(:user, roles: ["api_entreprise:instructor"]) }
 
     it "sends email to target api instructors, with datapass@api.gouv.fr in cc and from" do
