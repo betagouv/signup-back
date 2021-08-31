@@ -18,8 +18,6 @@ class WebhookMailer < ActionMailer::Base
   private
 
   def target_api_instructor_emails
-    User.where(
-      roles: ["#{params[:target_api]}:instructor"]
-    ).pluck(:email)
+    User.where("'#{params[:target_api]}:instructor' = ANY(roles)").pluck(:email)
   end
 end
