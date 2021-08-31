@@ -1,3 +1,5 @@
+require "sidekiq/web"
+
 Rails.application.routes.draw do
   scope :api do
     resources :enrollments do
@@ -50,4 +52,8 @@ Rails.application.routes.draw do
   end
 
   get "/uploads/:model/:type/:mounted_as/:id/:filename", to: "documents#show", constraints: {filename: /[^\/]+/}
+
+  authenticate :user, lambda { |u| u.is_administrator? } do
+    mount Sidekiq::Web => "/sidekiq"
+  end
 end

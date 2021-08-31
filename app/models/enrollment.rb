@@ -74,37 +74,13 @@ class Enrollment < ActiveRecord::Base
       )
     end
 
-    before_transition sent: :validated do |enrollment, _|
-      if enrollment.target_api == "api_particulier" && !ENV["DISABLE_API_PARTICULIER_BRIDGE"].present?
-        ApiParticulierBridge.call(enrollment)
-      end
+    before_transition sent: :validated do |enrollment|
+      bridge_enable = !ENV["DISABLE_#{enrollment.target_api.upcase}_BRIDGE"].present?
 
-      if enrollment.target_api == "franceconnect" && !ENV["DISABLE_FRANCECONNECT_BRIDGE"].present?
-        FranceconnectBridge.call(enrollment)
-      end
-
-      if enrollment.target_api == "api_entreprise" && !ENV["DISABLE_API_ENTREPRISE_BRIDGE"].present?
-        ApiEntrepriseBridge.call(enrollment)
-      end
-
-      if enrollment.target_api == "api_droits_cnam" && !ENV["DISABLE_API_DROITS_CNAM_BRIDGE"].present?
-        ApiDroitsCnamBridge.call(enrollment)
-      end
-
-      if enrollment.target_api == "api_impot_particulier_fc_sandbox" && !ENV["DISABLE_API_IMPOT_PARTICULIER_BRIDGE"].present?
-        ApiImpotParticulierFcSandboxBridge.call(enrollment)
-      end
-
-      if enrollment.target_api == "francerelance_fc" && !ENV["DISABLE_FRANCECONNECT_BRIDGE"].present?
-        FranceconnectBridge.call(enrollment)
-      end
-
-      if enrollment.target_api == "aidants_connect" && !ENV["DISABLE_AIDANTS_CONNECT_BRIDGE"].present?
-        AidantsConnectBridge.call(enrollment)
-      end
-
-      if enrollment.target_api == "hubee" && !ENV["DISABLE_HUBEE_BRIDGE"].present?
-        HubeeBridge.call(enrollment)
+      if bridge_enable && enrollment.bridge
+        enrollment.bridge.call(
+          enrollment
+        )
       end
     end
 
@@ -118,9 +94,15 @@ class Enrollment < ActiveRecord::Base
   end
 
   def notifier_class
-    Kernel.const_get("#{self.class}Notifier")
+    Kernel.const_get("#{target_api.classify}Notifier")
   rescue NameError
     BaseNotifier
+  end
+
+  def bridge
+    Kernel.const_get("#{target_api.classify}Bridge")
+  rescue NameError
+    nil
   end
 
   def subscribers
