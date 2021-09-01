@@ -53,7 +53,7 @@ class WebhookEnrollmentSerializer < ActiveModel::Serializer
       type: type,
       email: contact_payload["email"],
       family_name: contact_payload["family_name"],
-      givan_name: contact_payload["given_name"],
+      given_name: contact_payload["given_name"],
       phone_number: contact_payload["phone_number"],
       job: contact_payload["job"]
     }
