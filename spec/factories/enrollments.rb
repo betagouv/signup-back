@@ -24,10 +24,10 @@ FactoryBot.define do
 
       enrollment.siret = organization["siret"]
 
-      if evaluator.user
-        demandeur = build(:team_member, :demandeur, user: evaluator.user, enrollment: enrollment)
+      demandeur = if evaluator.user
+        build(:team_member, :demandeur, user: evaluator.user, enrollment: enrollment)
       else
-        demandeur = build(:team_member, :demandeur, :with_user, enrollment: enrollment)
+        build(:team_member, :demandeur, :with_user, enrollment: enrollment)
       end
 
       enrollment.team_members << demandeur
@@ -43,7 +43,7 @@ FactoryBot.define do
           enrollment.team_members << build(
             :team_member,
             contact_payload[:id],
-            contact_payload.except(:id),
+            contact_payload.except(:id)
           )
         end
       end
@@ -56,7 +56,7 @@ FactoryBot.define do
     end
 
     trait :complete do
-      with_dpo
+      with_delegue_protection_donnees
       with_responsable_traitement
       with_data_retention
 
@@ -79,7 +79,7 @@ FactoryBot.define do
       end
     end
 
-    trait :with_dpo do
+    trait :with_delegue_protection_donnees do
       after(:build) do |enrollment|
         enrollment.team_members << build(:team_member, :delegue_protection_donnees, enrollment: enrollment)
       end
@@ -100,7 +100,7 @@ FactoryBot.define do
     trait :validated do
       status { "validated" }
 
-      with_dpo
+      with_delegue_protection_donnees
       with_responsable_traitement
       with_data_retention
 

@@ -3,7 +3,7 @@ FactoryBot.define do
     email
 
     after(:build) do |team_member|
-      if team_member.type == 'demandeur' && team_member.user.present?
+      if team_member.type == "demandeur" && team_member.user.present?
         team_member.email = team_member.user.email
       end
     end

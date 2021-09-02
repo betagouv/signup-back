@@ -71,7 +71,7 @@ RSpec.describe ApiEntrepriseNotifier, type: :notifier do
 
   describe "emails events" do
     describe "#rgpd_contact_updated" do
-      let(:enrollment) { create(:enrollment, :api_entreprise, :with_dpo) }
+      let(:enrollment) { create(:enrollment, :api_entreprise, :with_delegue_protection_donnees) }
 
       subject { instance.rgpd_contact_updated(diff: "diff", user_id: user.id, dpo_email: user.email, responsable_traitement_email: nil) }
 
