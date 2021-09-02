@@ -39,7 +39,7 @@ module EmailNotifierMethods
       target_api: enrollment.target_api,
       enrollment_id: enrollment.id,
       template: "notify_application_sent",
-      applicant_email: enrollment.demandeurs.pluck(:email)
+      demandeur_email: enrollment.demandeurs.pluck(:email).first
     ).notification_email.deliver_later
   end
 end
