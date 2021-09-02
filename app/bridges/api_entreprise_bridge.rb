@@ -2,7 +2,7 @@ class ApiEntrepriseBridge < ApplicationBridge
   def call
     name = @enrollment.intitule
     email = @enrollment.demandeurs.pluck(:email).first
-    uid = @enrollment.demandeurs.pluck(:uid).first
+    uid = @enrollment.demandeurs.first.user.uid
     scopes = @enrollment[:scopes]
     team_members = @enrollment.team_members.where(type: %w[contact_metier responsable_technique])
     siret = @enrollment[:siret]
