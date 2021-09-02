@@ -21,7 +21,7 @@ class ApiEntrepriseNotifier < AbstractNotifier
     deliver_event_webhook(__method__)
     deliver_event_mailer(__method__, comment) if default_mailer_active?
 
-    notify_subscribers_by_email_for_sent_application(current_user: current_user)
+    notify_subscribers_by_email_for_sent_application
   end
 
   def notify(comment:, current_user:)
