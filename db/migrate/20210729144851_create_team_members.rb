@@ -18,7 +18,7 @@ class CreateTeamMembers < ActiveRecord::Migration[5.2]
       dir.up do
         execute <<-SQL
           INSERT INTO team_members (enrollment_id, email, family_name, given_name, job, type, phone_number, created_at, updated_at)
-          select enrollment_id, email, family_name, given_name, job, CASE WHEN id='technique' THEN 'responsable_technique' WHEN id='metier' THEN 'contact_metier' END, phone_number, timestamp 'epoch', timestamp 'epoch'
+          select enrollment_id, email, family_name, given_name, job, CASE WHEN id='technique' THEN 'responsable_technique' WHEN id='metier' THEN 'contact_metier' END as type, phone_number, timestamp 'epoch', timestamp 'epoch'
           from (
               select id as enrollment_id, unnest(contacts) as c
               from enrollments e
@@ -30,7 +30,7 @@ class CreateTeamMembers < ActiveRecord::Migration[5.2]
               job text,
               id text,
               phone_number text
-          ) where email is not null;
+          ) where email is not null and email <> '' and id in ('technique', 'metier');
         SQL
       end
       dir.down do
