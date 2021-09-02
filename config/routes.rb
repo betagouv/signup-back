@@ -18,8 +18,8 @@ Rails.application.routes.draw do
     end
 
     get "/users/me", to: "users#me"
-    get "/users/join-organization", to: "users#join_organization"
-    get "/users/personal-information", to: "users#personal_information"
+    get "/users/join_organization", to: "users#join_organization"
+    get "/users/personal_information", to: "users#personal_information"
     devise_scope :user do
       get "/users/sign_out", to: "users/sessions#destroy", as: :destroy_user_session
     end
