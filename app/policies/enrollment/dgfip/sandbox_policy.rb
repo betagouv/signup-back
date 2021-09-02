@@ -12,7 +12,7 @@ class Enrollment::Dgfip::SandboxPolicy < EnrollmentPolicy
       :description,
       :fondement_juridique_title,
       :fondement_juridique_url,
-      contacts: [:id, :given_name, :family_name, :email, :phone_number],
+      team_members_attributes: [:id, :type, :family_name, :given_name, :email, :phone_number, :job],
       documents_attributes: [
         :attachment,
         :type

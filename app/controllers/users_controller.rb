@@ -14,8 +14,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = policy_scope(User).find(params[:id])
-    authorize @user
+    @user = authorize User.find(params[:id])
 
     if @user.update(permitted_attributes(@user))
       render json: @user,
@@ -41,18 +40,21 @@ class UsersController < ApplicationController
     end
   end
 
+  # GET /users/me
   def me
     user = User.new current_user.attributes
     render json: user,
       serializer: FullUserSerializer
   end
 
+  # GET /users/join_organization
   def join_organization
     # we clear DataPass session here to trigger organization sync with api-auth
     clear_user_session!
     redirect_to "#{ENV.fetch("OAUTH_HOST")}/users/join-organization"
   end
 
+  # GET /users/personal_information
   def personal_information
     # we clear DataPass session here to trigger organization sync with api-auth
     clear_user_session!

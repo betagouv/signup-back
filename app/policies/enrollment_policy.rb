@@ -1,22 +1,42 @@
 class EnrollmentPolicy < ApplicationPolicy
+  def show?
+    user.is_member?(record) || user.is_reporter?(record.target_api)
+  end
+
   def create?
-    record.pending?
+    # note that we cannot use 'user.is_demandeur?(record)' here because team_members
+    # are not persisted yet. We cannot use 'where' on team_members and we cannot
+    # use team_member.user_id for comparaison since it has not been set yet.
+    record.pending? &&
+      user.belongs_to_organization?(record) &&
+      record.team_members.any? { |t_m| t_m["type"] == "demandeur" && t_m.email == user.email }
   end
 
   def update?
-    (record.pending? || record.modification_pending?) && user == record.user
+    (record.pending? || record.modification_pending?) &&
+      user.belongs_to_organization?(record) &&
+      user.is_demandeur?(record)
   end
 
   def destroy?
-    (record.pending? || record.modification_pending?) && user == record.user
+    (record.pending? || record.modification_pending?) &&
+      user.is_demandeur?(record)
   end
 
   def notify?
     record.can_notify? && user.is_instructor?(record.target_api)
   end
 
+  def copy?
+    (record.validated? || record.refused?) &&
+      user.belongs_to_organization?(record) &&
+      user.is_demandeur?(record)
+  end
+
   def send_application?
-    record.can_send_application? && user == record.user
+    record.can_send_application? &&
+      user.belongs_to_organization?(record) &&
+      user.is_demandeur?(record)
   end
 
   def validate_application?
@@ -31,35 +51,8 @@ class EnrollmentPolicy < ApplicationPolicy
     record.can_refuse_application? && user.is_instructor?(record.target_api)
   end
 
-  def update_owner?
-    (record.validated? || record.refused?) && user.is_administrator?
-  end
-
-  def update_rgpd_contact?
-    record.validated? && user.is_administrator?
-  end
-
   def get_email_templates?
     user.is_instructor?(record.target_api)
-  end
-
-  def permitted_attributes_for_update_owner
-    [:user_email]
-  end
-
-  def permitted_attributes_for_update_rgpd_contact
-    [
-      :responsable_traitement_family_name,
-      :responsable_traitement_given_name,
-      :responsable_traitement_email,
-      :responsable_traitement_phone_number,
-      :responsable_traitement_job,
-      :dpo_family_name,
-      :dpo_given_name,
-      :dpo_email,
-      :dpo_phone_number,
-      :dpo_job
-    ]
   end
 
   def permitted_attributes
@@ -81,18 +74,8 @@ class EnrollmentPolicy < ApplicationPolicy
       :data_recipients,
       :data_retention_period,
       :data_retention_comment,
-      :dpo_family_name,
-      :dpo_given_name,
-      :dpo_email,
-      :dpo_phone_number,
-      :dpo_job,
-      :responsable_traitement_family_name,
-      :responsable_traitement_given_name,
-      :responsable_traitement_email,
-      :responsable_traitement_phone_number,
-      :responsable_traitement_job,
       :demarche,
-      contacts: [:id, :family_name, :given_name, :email, :phone_number, :job],
+      team_members_attributes: [:id, :type, :family_name, :given_name, :email, :phone_number, :job],
       documents_attributes: [
         :attachment,
         :type
@@ -108,10 +91,8 @@ class EnrollmentPolicy < ApplicationPolicy
         .select { |r| r.end_with?(":reporter") }
         .map { |r| r.split(":").first }
         .uniq
-      scope.where("target_api IN (?)", target_apis)
-        .or(scope.where(user_id: user.id))
-        .or(scope.where(dpo_id: user.id).where(status: "validated"))
-        .or(scope.where(responsable_traitement_id: user.id).where(status: "validated"))
+      scope.includes(:team_members).where(target_api: target_apis)
+        .or(scope.includes(:team_members).where(team_members: {user: user}))
     end
   end
 end

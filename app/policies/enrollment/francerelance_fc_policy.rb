@@ -14,13 +14,7 @@ class Enrollment::FrancerelanceFcPolicy < EnrollmentPolicy
         :email,
         :openid
       ],
-      contacts: [
-        :id,
-        :family_name,
-        :given_name,
-        :email,
-        :phone_number
-      ],
+      team_members_attributes: [:id, :type, :family_name, :given_name, :email, :phone_number, :job],
       additional_content: [
         :has_alternative_authentication_methods,
         :utilisation_franceconnect_autre_projet,

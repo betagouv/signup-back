@@ -8,7 +8,7 @@ class Enrollment::FrancerelanceFc < Enrollment
     errors[:date_integration] << "Vous devez renseigner la date prévisionnelle de fin d’intégration au format AAAA-MM-JJ avant de continuer" unless date_regex.match?(additional_content&.fetch("date_integration", ""))
 
     scopes_validation
-    contact_validation("metier", "porteur de projet")
-    contact_validation("technique", "responsable technique")
+    team_members_validation("contact_metier", "porteur de projet")
+    responsable_technique_validation
   end
 end

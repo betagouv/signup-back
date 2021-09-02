@@ -8,9 +8,8 @@ class User < ActiveRecord::Base
       message: "Vous devez renseigner un email valide"
     }
 
-  has_many :enrollments
-  has_many :dpo_enrollments, foreign_key: :dpo_id, class_name: :Enrollment
-  has_many :responsable_traitement_enrollments, foreign_key: :responsable_traitement_id, class_name: :Enrollment
+  has_many :team_members
+  has_many :enrollments, through: :team_members
   has_many :events
 
   scope :with_at_least_one_role, -> { where("roles <> '{}'") }
@@ -35,6 +34,25 @@ class User < ActiveRecord::Base
     user.save
 
     user
+  end
+
+  def is_demandeur?(enrollment)
+    enrollment.demandeurs.any? { |demandeur| demandeur.user == self }
+  end
+
+  def is_member?(enrollment)
+    enrollment.team_members.any? { |team_member| team_member.user == self }
+  end
+
+  def belongs_to_organization?(enrollment)
+    organizations.any? do |o|
+      o["id"] == enrollment.organization_id ||
+        (
+          !enrollment.organization_id.present? &&
+            enrollment.previous_enrollment_id.present? &&
+            o["id"] == enrollment.previous_enrollment.organization_id
+        )
+    end
   end
 
   def is_instructor?(target_api)

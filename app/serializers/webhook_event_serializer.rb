@@ -4,5 +4,5 @@ class WebhookEventSerializer < ActiveModel::Serializer
     :comment,
     :created_at
 
-  has_one :user, serializer: UserWithProfileSerializer
+  has_one :user, serializer: WebhookUserWithProfileSerializer
 end

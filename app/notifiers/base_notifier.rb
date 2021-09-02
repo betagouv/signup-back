@@ -8,20 +8,16 @@ class BaseNotifier < AbstractNotifier
   def updated(diff:, user_id:)
   end
 
-  def owner_updated(diff:, user_id:)
-  end
-
-  def rgpd_contact_updated(diff:, user_id:, responsable_traitement_email:, dpo_email:)
-    notify_rgpd_contacts_by_email(
-      responsable_traitement_email: responsable_traitement_email,
-      dpo_email: dpo_email
-    )
+  def team_member_updated(team_member_type:)
+    if team_member_type.in?(%w[delegue_protection_donnees responsable_traitement])
+      deliver_rgpd_email_for(team_member_type)
+    end
   end
 
   def send_application(comment:, current_user:)
     deliver_event_mailer(__method__, comment)
 
-    notify_subscribers_by_email_for_sent_application(current_user: current_user)
+    notify_subscribers_by_email_for_sent_application
   end
 
   def notify(comment:, current_user:)
@@ -39,12 +35,12 @@ class BaseNotifier < AbstractNotifier
   def validate_application(comment:, current_user:)
     deliver_event_mailer(__method__, comment)
 
-    if enrollment.responsable_traitement.present?
-      deliver_rgpd_email_for(:responsable_traitement)
+    if enrollment.team_members.exists?(type: "responsable_traitement")
+      deliver_rgpd_email_for("responsable_traitement")
     end
 
-    if enrollment.dpo.present?
-      deliver_rgpd_email_for(:dpo)
+    if enrollment.team_members.exists?(type: "delegue_protection_donnees")
+      deliver_rgpd_email_for("delegue_protection_donnees")
     end
   end
 end

@@ -31,7 +31,7 @@ class SendinblueWebhooksController < ApplicationController
 
     email_uuid = transactional_email["transactionalEmails"][0]["uuid"]
     rgpd_contact_email = transactional_email["transactionalEmails"][0]["email"]
-    rgpd_role = transactional_email["transactionalEmails"][0]["subject"][/(#{EnrollmentsController::RESPONSABLE_TRAITEMENT_LABEL}|#{EnrollmentsController::DPO_LABEL})/o, 1]
+    rgpd_role = transactional_email["transactionalEmails"][0]["subject"][/(#{EnrollmentsController::RESPONSABLE_TRAITEMENT_LABEL}|#{EnrollmentsController::DELEGUE_PROTECTION_DONNEES_LABEL})/o, 1]
 
     # 4. get email content
     get_email_content_response = Http.get(
@@ -53,10 +53,10 @@ class SendinblueWebhooksController < ApplicationController
     enrollment = Enrollment.find(enrollment_id.to_i)
     instructor_email = enrollment.events.where(name: "validated")[0].user["email"]
 
-    # 5. notify enrollment owner that he made an error with the provided rgpd email
+    # 5. notify enrollment demandeurs that he made an error with the provided rgpd email
     RgpdMailer.with(
       target_api: enrollment[:target_api],
-      to: enrollment.user[:email],
+      to: enrollment.demandeurs.pluck(:email),
       enrollment_id: enrollment[:id],
       rgpd_role: rgpd_role,
       rgpd_contact_email: rgpd_contact_email,

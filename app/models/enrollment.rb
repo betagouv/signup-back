@@ -21,13 +21,14 @@ class Enrollment < ActiveRecord::Base
 
   has_many :documents, as: :attachable
   accepts_nested_attributes_for :documents
-  belongs_to :user
   has_many :events, dependent: :destroy
   belongs_to :copied_from_enrollment, class_name: :Enrollment, foreign_key: :copied_from_enrollment_id, optional: true
   validates :copied_from_enrollment, uniqueness: true, if: -> { copied_from_enrollment.present? }
   belongs_to :previous_enrollment, class_name: :Enrollment, foreign_key: :previous_enrollment_id, optional: true
-  belongs_to :dpo, class_name: :User, foreign_key: :dpo_id, optional: true
-  belongs_to :responsable_traitement, class_name: :User, foreign_key: :responsable_traitement_id, optional: true
+
+  has_many :team_members, dependent: :destroy
+  accepts_nested_attributes_for :team_members
+  has_many :users, through: :team_members
 
   state_machine :status, initial: :pending do
     state :pending
@@ -115,44 +116,30 @@ class Enrollment < ActiveRecord::Base
     User.where("'#{target_api}:subscriber' = ANY(roles)")
   end
 
-  def dpo_email=(email)
-    self.dpo = if email.empty?
-      nil
-    else
-      User.reconcile({"email" => email.strip})
-    end
+  def demandeurs
+    team_members.where(type: "demandeur")
   end
 
-  def dpo_email
-    dpo.try(:email)
-  end
-
-  def responsable_traitement_email=(email)
-    self.responsable_traitement = if email.empty?
-      nil
-    else
-      User.reconcile({"email" => email.strip})
-    end
+  def responsable_traitement
+    team_members.where(type: "responsable_traitement").first
   end
 
   def responsable_traitement_email
-    responsable_traitement.try(:email)
+    team_members.where(type: "responsable_traitement").pluck(:email).first
   end
 
-  def user_email=(email)
-    self.user = if email.empty?
-      nil
-    else
-      User.reconcile({"email" => email.strip})
-    end
+  def delegue_protection_donnees_email
+    team_members.where(type: "delegue_protection_donnees").pluck(:email).first
   end
 
   def responsable_traitement_full_name
-    [responsable_traitement_given_name, responsable_traitement_family_name].join(" ")
+    team_member = team_members.where(type: "responsable_traitement").first
+    [team_member["given_name"], team_member["family_name"]].join(" ")
   end
 
-  def dpo_full_name
-    [dpo_given_name, dpo_family_name].join(" ")
+  def delegue_protection_donnees_full_name
+    team_member = team_members.where(type: "delegue_protection_donnees").first
+    [team_member["given_name"], team_member["family_name"]].join(" ")
   end
 
   def submitted_at
@@ -166,7 +153,6 @@ class Enrollment < ActiveRecord::Base
   def copy(current_user)
     copied_enrollment = dup
     copied_enrollment.status = :pending
-    copied_enrollment.user = current_user
     copied_enrollment.linked_token_manager_id = nil
     copied_enrollment.copied_from_enrollment = self
     copied_enrollment.save!
@@ -179,6 +165,10 @@ class Enrollment < ActiveRecord::Base
       copied_document = document.dup
       copied_document.attachment = File.open(document.attachment.file.file)
       copied_enrollment.documents << copied_document
+    end
+    team_members.each do |team_member|
+      copied_team_member = team_member.dup
+      copied_enrollment.team_members << copied_team_member
     end
 
     copied_enrollment
@@ -205,11 +195,10 @@ class Enrollment < ActiveRecord::Base
 
   def set_company_info
     # taking the siret from users organization ensure the user belongs to the organization
-    # this might not be the proper place to do this kind of authorization check
-    selected_organization = user.organizations.find { |o| o["id"] == organization_id }
-    if selected_organization.nil?
-      raise ApplicationController::Forbidden, "Vous ne pouvez pas déposer une demande pour une organisation à laquelle vous n’appartenez pas"
-    end
+    current_user_email = team_members.find { |tm| tm.type == "demandeur" }.email
+    current_user = User.find_by(email: current_user_email)
+
+    selected_organization = current_user.organizations.find { |o| o["id"] == organization_id }
     siret = selected_organization["siret"]
 
     response = HTTP.get("https://entreprise.data.gouv.fr/api/sirene/v3/etablissements/#{siret}")
@@ -239,39 +228,39 @@ class Enrollment < ActiveRecord::Base
     errors[:organization_id] << "Une erreur inattendue est survenue: pas d’organisation. Aucun changement n’a été sauvegardé." unless organization_id.present?
   end
 
-  def rgpd_validation
-    errors[:data_retention_period] << "Vous devez renseigner la conservation des données avant de continuer" unless data_retention_period.present?
-    errors[:data_recipients] << "Vous devez renseigner les destinataires des données avant de continuer" unless data_recipients.present?
-    errors[:dpo_family_name] << "Vous devez renseigner un nom pour le délégué à la protection des données avant de continuer" unless dpo_family_name.present?
-    errors[:dpo_email] << "Vous devez renseigner un email pour le délégué à la protection des données avant de continuer" unless dpo_email.present?
-    errors[:dpo_phone_number] << "Vous devez renseigner un numéro de téléphone pour le délégué à la protection des données avant de continuer" unless dpo_phone_number.present?
-    errors[:responsable_traitement_family_name] << "Vous devez renseigner un nom pour le responsable de traitement avant de continuer" unless responsable_traitement_family_name.present?
-    errors[:responsable_traitement_email] << "Vous devez renseigner un email pour le responsable de traitement avant de continuer" unless responsable_traitement_email.present?
-    errors[:responsable_traitement_phone_number] << "Vous devez renseigner un numéro de téléphone pour le responsable de traitement avant de continuer" unless responsable_traitement_phone_number.present?
-  end
-
-  def contact_validation(key, label, validate_full_profile = false)
+  def team_members_validation(type, label, validate_full_profile = false)
     email_regex = URI::MailTo::EMAIL_REGEXP
     # loose homemade regexp to match large amount of phone number
     phone_number_regex = /^\+?(?:[0-9][ -]?){6,14}[0-9]$/
 
-    contact = contacts&.find { |e| e["id"] == key }
-    errors[:contacts] << "Vous devez renseigner un email valide pour le #{label} avant de continuer" unless email_regex.match?(contact&.fetch("email", ""))
-    errors[:contacts] << "Vous devez renseigner un numéro de téléphone valide pour le #{label} avant de continuer" unless phone_number_regex.match?(contact&.fetch("phone_number", ""))
+    unless team_members.exists?(type: type)
+      errors[:team_members] << "Vous devez renseigner un contact #{label} avant de continuer"
+    end
+    team_members.where(type: type).each do |team_member|
+      errors[:team_members] << "Vous devez renseigner un email valide pour le #{label} avant de continuer" unless email_regex.match?(team_member.email)
+      errors[:team_members] << "Vous devez renseigner un numéro de téléphone valide pour le #{label} avant de continuer" unless phone_number_regex.match?(team_member.phone_number)
 
-    if validate_full_profile
-      errors[:contacts] << "Vous devez renseigner un intitulé de poste valide pour le #{label} avant de continuer" unless contact&.fetch("job", false)&.present?
-      errors[:contacts] << "Vous devez renseigner un nom valide pour le #{label} avant de continuer" unless contact&.fetch("given_name", false)&.present?
-      errors[:contacts] << "Vous devez renseigner un prénom valide pour le #{label} avant de continuer" unless contact&.fetch("family_name", false)&.present?
+      if validate_full_profile
+        errors[:team_members] << "Vous devez renseigner un intitulé de poste valide pour le #{label} avant de continuer" unless team_member.job.present?
+        errors[:team_members] << "Vous devez renseigner un nom valide pour le #{label} avant de continuer" unless team_member.given_name.present?
+        errors[:team_members] << "Vous devez renseigner un prénom valide pour le #{label} avant de continuer" unless team_member.family_name.present?
+      end
     end
   end
 
-  def contact_technique_validation
-    contact_validation("technique", "contact technique", false)
+  def responsable_technique_validation
+    team_members_validation("responsable_technique", "responsable technique")
   end
 
   def contact_metier_validation
-    contact_validation("metier", "contact métier", false)
+    team_members_validation("contact_metier", "contact métier")
+  end
+
+  def rgpd_validation
+    errors[:data_retention_period] << "Vous devez renseigner la conservation des données avant de continuer" unless data_retention_period.present?
+    errors[:data_recipients] << "Vous devez renseigner les destinataires des données avant de continuer" unless data_recipients.present?
+    team_members_validation("delegue_protection_donnees", EnrollmentsController::DELEGUE_PROTECTION_DONNEES_LABEL)
+    team_members_validation("responsable_traitement", EnrollmentsController::RESPONSABLE_TRAITEMENT_LABEL)
   end
 
   def cadre_juridique_validation
@@ -288,9 +277,6 @@ class Enrollment < ActiveRecord::Base
   end
 
   def sent_validation
-    contact = contacts&.find { |e| e["id"] == "technique" }
-    errors[:contacts] << "Vous devez renseigner le responsable technique avant de continuer" unless contact&.fetch("email", false)&.present?
-
     rgpd_validation
     cadre_juridique_validation
 

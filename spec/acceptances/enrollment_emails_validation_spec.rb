@@ -8,7 +8,7 @@ RSpec.describe "Enrollments emails validation", type: :acceptance do
 
         expect {
           EnrollmentEmailTemplatesRetriever.new(
-            build(:enrollment, target_api: target_api),
+            create(:enrollment, target_api: target_api),
             instructor
           ).perform
         }.not_to raise_error

@@ -3,7 +3,7 @@ class EnrollmentMailer < ActionMailer::Base
 
   def notification_email
     @enrollment = Enrollment.find(params[:enrollment_id])
-    @user = @enrollment.user
+    @user = @enrollment.demandeurs.first
 
     @target_api_label = data_provider_config["label"]
     @message = params[:message]

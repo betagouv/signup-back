@@ -8,7 +8,7 @@ class Enrollment::CartobioPolicy < EnrollmentPolicy
       :organization_id,
       :intitule,
       :description,
-      contacts: [:id, :email],
+      team_members_attributes: [:id, :type, :family_name, :given_name, :email, :phone_number, :job],
       documents_attributes: [
         :attachment,
         :type

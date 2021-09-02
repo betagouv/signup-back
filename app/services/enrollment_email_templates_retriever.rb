@@ -20,7 +20,7 @@ class EnrollmentEmailTemplatesRetriever
       action_name: email_kind,
       sender_email: target_api_data["support_email"],
       subject: target_api_data["mailer"][email_kind]["subject"],
-      user_email: enrollment.user.email,
+      user_email: enrollment.demandeurs.pluck(:email).first,
       plain_text_content: render_template(email_kind)
     )
   end
@@ -83,7 +83,7 @@ class EnrollmentEmailTemplatesRetriever
   end
 
   def user
-    @user ||= enrollment.user
+    @user ||= enrollment.demandeurs.first
   end
 
   def email_kinds

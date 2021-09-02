@@ -31,13 +31,7 @@ class Enrollment::ApiEntreprisePolicy < EnrollmentPolicy
         :eori_douanes,
         :certificat_agence_bio
       ],
-      contacts: [
-        :id,
-        :family_name,
-        :given_name,
-        :email,
-        :phone_number
-      ]
+      team_members_attributes: [:id, :type, :family_name, :given_name, :email, :phone_number, :job]
     ])
 
     res

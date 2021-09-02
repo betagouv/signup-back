@@ -3,13 +3,7 @@ class Enrollment::ApiDeclarationAutoEntrepreneurPolicy < EnrollmentPolicy
     res = super
 
     res.concat([
-      contacts: [
-        :id,
-        :family_name,
-        :given_name,
-        :email,
-        :phone_number
-      ]
+      team_members_attributes: [:id, :type, :family_name, :given_name, :email, :phone_number, :job]
     ])
 
     res

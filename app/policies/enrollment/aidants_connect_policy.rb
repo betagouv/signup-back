@@ -8,14 +8,7 @@ class Enrollment::AidantsConnectPolicy < EnrollmentPolicy
       :organization_id,
       :intitule,
       :description,
-      contacts: [
-        :id,
-        :family_name,
-        :given_name,
-        :email,
-        :phone_number,
-        :job
-      ],
+      team_members_attributes: [:id, :type, :family_name, :given_name, :email, :phone_number, :job],
       documents_attributes: [
         :attachment,
         :type

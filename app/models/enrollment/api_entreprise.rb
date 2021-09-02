@@ -5,7 +5,7 @@ class Enrollment::ApiEntreprise < Enrollment
     super
 
     scopes_validation
-    contact_technique_validation
+    responsable_technique_validation
     contact_metier_validation
   end
 end

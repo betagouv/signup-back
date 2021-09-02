@@ -1,9 +1,8 @@
 class EnrollmentsController < ApplicationController
   RESPONSABLE_TRAITEMENT_LABEL = "responsable de traitement"
-  DPO_LABEL = "délégué à la protection des données"
+  DELEGUE_PROTECTION_DONNEES_LABEL = "délégué à la protection des données"
 
   before_action :authenticate_user!, except: [:public]
-  before_action :set_enrollment, only: %i[show update trigger copy destroy update_owner update_rgpd_contact]
 
   # GET /enrollments
   def index
@@ -19,7 +18,7 @@ class EnrollmentsController < ApplicationController
           next unless ["updated_at"].include? sort_key
           next unless %w[asc desc].include? sort_direction
 
-          @enrollments = @enrollments.order("#{sort_key} #{sort_direction.upcase}")
+          @enrollments = @enrollments.order("\"enrollments\".\"#{sort_key}\" #{sort_direction.upcase}")
         end
       end
     rescue JSON::ParserError
@@ -30,22 +29,19 @@ class EnrollmentsController < ApplicationController
       filter = JSON.parse(params.fetch(:filter, "[]"))
       filter.each do |filter_item|
         filter_item.each do |filter_key, filter_value|
-          next unless %w[id siret nom_raison_sociale target_api status user.email].include? filter_key
+          next unless %w[id siret nom_raison_sociale target_api status team_members.email].include? filter_key
+          is_fuzzy = %w[id siret nom_raison_sociale team_members.email].include? filter_key
           filter_value = [filter_value] unless filter_value.is_a?(Array)
           sanitized_filter_value = filter_value.map { |f| Regexp.escape(f) }
           san_fil_val_without_accent = sanitized_filter_value.map { |f| ActiveSupport::Inflector.transliterate(f, " ") }.join("|")
           next if san_fil_val_without_accent == ""
 
-          if filter_key.start_with? "user."
-            @enrollments = @enrollments.joins(
-              "INNER JOIN users \"user\" ON \"user\".id = enrollments.user_id"
-            )
+          if filter_key.start_with? "team_members."
+            @enrollments = @enrollments.includes(:team_members)
             sanitized_filter_key = filter_key.split(".").map { |e| "\"#{e}\"" }.join(".")
           else
             sanitized_filter_key = "\"enrollments\".\"#{filter_key}\""
           end
-
-          is_fuzzy = %w[id siret nom_raison_sociale user.email].include? filter_key
 
           @enrollments = @enrollments.where(
             "#{sanitized_filter_key}::varchar(255) ~* ?",
@@ -77,7 +73,7 @@ class EnrollmentsController < ApplicationController
 
   # GET /enrollments/1
   def show
-    authorize @enrollment, :show?
+    @enrollment = authorize Enrollment.find(params[:id])
     render json: @enrollment
   end
 
@@ -106,15 +102,13 @@ class EnrollmentsController < ApplicationController
   def create
     target_api = params.fetch(:enrollment, {})["target_api"]
     unless DataProvidersConfiguration.instance.exists?(target_api)
-      raise ApplicationController::UnprocessableEntity, "Une erreur inattendue est survenue: API cible invalide. Aucun changement n’a été sauvegardé."
+      raise ApplicationController::UnprocessableEntity, "Une erreur inattendue est survenue: fournisseur de données inconnu. Aucun changement n’a été sauvegardé."
     end
     enrollment_class = "Enrollment::#{target_api.underscore.classify}".constantize
     @enrollment = enrollment_class.new
 
-    authorize @enrollment
-
     @enrollment.assign_attributes(permitted_attributes(@enrollment))
-    @enrollment.user = current_user
+    authorize @enrollment
 
     if @enrollment.save
       @enrollment.events.create(name: "created", user_id: current_user.id)
@@ -128,8 +122,13 @@ class EnrollmentsController < ApplicationController
 
   # PATCH/PUT /enrollments/1
   def update
-    authorize @enrollment
+    @enrollment = authorize Enrollment.find(params[:id])
 
+    begin
+      @enrollment.update(permitted_attributes(@enrollment))
+    rescue => e
+      puts "#{e.inspect} e"
+    end
     if @enrollment.update(permitted_attributes(@enrollment))
       @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
       @enrollment.notify_event("updated", user_id: current_user.id, diff: @enrollment.previous_changes)
@@ -148,7 +147,7 @@ class EnrollmentsController < ApplicationController
         message: ["event not permitted"]
       }
     end
-    authorize @enrollment, "#{event}?".to_sym
+    @enrollment = authorize Enrollment.find(params[:id]), "#{event}?".to_sym
 
     # We update userinfo when "event" is "send_application".
     # This is useful to prevent user that has been removed from organization, or has been deactivated
@@ -156,31 +155,26 @@ class EnrollmentsController < ApplicationController
     # Note that this feature need the access token to be stored in a clientside
     # sessions. This might be considered as a security weakness.
     if event == "send_application"
-      # This is a defensive programming test because we must not update an user illegitimately
-      if current_user.email == @enrollment.user.email
-        begin
-          refreshed_user = RefreshUser.call(session[:access_token])
-          @enrollment.user.email_verified = refreshed_user.email_verified
-          @enrollment.user.organizations = refreshed_user.organizations
+      begin
+        refreshed_user = RefreshUser.call(session[:access_token])
 
-          unless refreshed_user.email_verified
-            raise ApplicationController::Forbidden, "L’accès à votre adresse email n’a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
-          end
-          selected_organization = refreshed_user.organizations.find { |o| o["id"] == @enrollment.organization_id }
-          if selected_organization.nil?
-            raise ApplicationController::Forbidden, "Vous ne pouvez pas déposer une demande pour une organisation à laquelle vous n’appartenez pas. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/join-organization?siret_hint=#{@enrollment.siret} puis de cliquer sur 'Rejoindre l’organisation'"
-          end
-        rescue ApplicationController::Forbidden => _e
-          raise
-        rescue => e
-          # If there is an error, we assume that the access token as expired
-          # we force the logout so the token can be refreshed.
-          # NB: if the error is something else, the user will keep clicking on "soumettre"
-          # without any effect. We log this in case some user get stuck into this
-          clear_user_session!
-          Sentry.capture_exception(e)
-          raise ApplicationController::AccessDenied, e.message
+        unless refreshed_user.email_verified
+          raise ApplicationController::Forbidden, "L’accès à votre adresse email n’a pas pu être vérifié. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/verify-email puis de cliquer sur 'Me renvoyer un code de confirmation'"
         end
+        selected_organization = refreshed_user.organizations.find { |o| o["id"] == @enrollment.organization_id }
+        if selected_organization.nil?
+          raise ApplicationController::Forbidden, "Vous ne pouvez pas déposer une demande pour une organisation à laquelle vous n’appartenez pas. Merci de vous rendre sur #{ENV.fetch("OAUTH_HOST")}/users/join-organization?siret_hint=#{@enrollment.siret} puis de cliquer sur 'Rejoindre l’organisation'"
+        end
+      rescue ApplicationController::Forbidden => _e
+        raise
+      rescue => e
+        # If there is an error, we assume that the access token as expired
+        # we force the logout so the token can be refreshed.
+        # NB: if the error is something else, the user will keep clicking on "soumettre"
+        # without any effect. We log this in case some user get stuck into this
+        clear_user_session!
+        Sentry.capture_exception(e)
+        raise ApplicationController::AccessDenied, e.message
       end
     end
 
@@ -201,42 +195,9 @@ class EnrollmentsController < ApplicationController
     end
   end
 
-  # PATCH /enrollment/1/update_owner
-  def update_owner
-    authorize @enrollment
-
-    if @enrollment.update(permitted_attributes(@enrollment))
-      @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
-      @enrollment.notify_event("owner_updated", user_id: current_user.id, diff: @enrollment.previous_changes)
-
-      render json: @enrollment
-    else
-      render json: @enrollment.errors, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH /enrollment/1/update_rgpd_contact
-  def update_rgpd_contact
-    authorize @enrollment
-
-    if @enrollment.update(permitted_attributes(@enrollment))
-      @enrollment.events.create(name: "updated", user_id: current_user.id, diff: @enrollment.previous_changes)
-      @enrollment.notify_event(
-        "rgpd_contact_updated",
-        user_id: current_user.id,
-        diff: @enrollment.previous_changes,
-        responsable_traitement_email: params[:enrollment][:responsable_traitement_email],
-        dpo_email: params[:enrollment][:dpo_email]
-      )
-
-      render json: @enrollment
-    else
-      render json: @enrollment.errors, status: :unprocessable_entity
-    end
-  end
-
   # POST /enrollment/1/copy
   def copy
+    @enrollment = authorize Enrollment.find(params[:id])
     copied_enrollment = @enrollment.copy current_user
     render json: copied_enrollment
   end
@@ -262,18 +223,13 @@ class EnrollmentsController < ApplicationController
   end
 
   def destroy
-    authorize @enrollment
-
+    @enrollment = authorize Enrollment.find(params[:id])
     @enrollment.destroy
 
     render status: :ok
   end
 
   private
-
-  def set_enrollment
-    @enrollment = policy_scope(Enrollment).find(params[:id])
-  end
 
   def pundit_params_for(_record)
     params.fetch(:enrollment, {})
