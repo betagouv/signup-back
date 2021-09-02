@@ -155,6 +155,10 @@ class Enrollment < ActiveRecord::Base
     copied_enrollment.status = :pending
     copied_enrollment.linked_token_manager_id = nil
     copied_enrollment.copied_from_enrollment = self
+    team_members.each do |team_member|
+      copied_team_member = team_member.dup
+      copied_enrollment.team_members << copied_team_member
+    end
     copied_enrollment.save!
     copied_enrollment.events.create(
       name: "copied",
@@ -165,10 +169,6 @@ class Enrollment < ActiveRecord::Base
       copied_document = document.dup
       copied_document.attachment = File.open(document.attachment.file.file)
       copied_enrollment.documents << copied_document
-    end
-    team_members.each do |team_member|
-      copied_team_member = team_member.dup
-      copied_enrollment.team_members << copied_team_member
     end
 
     copied_enrollment
