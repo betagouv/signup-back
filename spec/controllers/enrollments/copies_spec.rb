@@ -40,7 +40,7 @@ RSpec.describe EnrollmentsController, "#copies", type: :controller do
         JSON.parse(response.body)
       end
 
-      context "when user created this copy " do
+      context "when user created this copy" do
         let!(:enrollment_copy) { create(:enrollment, :franceconnect, user: user, copied_from_enrollment_id: enrollment.id) }
 
         it "has this enrollment in payload" do
@@ -50,47 +50,23 @@ RSpec.describe EnrollmentsController, "#copies", type: :controller do
         end
       end
 
-      context "when user is the DPO associated to this copy" do
-        let!(:enrollment_copy) { create(:enrollment, :franceconnect, status_trait, dpo: user, copied_from_enrollment_id: enrollment.id) }
+      context "when user is the delegue_protection_donnees associated to this copy" do
+        let!(:enrollment_copy) { create(:enrollment, :franceconnect, delegue_protection_donnees: build(:team_member, :delegue_protection_donnees, user: user), copied_from_enrollment_id: enrollment.id) }
 
-        context "when this enrollment has been validated" do
-          let(:status_trait) { :validated }
+        it "has this enrollment in payload" do
+          expect(enrollment_copies_payload["enrollments"].count).to eq(1)
 
-          it "has this enrollment in payload" do
-            expect(enrollment_copies_payload["enrollments"].count).to eq(1)
-
-            expect(enrollment_copies_payload["enrollments"].first["id"]).to eq(enrollment_copy.id)
-          end
-        end
-
-        context "when this enrollment has not been validated" do
-          let(:status_trait) { :pending }
-
-          it "does not have this enrollment in payload" do
-            expect(enrollment_copies_payload["enrollments"].count).to eq(0)
-          end
+          expect(enrollment_copies_payload["enrollments"].first["id"]).to eq(enrollment_copy.id)
         end
       end
 
       context "when user is the responsable traitement associated to this copy" do
-        let!(:enrollment_copy) { create(:enrollment, :franceconnect, status_trait, responsable_traitement: user, copied_from_enrollment_id: enrollment.id) }
+        let!(:enrollment_copy) { create(:enrollment, :franceconnect, responsable_traitement: build(:team_member, :responsable_traitement, user: user), copied_from_enrollment_id: enrollment.id) }
 
-        context "when this enrollment has been validated" do
-          let(:status_trait) { :validated }
+        it "has this enrollment in payload" do
+          expect(enrollment_copies_payload["enrollments"].count).to eq(1)
 
-          it "has this enrollment in payload" do
-            expect(enrollment_copies_payload["enrollments"].count).to eq(1)
-
-            expect(enrollment_copies_payload["enrollments"].first["id"]).to eq(enrollment_copy.id)
-          end
-        end
-
-        context "when this enrollment has not been validated" do
-          let(:status_trait) { :pending }
-
-          it "does not have this enrollment in payload" do
-            expect(enrollment_copies_payload["enrollments"].count).to eq(0)
-          end
+          expect(enrollment_copies_payload["enrollments"].first["id"]).to eq(enrollment_copy.id)
         end
       end
 
