@@ -53,7 +53,7 @@ RSpec.describe EnrollmentEmailTemplatesRetriever, type: :service do
         end
 
         it "has a valid user_email, which is the enrollment's user email" do
-          expect(subject.user_email).to eq(enrollment.user.email)
+          expect(subject.user_email).to eq(enrollment.demandeurs.first.email)
         end
 
         it "has a valid subject" do
