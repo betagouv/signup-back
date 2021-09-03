@@ -36,43 +36,19 @@ RSpec.describe EnrollmentsController, "#user", type: :controller do
         end
       end
 
-      context "when user is the DPO associated to an enrollment" do
-        let!(:enrollment_where_user_is_the_dpo) { create(:enrollment, :franceconnect, status_trait, dpo: user) }
+      context "when user is the delegue_protection_donnees associated to an enrollment" do
+        let!(:enrollment_where_user_is_the_dpo) { create(:enrollment, :franceconnect, delegue_protection_donnees: build(:team_member, :delegue_protection_donnees, user: user)) }
 
-        context "when this enrollment has been validated" do
-          let(:status_trait) { :validated }
-
-          it "includes it in the response" do
-            expect(user_enrollment_ids_payload).to include(enrollment_where_user_is_the_dpo.id)
-          end
-        end
-
-        context "when this enrollment has not been validated" do
-          let(:status_trait) { :pending }
-
-          it "does not include it in the response" do
-            expect(user_enrollment_ids_payload).not_to include(enrollment_where_user_is_the_dpo.id)
-          end
+        it "includes it in the response" do
+          expect(user_enrollment_ids_payload).to include(enrollment_where_user_is_the_dpo.id)
         end
       end
 
       context "when user is the responsable traitement associated to an enrollment" do
-        let!(:enrollment_where_user_is_the_responsable_traitement) { create(:enrollment, :franceconnect, status_trait, responsable_traitement: user) }
+        let!(:enrollment_where_user_is_the_responsable_traitement) { create(:enrollment, :franceconnect, responsable_traitement: build(:team_member, :responsable_traitement, user: user)) }
 
-        context "when this enrollment has been validated" do
-          let(:status_trait) { :validated }
-
-          it "includes it in the response" do
-            expect(user_enrollment_ids_payload).to include(enrollment_where_user_is_the_responsable_traitement.id)
-          end
-        end
-
-        context "when this enrollment has not been validated" do
-          let(:status_trait) { :pending }
-
-          it "does not include it in the response" do
-            expect(user_enrollment_ids_payload).not_to include(enrollment_where_user_is_the_responsable_traitement.id)
-          end
+        it "includes it in the response" do
+          expect(user_enrollment_ids_payload).to include(enrollment_where_user_is_the_responsable_traitement.id)
         end
       end
 

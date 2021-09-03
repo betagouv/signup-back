@@ -25,36 +25,16 @@ RSpec.describe EnrollmentsController, "#show", type: :controller do
         it { is_expected.to have_http_status(:ok) }
       end
 
-      context "when user is the DPO associated to this enrollment" do
-        let(:enrollment) { create(:enrollment, :franceconnect, status_trait, dpo: user) }
+      context "when user is the delegue_protection_donnees associated to this enrollment" do
+        let(:enrollment) { create(:enrollment, :franceconnect, delegue_protection_donnees: build(:team_member, :delegue_protection_donnees, user: user)) }
 
-        context "when this enrollment has been validated" do
-          let(:status_trait) { :validated }
-
-          it { is_expected.to have_http_status(:ok) }
-        end
-
-        context "when this enrollment has not been validated" do
-          let(:status_trait) { :pending }
-
-          it { is_expected.to have_http_status(:not_found) }
-        end
+        it { is_expected.to have_http_status(:ok) }
       end
 
       context "when user is the responsable traitement associated to this enrollment" do
-        let(:enrollment) { create(:enrollment, :franceconnect, status_trait, responsable_traitement: user) }
+        let(:enrollment) { create(:enrollment, :franceconnect, responsable_traitement: build(:team_member, :responsable_traitement, user: user)) }
 
-        context "when this enrollment has been validated" do
-          let(:status_trait) { :validated }
-
-          it { is_expected.to have_http_status(:ok) }
-        end
-
-        context "when this enrollment has not been validated" do
-          let(:status_trait) { :pending }
-
-          it { is_expected.to have_http_status(:not_found) }
-        end
+        it { is_expected.to have_http_status(:ok) }
       end
 
       context "when user is a reporter for the enrollment's target api" do
@@ -68,7 +48,7 @@ RSpec.describe EnrollmentsController, "#show", type: :controller do
         let(:user) { create(:user, roles: ["api_entreprise:reporter"]) }
         let(:enrollment) { create(:enrollment, :franceconnect) }
 
-        it { is_expected.to have_http_status(:not_found) }
+        it { is_expected.to have_http_status(:forbidden) }
       end
     end
   end
@@ -83,14 +63,14 @@ RSpec.describe EnrollmentsController, "#show", type: :controller do
     end
 
     let(:user) { create(:user) }
-    let(:enrollment) { create(:enrollment, :franceconnect, user: user) }
+    let(:enrollment) { create(:enrollment, :franceconnect, user: user, type_projet: "whatever") }
 
     before do
       login(user)
     end
 
     it "includes fields defined in EnrollmentSerializer only" do
-      expect(show_enrollment_payload["dpo_family_name"]).to eq(enrollment.dpo_family_name)
+      expect(show_enrollment_payload["type_projet"]).to eq(enrollment.type_projet)
     end
   end
 end

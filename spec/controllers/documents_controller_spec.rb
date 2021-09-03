@@ -50,18 +50,6 @@ RSpec.describe DocumentsController, type: :controller do
 
           it { is_expected.to have_http_status(:forbidden) }
         end
-
-        context "when user is an instructor for the enrollment target api" do
-          let(:roles) { ["franceconnect:instructor"] }
-
-          it { is_expected.to have_http_status(:ok) }
-        end
-
-        context "when user is an instructor for another target api" do
-          let(:roles) { ["api_entreprise:instructor"] }
-
-          it { is_expected.to have_http_status(:forbidden) }
-        end
       end
     end
   end

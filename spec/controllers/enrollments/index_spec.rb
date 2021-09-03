@@ -29,7 +29,7 @@ RSpec.describe EnrollmentsController, "#index", type: :controller do
           updated_at: :desc
         }].to_json,
         filter: [{
-          "user.email" => searched_user_email_filter
+          "team_members.email" => searched_user_email_filter
         }].to_json
       }
 
@@ -53,6 +53,7 @@ RSpec.describe EnrollmentsController, "#index", type: :controller do
 
     it "renders filtered and ordered enrollments" do
       expect(enrollments_payload.count).to eq(2)
+
       expect(enrollments_payload.map { |enrollment_payload| enrollment_payload["id"] }).to eq([
         newest_franceconnect_enrollment_from_filtered_user.id,
         oldest_franceconnect_enrollment_from_filtered_user.id

@@ -40,7 +40,7 @@ RSpec.describe EnrollmentsController, "#next_enrollments", type: :controller do
         JSON.parse(response.body)
       end
 
-      context "when user created this next enrollment " do
+      context "when user created this next enrollment" do
         let!(:next_enrollment) { create(:enrollment, :franceconnect, user: user, previous_enrollment_id: enrollment.id) }
 
         it "has this enrollment in payload" do
@@ -50,47 +50,23 @@ RSpec.describe EnrollmentsController, "#next_enrollments", type: :controller do
         end
       end
 
-      context "when user is the DPO associated to this next enrollment" do
-        let!(:next_enrollment) { create(:enrollment, :franceconnect, status_trait, dpo: user, previous_enrollment_id: enrollment.id) }
+      context "when user is the delegue_protection_donnees associated to this next enrollment" do
+        let!(:next_enrollment) { create(:enrollment, :franceconnect, delegue_protection_donnees: build(:team_member, :delegue_protection_donnees, user: user), previous_enrollment_id: enrollment.id) }
 
-        context "when this enrollment has been validated" do
-          let(:status_trait) { :validated }
+        it "has this enrollment in payload" do
+          expect(enrollment_next_payload["enrollments"].count).to eq(1)
 
-          it "has this enrollment in payload" do
-            expect(enrollment_next_payload["enrollments"].count).to eq(1)
-
-            expect(enrollment_next_payload["enrollments"].first["id"]).to eq(next_enrollment.id)
-          end
-        end
-
-        context "when this enrollment has not been validated" do
-          let(:status_trait) { :pending }
-
-          it "does not have this enrollment in payload" do
-            expect(enrollment_next_payload["enrollments"].count).to eq(0)
-          end
+          expect(enrollment_next_payload["enrollments"].first["id"]).to eq(next_enrollment.id)
         end
       end
 
       context "when user is the responsable traitement associated to this next enrollment" do
-        let!(:next_enrollment) { create(:enrollment, :franceconnect, status_trait, responsable_traitement: user, previous_enrollment_id: enrollment.id) }
+        let!(:next_enrollment) { create(:enrollment, :franceconnect, responsable_traitement: build(:team_member, :responsable_traitement, user: user), previous_enrollment_id: enrollment.id) }
 
-        context "when this enrollment has been validated" do
-          let(:status_trait) { :validated }
+        it "has this enrollment in payload" do
+          expect(enrollment_next_payload["enrollments"].count).to eq(1)
 
-          it "has this enrollment in payload" do
-            expect(enrollment_next_payload["enrollments"].count).to eq(1)
-
-            expect(enrollment_next_payload["enrollments"].first["id"]).to eq(next_enrollment.id)
-          end
-        end
-
-        context "when this enrollment has not been validated" do
-          let(:status_trait) { :pending }
-
-          it "does not have this enrollment in payload" do
-            expect(enrollment_next_payload["enrollments"].count).to eq(0)
-          end
+          expect(enrollment_next_payload["enrollments"].first["id"]).to eq(next_enrollment.id)
         end
       end
 

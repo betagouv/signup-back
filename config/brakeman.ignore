@@ -1,23 +1,43 @@
 {
   "ignored_warnings": [
     {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "3f6ee4fa66196abb6c9536387aed01b8b1466072ba107442a1bd0bcdbf227fd3",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
+      "warning_type": "File Access",
+      "warning_code": 16,
+      "fingerprint": "284a45cb0fd6d69ca85ca9f181153eca233008257789f828b70bbc3d0b65e5c4",
+      "check_name": "SendFile",
+      "message": "Model attribute used in file name",
+      "file": "app/controllers/documents_controller.rb",
+      "line": 7,
+      "link": "https://brakemanscanner.org/docs/warning_types/file_access/",
+      "code": "send_file(authorize(Document.find(params[:id]), :policy_class => (DocumentPolicy)).attachment.current_path)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "DocumentsController",
+        "method": "show"
+      },
+      "user_input": "Document.find(params[:id])",
+      "confidence": "Weak",
+      "note": ""
+    },
+    {
+      "warning_type": "Dangerous Send",
+      "warning_code": 23,
+      "fingerprint": "4eb4e99a866c4c55f309cca766f7ad66b69fd8da642586f35d9911d4f164aec8",
+      "check_name": "Send",
+      "message": "User controlled method execution",
       "file": "app/controllers/enrollments_controller.rb",
-      "line": 51,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "policy_scope(Enrollment).where(:target_api => params.fetch(:target_api, false)).order(\"#{sort_key} #{sort_direction.upcase}\").joins(\"INNER JOIN users \\\"user\\\" ON \\\"user\\\".id = enrollments.user_id\").where(\"#{(filter_key.split(\".\").map do\n \"\\\"#{e}\\\"\"\n end.join(\".\") or \"\\\"enrollments\\\".\\\"#{filter_key}\\\"\")}::varchar(255) ~* ?\", (if [\"id\", \"siret\", \"nom_raison_sociale\", \"user.email\"].include?(filter_key) then\n  \".*(#{(filter_value or [filter_value]).map do\n   Regexp.escape(f)\n   end.map do\n   ActiveSupport::Inflector.transliterate(f, \" \")\n   end.join(\"|\")}).*\"\nelse\n  \"^(#{(filter_value or [filter_value]).map do\n   Regexp.escape(f)\n   end.map do\n   ActiveSupport::Inflector.transliterate(f, \" \")\n   end.join(\"|\")})$\"\nend))",
+      "line": 182,
+      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_send/",
+      "code": "authorize(Enrollment.find(params[:id]), \"#{params[:event]}?\".to_sym).send(params[:event].to_sym, :user_id => current_user.id, :comment => params[:comment])",
       "render_path": null,
       "location": {
         "type": "method",
         "class": "EnrollmentsController",
-        "method": "index"
+        "method": "trigger"
       },
-      "user_input": "filter_key.split(\".\").map do\n \"\\\"#{e}\\\"\"\n end.join(\".\")",
-      "confidence": "Weak",
+      "user_input": "params[:event].to_sym",
+      "confidence": "High",
       "note": ""
     },
     {
@@ -27,7 +47,7 @@
       "check_name": "UnsafeReflection",
       "message": "Unsafe reflection method `constantize` called with parameter value",
       "file": "app/controllers/enrollments_controller.rb",
-      "line": 111,
+      "line": 107,
       "link": "https://brakemanscanner.org/docs/warning_types/remote_code_execution/",
       "code": "\"Enrollment::#{params.fetch(:enrollment, {})[\"target_api\"].underscore.classify}\".constantize",
       "render_path": null,
@@ -41,33 +61,13 @@
       "note": ""
     },
     {
-      "warning_type": "Dangerous Send",
-      "warning_code": 23,
-      "fingerprint": "63d34323b6444adc646d08faf42ba3a3cbe665c961f2ede8287f7bda5b5d8274",
-      "check_name": "Send",
-      "message": "User controlled method execution",
-      "file": "app/controllers/enrollments_controller.rb",
-      "line": 188,
-      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_send/",
-      "code": "policy_scope(Enrollment).find(params[:id]).send(params[:event].to_sym, :user_id => current_user.id, :comment => params[:comment])",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "EnrollmentsController",
-        "method": "trigger"
-      },
-      "user_input": "params[:event].to_sym",
-      "confidence": "High",
-      "note": ""
-    },
-    {
       "warning_type": "SQL Injection",
       "warning_code": 0,
       "fingerprint": "8592b6a3a71a436db6b921a352a9f0faad7e4e498a2fd81a5944211c6ae2338a",
       "check_name": "SQL",
       "message": "Possible SQL injection",
       "file": "app/mailers/webhook_mailer.rb",
-      "line": 21,
+      "line": 22,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
       "code": "User.where(\"'#{params[:target_api]}:instructor' = ANY(roles)\")",
       "render_path": null,
@@ -83,11 +83,31 @@
     {
       "warning_type": "SQL Injection",
       "warning_code": 0,
+      "fingerprint": "8f8306c06d853d0eaae6dc447c658e6ace5dffcc904797c41fb9d7611e30f55b",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/controllers/enrollments_controller.rb",
+      "line": 47,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "policy_scope(Enrollment).where(:target_api => params.fetch(:target_api, false)).order(\"\\\"enrollments\\\".\\\"#{sort_key}\\\" #{sort_direction.upcase}\").includes(:team_members).where(\"#{(filter_key.split(\".\").map do\n \"\\\"#{e}\\\"\"\n end.join(\".\") or \"\\\"enrollments\\\".\\\"#{filter_key}\\\"\")}::varchar(255) ~* ?\", (if [\"id\", \"siret\", \"nom_raison_sociale\", \"team_members.email\"].include?(filter_key) then\n  \".*(#{(filter_value or [filter_value]).map do\n   Regexp.escape(f)\n   end.map do\n   ActiveSupport::Inflector.transliterate(f, \" \")\n   end.join(\"|\")}).*\"\nelse\n  \"^(#{(filter_value or [filter_value]).map do\n   Regexp.escape(f)\n   end.map do\n   ActiveSupport::Inflector.transliterate(f, \" \")\n   end.join(\"|\")})$\"\nend))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "EnrollmentsController",
+        "method": "index"
+      },
+      "user_input": "filter_key.split(\".\").map do\n \"\\\"#{e}\\\"\"\n end.join(\".\")",
+      "confidence": "Weak",
+      "note": ""
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
       "fingerprint": "aac97180b952af4721ad5375d2e637a78a4140ac35b1ff82c228d1853570c5c1",
       "check_name": "SQL",
       "message": "Possible SQL injection",
       "file": "app/models/enrollment.rb",
-      "line": 115,
+      "line": 116,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
       "code": "User.where(\"'#{target_api}:subscriber' = ANY(roles)\")",
       "render_path": null,
@@ -101,15 +121,31 @@
       "note": ""
     },
     {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 106,
+      "fingerprint": "c8adc1c0caf2c9251d1d8de588fb949070212d0eed5e1580aee88bab2287b772",
+      "check_name": "SanitizeMethods",
+      "message": "loofah gem 2.11.0 is vulnerable (CVE-2018-8048). Upgrade to 2.2.1",
+      "file": "Gemfile.lock",
+      "line": 178,
+      "link": "https://github.com/flavorjones/loofah/issues/144",
+      "code": null,
+      "render_path": null,
+      "location": null,
+      "user_input": null,
+      "confidence": "Medium",
+      "note": ""
+    },
+    {
       "warning_type": "SQL Injection",
       "warning_code": 0,
-      "fingerprint": "adfaf50d4efb8de1677e382f5516e13091f0a130988daa4d3865a4e73110e272",
+      "fingerprint": "f535c1304265e6a439f11ba3b7708752486d45eacb234932214770395c6a4160",
       "check_name": "SQL",
       "message": "Possible SQL injection",
       "file": "app/controllers/enrollments_controller.rb",
-      "line": 22,
+      "line": 21,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "policy_scope(Enrollment).where(:target_api => params.fetch(:target_api, false)).order(\"#{sort_key} #{sort_direction.upcase}\")",
+      "code": "policy_scope(Enrollment).where(:target_api => params.fetch(:target_api, false)).order(\"\\\"enrollments\\\".\\\"#{sort_key}\\\" #{sort_direction.upcase}\")",
       "render_path": null,
       "location": {
         "type": "method",
@@ -119,28 +155,8 @@
       "user_input": "sort_key",
       "confidence": "Weak",
       "note": ""
-    },
-    {
-      "warning_type": "File Access",
-      "warning_code": 16,
-      "fingerprint": "c19fcc55e2b08a0e3c8789ee22e86e5bee156c7be0f04744bde0ae34962be1d7",
-      "check_name": "SendFile",
-      "message": "Model attribute used in file name",
-      "file": "app/controllers/documents_controller.rb",
-      "line": 9,
-      "link": "https://brakemanscanner.org/docs/warning_types/file_access/",
-      "code": "send_file(Document.find(params[:id]).attachment.current_path)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "DocumentsController",
-        "method": "show"
-      },
-      "user_input": "Document.find(params[:id]).attachment.current_path",
-      "confidence": "Medium",
-      "note": ""
     }
   ],
-  "updated": "2021-08-31 17:01:42 +0200",
+  "updated": "2021-09-03 13:51:59 +0200",
   "brakeman_version": "5.0.1"
 }

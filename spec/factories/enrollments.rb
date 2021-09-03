@@ -16,7 +16,10 @@ FactoryBot.define do
     transient do
       organization_kind { :clamart }
       contacts { [] }
+
       user { nil }
+      delegue_protection_donnees { nil }
+      responsable_traitement { nil }
     end
 
     after(:build) do |enrollment, evaluator|
@@ -46,6 +49,22 @@ FactoryBot.define do
             contact_payload.except(:id)
           )
         end
+      end
+
+      if evaluator.delegue_protection_donnees.present?
+        delegue_protection_donnees = enrollment.team_members.find { |tm| tm.type == "delegue_protection_donnees" }
+        enrollment.team_members.delete(delegue_protection_donnees) if delegue_protection_donnees.present?
+
+        evaluator.delegue_protection_donnees.enrollment = enrollment
+        enrollment.team_members << evaluator.delegue_protection_donnees
+      end
+
+      if evaluator.responsable_traitement.present?
+        responsable_traitement = enrollment.team_members.find { |tm| tm.type == "responsable_traitement" }
+        responsable_traitement.delete if responsable_traitement.present?
+
+        evaluator.responsable_traitement.enrollment = enrollment
+        enrollment.team_members << evaluator.responsable_traitement
       end
 
       enrollment.organization_id = organization["id"]

@@ -8,9 +8,10 @@ RSpec.describe WebhookEnrollmentSerializer, type: :serializer do
   let!(:validated_event) { create(:event, :validated, enrollment: enrollment, created_at: 1.hours.ago) }
 
   before do
-    enrollment.user.update!(
+    enrollment.demandeurs.first.user.update!(
       uid: rand(9001).to_s
     )
+    enrollment.reload
   end
 
   it "renders valid data" do

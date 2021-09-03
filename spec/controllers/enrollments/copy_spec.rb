@@ -36,7 +36,7 @@ RSpec.describe EnrollmentsController, "#copy", type: :controller do
           context "when user belongs to the organization's enrollment" do
             let(:user) { create(:user, organization_kind: :clamart) }
 
-            it { is_expected.to have_http_status(:ok) }
+            it { is_expected.to have_http_status(:forbidden) }
           end
         end
 
@@ -52,7 +52,7 @@ RSpec.describe EnrollmentsController, "#copy", type: :controller do
       end
 
       context "when user did not create this enrollment" do
-        it { is_expected.to have_http_status(:not_found) }
+        it { is_expected.to have_http_status(:forbidden) }
       end
     end
   end
@@ -64,7 +64,7 @@ RSpec.describe EnrollmentsController, "#copy", type: :controller do
       }
     end
 
-    let!(:enrollment) { create(:enrollment, :franceconnect, organization_kind: :clamart, user: user) }
+    let!(:enrollment) { create(:enrollment, :franceconnect, :validated, organization_kind: :clamart, user: user) }
     let(:user) { create(:user, organization_kind: :clamart) }
 
     before do

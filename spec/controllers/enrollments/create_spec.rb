@@ -10,7 +10,7 @@ RSpec.describe EnrollmentsController, "#create", type: :controller do
   before do
     login(user)
 
-    stub_entreprise_data_etablissement_call('21920023500014')
+    stub_entreprise_data_etablissement_call("21920023500014")
   end
 
   context "with valid enrollment attributes" do
@@ -18,7 +18,7 @@ RSpec.describe EnrollmentsController, "#create", type: :controller do
       enrollment = build(:enrollment, user: user, target_api: "franceconnect")
 
       enrollment.attributes.merge(
-        'team_members_attributes' => enrollment.team_members.map(&:attributes)
+        "team_members_attributes" => enrollment.team_members.map(&:attributes)
       )
     end
 
@@ -31,18 +31,18 @@ RSpec.describe EnrollmentsController, "#create", type: :controller do
 
       latest_user_enrollment = user.enrollments.last
 
-      expect(latest_user_enrollment.intitule).to eq(enrollment_attributes['intitule'])
+      expect(latest_user_enrollment.intitule).to eq(enrollment_attributes["intitule"])
       expect(latest_user_enrollment.target_api).to eq("franceconnect")
     end
 
     it "creates team members, with at least one demandeur" do
       expect {
         create_enrollment
-      }.to change { TeamMember.count }.by(enrollment_attributes['team_members_attributes'].count)
+      }.to change { TeamMember.count }.by(enrollment_attributes["team_members_attributes"].count)
 
-      latest_team_members = TeamMember.last(enrollment_attributes['team_members_attributes'].count)
+      latest_team_members = TeamMember.last(enrollment_attributes["team_members_attributes"].count)
 
-      expect(latest_team_members.find { |tm| tm.type == 'demandeur' }).to be_present
+      expect(latest_team_members.find { |tm| tm.type == "demandeur" }).to be_present
     end
 
     it "creates an event 'created' associated to this enrollment and user" do

@@ -126,7 +126,7 @@ RSpec.describe EnrollmentsController, "#trigger", type: :controller do
           expect(enrollment_user_email).to be_present
 
           expect(enrollment_user_email.to).to eq(enrollment.subscribers.pluck(:email))
-          expect(enrollment_user_email.body.encoded).to include(enrollment.user.email)
+          expect(enrollment_user_email.body.encoded).to include(enrollment.demandeurs.first.email)
         end
 
         it "sends first email to enrollment's user" do
@@ -135,7 +135,7 @@ RSpec.describe EnrollmentsController, "#trigger", type: :controller do
           enrollment_user_email = ActionMailer::Base.deliveries.first
           expect(enrollment_user_email).to be_present
 
-          expect(enrollment_user_email.to).to eq([enrollment.user.email])
+          expect(enrollment_user_email.to).to eq([enrollment.demandeurs.first.email])
           expect(enrollment_user_email.body.encoded).to include(send_application_email_sample)
         end
       end
@@ -275,7 +275,7 @@ RSpec.describe EnrollmentsController, "#trigger", type: :controller do
           enrollment_user_email = ActionMailer::Base.deliveries.first
           expect(enrollment_user_email).to be_present
 
-          expect(enrollment_user_email.to).to eq([enrollment.user.email])
+          expect(enrollment_user_email.to).to eq([enrollment.demandeurs.first.email])
         end
 
         it "sends emails to DPO and responsable traitement" do
@@ -397,7 +397,7 @@ RSpec.describe EnrollmentsController, "#trigger", type: :controller do
           enrollment_user_email = ActionMailer::Base.deliveries.first
           expect(enrollment_user_email).to be_present
 
-          expect(enrollment_user_email.to).to eq([enrollment.user.email])
+          expect(enrollment_user_email.to).to eq([enrollment.demandeurs.first.email])
         end
       end
     end
@@ -432,7 +432,7 @@ RSpec.describe EnrollmentsController, "#trigger", type: :controller do
           enrollment_user_email = ActionMailer::Base.deliveries.first
           expect(enrollment_user_email).to be_present
 
-          expect(enrollment_user_email.to).to eq([enrollment.user.email])
+          expect(enrollment_user_email.to).to eq([enrollment.demandeurs.first.email])
         end
       end
     end
@@ -467,7 +467,7 @@ RSpec.describe EnrollmentsController, "#trigger", type: :controller do
           enrollment_user_email = ActionMailer::Base.deliveries.first
           expect(enrollment_user_email).to be_present
 
-          expect(enrollment_user_email.to).to eq([enrollment.user.email])
+          expect(enrollment_user_email.to).to eq([enrollment.demandeurs.first.email])
         end
       end
     end
