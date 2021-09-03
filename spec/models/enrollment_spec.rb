@@ -6,7 +6,6 @@ RSpec.describe Enrollment, type: :model do
       api_particulier
       api_droits_cnam
       api_impot_particulier_fc_sandbox
-      francerelance_fc
       aidants_connect
       hubee
     ].each do |target_api_trait|
@@ -84,16 +83,6 @@ RSpec.describe Enrollment, type: :model do
 
       it "runs associated bridge" do
         expect(ApiImpotParticulierFcSandboxBridge).to receive(:call).with(enrollment)
-
-        subject
-      end
-    end
-
-    context "with francerelance_fc as target api" do
-      let(:target_api) { :francerelance_fc }
-
-      it "runs FrancerelanceFcBridge" do
-        expect(FrancerelanceFcBridge).to receive(:call).with(enrollment)
 
         subject
       end
