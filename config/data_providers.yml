@@ -113,11 +113,6 @@ aidants_connect:
   support_email: contact@aidantsconnect.beta.gouv.fr
   mailer: *shared_mailer
 
-francerelance_fc:
-  label: FranceRelance - Guichet FranceConnect
-  support_email: support.partenaires@franceconnect.gouv.fr
-  mailer: *shared_mailer
-
 api_service_national:
   label: API Service National
   support_email: contact@api.gouv.fr

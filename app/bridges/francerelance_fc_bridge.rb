@@ -1,2 +1,0 @@
-class FrancerelanceFcBridge < FranceconnectBridge
-end
