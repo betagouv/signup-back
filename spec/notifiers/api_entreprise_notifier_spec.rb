@@ -70,28 +70,16 @@ RSpec.describe ApiEntrepriseNotifier, type: :notifier do
   end
 
   describe "emails events" do
-    describe "#rgpd_contact_updated" do
+    describe "#team_member_updated" do
       let(:enrollment) { create(:enrollment, :api_entreprise, :with_delegue_protection_donnees) }
 
-      subject { instance.rgpd_contact_updated(diff: "diff", user_id: user.id, dpo_email: user.email, responsable_traitement_email: nil) }
+      subject { instance.team_member_updated(team_member_type: "delegue_protection_donnees") }
 
       it "delivers an email" do
         expect {
           subject
         }.to have_enqueued_job.on_queue("mailers")
       end
-    end
-  end
-
-  describe "#owner_updated" do
-    subject { instance.owner_updated(diff: "diff", user_id: user.id) }
-
-    it "does nothing" do
-      expect(DeliverEnrollmentWebhookWorker).not_to receive(:perform_async)
-
-      expect {
-        subject
-      }.not_to have_enqueued_job.on_queue("mailers")
     end
   end
 end
