@@ -34,7 +34,7 @@ class CreateTeamMembers < ActiveRecord::Migration[5.2]
         SQL
       end
       dir.down do
-        # raise ActiveRecord::IrreversibleMigration
+        raise ActiveRecord::IrreversibleMigration
       end
     end
 
@@ -61,7 +61,7 @@ class CreateTeamMembers < ActiveRecord::Migration[5.2]
         SQL
       end
       dir.down do
-        # raise ActiveRecord::IrreversibleMigration
+        raise ActiveRecord::IrreversibleMigration
       end
     end
     reversible do |dir|
@@ -85,7 +85,7 @@ class CreateTeamMembers < ActiveRecord::Migration[5.2]
         SQL
       end
       dir.down do
-        # raise ActiveRecord::IrreversibleMigration
+        raise ActiveRecord::IrreversibleMigration
       end
     end
 
@@ -137,7 +137,7 @@ class CreateTeamMembers < ActiveRecord::Migration[5.2]
         SQL
       end
       dir.down do
-        # raise ActiveRecord::IrreversibleMigration
+        raise ActiveRecord::IrreversibleMigration
       end
     end
     reversible do |dir|
