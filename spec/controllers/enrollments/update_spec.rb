@@ -45,7 +45,7 @@ RSpec.describe EnrollmentsController, "#update", type: :controller do
       end
 
       context "when user did not create this enrollment" do
-        it { is_expected.to have_http_status(:not_found) }
+        it { is_expected.to have_http_status(:forbidden) }
       end
     end
   end
