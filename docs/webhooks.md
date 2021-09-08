@@ -1,4 +1,4 @@
-## Implémentation d'un wehbook
+## Implémentation d'un webhook
 
 DataPass possède un système de webhooks permettant de souscrire aux différents
 changement d'état d'une demande. Par défaut ce système est désactivé (en faveur
