@@ -2,6 +2,7 @@ class WebhookEnrollmentSerializer < ActiveModel::Serializer
   attributes :id,
     :intitule,
     :description,
+    :demarche,
     :status,
     :siret,
     :scopes,
