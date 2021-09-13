@@ -48,16 +48,6 @@ RSpec.describe Enrollment, type: :model do
       end
     end
 
-    context "with api_entreprise as target api" do
-      let(:target_api) { :api_entreprise }
-
-      it "runs associated bridge" do
-        expect(ApiEntrepriseBridge).to receive(:call).with(enrollment)
-
-        subject
-      end
-    end
-
     context "with api_particulier as target api" do
       let(:target_api) { :api_particulier }
 
