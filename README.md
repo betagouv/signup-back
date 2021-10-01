@@ -1,5 +1,11 @@
 # Backend de DataPass
 
+## Avertissement de dépréciation
+
+Ce dépôt de code n'est plus utilisé et a été fusionné avec le frontend : https://github.com/betagouv/datapass
+
+## 
+
 [![Rails tests](https://github.com/betagouv/signup-back/actions/workflows/ci.yml/badge.svg)](https://github.com/betagouv/signup-back/actions/workflows/ci.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/713ba5c1e90ee6a35937/maintainability)](https://codeclimate.com/github/betagouv/signup-back/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/713ba5c1e90ee6a35937/test_coverage)](https://codeclimate.com/github/betagouv/signup-back/test_coverage)
