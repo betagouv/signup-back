@@ -47,6 +47,11 @@ class Enrollment::ApiImpotParticulierSandboxPolicy < Enrollment::Dgfip::SandboxP
         :dgfip_annee_n_moins_3,
         :dgfip_acces_spi,
         :dgfip_acces_etat_civil
+      ],
+      additional_content: [
+        :rgpd_general_agreement,
+        :dgfip_acces_spi,
+        :dgfip_acces_etat_civil
       ]
     ])
 
